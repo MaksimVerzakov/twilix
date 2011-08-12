@@ -1,28 +1,36 @@
 from twisted.words.xish.domish import Element
 
 class ElementParseError(Exception):
+    """Rises when attribute is required and value is None."""
     pass
 
 class WrongElement(Exception):
+    """Rises when there is an attempt to create an element from improper."""
     pass
 
 class EmptyStanza(object):
+    """Stanza without any attributes."""
     pass
 
 class EmptyElement(object):
+    """Element without value"""
     pass
 
 class BreakStanza(object):
     pass
 
 class MyElement(Element):
-
+    """
+    Extend class Element from twisted.words.xish.domish.
+    """
+    
     attributesProps = {}
     nodesProps = {}
     
     @classmethod
     def makeFromElement(cls, el):
-        """Class method. Make copy of element.
+        """
+        Class method. Make copy of element.
         
         :param el: element to copy
         :type el: Element
@@ -41,7 +49,9 @@ class MyElement(Element):
 
     @classmethod
     def createFromElement(cls, el, host=None, **kwargs):
-        """Class method. Make class instance of element if it's suits to class.
+        """
+        Class method. Make class instance of element
+        if it's suits to class.
         
         :returns: class instance with host and kwargs of element
         
@@ -67,7 +77,8 @@ class MyElement(Element):
 
     @classmethod
     def topClass(cls):
-        """Class method. 
+        """
+        Class method. 
         Return top class in class hierarchy.
         
         :returns:  
@@ -82,7 +93,7 @@ class MyElement(Element):
         return cls
 
     def validate(self):
-        """Validate all atributes."""
+        """Validate all attributes."""
         parent = getattr(self, 'parent', None)
         if parent is not None:
             parent.validate()
@@ -91,9 +102,17 @@ class MyElement(Element):
         for name, attr in self.__class__.nodesProps.items():
             getattr(self, name, None)
 
-    def __getattr__(self, name):
+    def __getattr__(self, name):  #XXX: refactor?
         """Overrides __getattr__ method.
         
+        Return valid attribute or not listed node if it's exist.
+        
+        Return list of valid childrens of node if it's listed.
+        
+        Return function adder or remover if it's required and node is
+        listed.
+        
+        Call __getattr__ method of super class otherwise.         
         """
         need_adder = False
         need_remover = False
@@ -130,7 +149,7 @@ class MyElement(Element):
                             self.addChild(n)
                     return r
                 return adder
-            elif need_remover and listed:   #listed?
+            elif need_remover and listed:   #XXX: node.listed?
                 def remover(value):
                     if not isinstance(value, (tuple, list)):
                         values = [value,]
@@ -157,7 +176,8 @@ class MyElement(Element):
             return super(MyElement, self).__getattr__(name)
 
     def _validate(self, name, attr, value, setter=False):
-        """Call cleaning function to attributes value according to the
+        """
+        Call cleaning function to attributes value according to the
         name and setter. 
         Return clean value.
         
@@ -187,8 +207,11 @@ class MyElement(Element):
         return value
 
     def __setattr__(self, name, value):
-        """Overrides __setattr__ method.
+        """
+        Overrides __setattr__ method.
+        
         Set new value to attribute with name if it's exist. 
+        
         Call __setattr__ method of super class otherwise.
         """
         attr = self.attributesProps.get(name, None)
@@ -220,7 +243,8 @@ class MyElement(Element):
             super(MyElement, self).__setattr__(name, value)
 
     def topElement(self):
-        """Return top element in elements hierarchy.
+        """
+        Return top element in elements hierarchy.
         
         :returns:  
             self if instance have not parent elements
@@ -234,7 +258,9 @@ class MyElement(Element):
         return self
 
     def _content_get(self):
-        """Getter for property descriptor.
+        """
+        Getter for property descriptor.
+        Return content.
         :returns: unicode content
         :rises: ValueError
         """
@@ -246,7 +272,8 @@ class MyElement(Element):
         return r
 
     def _content_set(self, value):
-        """Setter for property descriptor.
+        """
+        Setter for property descriptor.
         Remove old content.
         Set value as content.        
         """
@@ -254,12 +281,13 @@ class MyElement(Element):
         self.children.append(unicode(value))
     content = property(_content_get, _content_set)
 
-    def addElement(self, name, defaultUri = None, content = None):
-        """Append element to childrens. 
+    def addElement(self, name, defaultUri=None, content=None):
+        """
+        Append element to childrens. 
         Return element with specified name, Uri and content.
         """
         result = None
-        if isinstance(name, type(())):    #tuple?
+        if isinstance(name, type(())):    #XXX: tuple?
             if defaultUri is None:
                 defaultUri = name[0]
             self.children.append(MyElement(name, defaultUri))
@@ -277,12 +305,13 @@ class MyElement(Element):
         return result
 
     def cleanAttribute(self, attrib):
-        """Delete atribute if it's exist."""
+        """Delete attribute if it's exist."""
         if self.hasAttribute(attrib):
             del self.attributes[attrib]
 
     def removeChilds(self, name=None, uri=None, element=None):
-        """Remove all content and child elements not appropriate
+        """
+        Remove all content and child elements appropriate 
         to name-uri pair.
         """
         if element is not None:
@@ -309,7 +338,8 @@ class MyElement(Element):
             return el.content
 
     def link(self, el, unique=True):
-        """Replace child element with the same name and uri as element
+        """
+        Replace child element with the same name and uri as element
         if uniqueness is required or just add element.
         """
         if unique:
@@ -364,7 +394,8 @@ class VElement(MyElement):
             setattr(self, attr, value)
 
     def __eq__(self, other):
-        """Overrides comparison operator ==.
+        """
+        Overrides comparison operator ==.
         :returns:
             False if elements ain't equal.
             True if elements are equal.
@@ -380,14 +411,16 @@ class VElement(MyElement):
         return True
 
     def __ne__(self, other):
-        """Overrides comparison operator !=.
+        """
+        Overrides comparison operator !=.
         :returns: denial results of function __eq__
         """
         return not self.__eq__(other)
 
     @classmethod
     def ___validate(cls, el):
-        """Class method.
+        """
+        Class method.
         Returns el if it's instance of class and create element from el
         of required type.
         """

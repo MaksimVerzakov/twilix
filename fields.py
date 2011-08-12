@@ -5,28 +5,39 @@ from twilix.base import ElementParseError, WrongElement, MyElement, EmptyElement
 from twilix.utils import parse_timestamp
 
 class AttributeProp(object):
+    """Base class for all attributes."""
     def __init__(self, xmlattr, required=True):
         self.required = required
         self.xmlattr = xmlattr
 
     def get_from_el(self, el):
+        """Return required xml attribute."""
         return el.attributes.get(self.xmlattr, None)
 
     def __unicode__(self):
+        """Overrides __unicode__ method of object."""
         return u'AttributeProp %s' % self.xmlattr
         
 class StringAttr(AttributeProp):
+    """String attribute."""
     def clean(self, value):
+        """Return value cast to unicode. 
+        Rise ElementParseError if there's no value but it's required.
+        :returns: unicode(value)
+        :rises: ElementParseError      
+        """
         if value is not None:
             return unicode(value)
         elif self.required:
             raise ElementParseError, u'%s is required' % self
 
     def clean_set(self, value):
+        """Return value cast to unicode."""
         if value is not None:
             return unicode(value)
 
 class JidAttr(StringAttr):
+    """Jabber id Attribute."""
     def clean(self, value):
         value = super(JidAttr, self).clean(value)
         if value is not None or self.required:
