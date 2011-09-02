@@ -13,7 +13,7 @@ class EmptyStanza(object):
     pass
 
 class EmptyElement(object):
-    """Element without value"""
+    """Element without value."""
     pass
 
 class BreakStanza(object):
@@ -22,6 +22,7 @@ class BreakStanza(object):
 class MyElement(Element):
     """
     Extend class Element from twisted.words.xish.domish.
+    Base class for all Elements.
     """
     
     attributesProps = {}
@@ -30,7 +31,7 @@ class MyElement(Element):
     @classmethod
     def makeFromElement(cls, el):
         """
-        Class method. Make copy of element.
+        Class method. Make copy of element.  !
         
         :param el: element to copy
         :type el: Element
@@ -50,7 +51,7 @@ class MyElement(Element):
     @classmethod
     def createFromElement(cls, el, host=None, **kwargs):
         """
-        Class method. Make class instance of element
+        Class method. Make class instance of element     !
         if it's suits to class.
         
         :returns: class instance with host and kwargs of element
@@ -249,7 +250,7 @@ class MyElement(Element):
         :returns:  
             self if instance have not parent elements
             
-            top element of parent elemen otherwise
+            top element of parent element otherwise
             
         """
         parent = getattr(self, 'parent', None)
@@ -261,8 +262,11 @@ class MyElement(Element):
         """
         Getter for property descriptor.
         Return content.
+        
         :returns: unicode content
+        
         :rises: ValueError
+        
         """
         r = u''
         for c in self.children:
@@ -347,6 +351,18 @@ class MyElement(Element):
         self.addChild(el)
 
 def get_declared_fields(bases, attrs):
+    """
+    Getter for metaclass.
+    Make lists of tuples with field name and value of attributes 
+    and nodes.
+    
+    :param bases: list of parents.
+    :param attrs: list of attributes.
+    
+    :returns: dictionaries of field_name/value pair for attributes and 
+    nodes.
+    
+    """
     from twilix import fields
     attr_fields = [(field_name, attrs.pop(field_name)) for field_name, obj in \
                     attrs.items() if isinstance(obj, fields.AttributeProp)]
@@ -354,12 +370,17 @@ def get_declared_fields(bases, attrs):
                     attrs.items() if isinstance(obj, fields.NodeProp)]
     for base in bases[::-1]:
         if hasattr(base, 'attributesProps'):
-            attr_fields = base.attributesProps.items() + attr_fields
+            attr_fields = base.attributesProps.items() + attr_fields #XXX: extend?
         if hasattr(base, 'nodesProps'):
-            node_fields = base.nodesProps.items() + node_fields
+            node_fields = base.nodesProps.items() + node_fields   #XXX: extend?
     return dict(attr_fields), dict(node_fields)
 
 class DeclarativeFieldsMetaClass(type):
+    """
+    Metaclass for VElement.
+    Set get_declared_fields as getter for fields 'attributesProps' and
+    'nodesProps'.
+    """
     def __new__(cls, name, bases, attrs):
         attrs['attributesProps'], attrs['nodesProps'] = \
               get_declared_fields(bases, attrs)
@@ -368,6 +389,10 @@ class DeclarativeFieldsMetaClass(type):
         return new_class
 
 class VElement(MyElement):
+    """
+    Base class for stanzas and other items.
+    Uses DeclarativeFieldsMetaClass as metaclass.    
+    """
     elementName = None
     elementUri = None
     elementPrefixes = {}
@@ -375,6 +400,7 @@ class VElement(MyElement):
     __metaclass__ = DeclarativeFieldsMetaClass
 
     def __init__(self, **kwargs):
+        """Initialize VElement object."""
         uri = kwargs.get('uri', None)
         name = kwargs.get('el_name', self.elementName)
         if uri is None and isinstance(self.elementUri, (str, unicode)):

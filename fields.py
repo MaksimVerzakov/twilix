@@ -5,13 +5,20 @@ from twilix.base import ElementParseError, WrongElement, MyElement, EmptyElement
 from twilix.utils import parse_timestamp
 
 class AttributeProp(object):
-    """Base class for all attributes."""
+    """Base class for all attribute properties."""
     def __init__(self, xmlattr, required=True):
         self.required = required
         self.xmlattr = xmlattr
 
     def get_from_el(self, el):
-        """Return required xml attribute."""
+        """
+        Return required xml attribute from element.
+        :returns:
+            xml attribute from element.
+            
+            None if attribute isn't exist.
+            
+        """
         return el.attributes.get(self.xmlattr, None)
 
     def __unicode__(self):
@@ -23,8 +30,10 @@ class StringAttr(AttributeProp):
     def clean(self, value):
         """Return value cast to unicode. 
         Rise ElementParseError if there's no value but it's required.
-        :returns: unicode(value)
-        :rises: ElementParseError      
+        
+        :returns: value cast to unicode.
+        
+        :rises: ElementParseError.
         """
         if value is not None:
             return unicode(value)
@@ -39,12 +48,28 @@ class StringAttr(AttributeProp):
 class JidAttr(StringAttr):
     """Jabber id Attribute."""
     def clean(self, value):
+        """
+        Call clean method of parent class to value.
+        
+        :returns:
+            value cast to internJID if value isn't None or required.
+        """
         value = super(JidAttr, self).clean(value)
         if value is not None or self.required:
             return internJID(value)
 
 class BooleanAttr(StringAttr):
+    """Boolean attribute."""
     def clean(self, value):
+        """
+        Call clean method of parent class.
+        
+        :returns:
+            True if value is 'true'
+            
+            False otherwise
+            
+        """
         value = super(BooleanAttr, self).clean(value)
         if value == 'true': value = True
         else: value = False
@@ -56,6 +81,7 @@ class BooleanAttr(StringAttr):
         return u'false'
 
 class NodeProp(object):
+    """Base class for all node properties."""
     def __init__(self, xmlnode, required=True, listed=False, unique=False):
         self.xmlnode = xmlnode
         self.required = required
@@ -63,6 +89,19 @@ class NodeProp(object):
         self.unique = unique
 
     def get_from_el(self, el):
+        """
+        Get all non-string and non-unicode elements from el which names 
+        is the same to xmlnode or just non-string and non-unicode elements
+        if xmlnod is None.
+        
+        :returns:
+            list of relevant elements if node is listed.
+            
+            element otherwise.
+        
+        :rises:
+            ElementParseError       
+        """
         r = filter(lambda el: not isinstance(el, (str, unicode)) and \
                               (getattr(el, 'name', None) == self.xmlnode or \
                                self.xmlnode is None),
@@ -75,13 +114,19 @@ class NodeProp(object):
             return r[0]
 
     def clean(self, value):
+        """Return value."""
         return value
 
     def __unicode__(self):
+        """Overrides __unicode__ method of object."""
         return 'NodeProp %s' % self.xmlnode
 
 class StringNode(NodeProp):
     def __init__(self, *args, **kwargs):
+        """
+        Initialize StringNode object.
+        Get uri and call __init__ method of parent.
+        """
         try:
             self.uri = kwargs.pop('uri')
         except KeyError:
@@ -89,12 +134,29 @@ class StringNode(NodeProp):
         super(StringNode, self).__init__(*args, **kwargs)
 
     def clean(self, value):
+        """
+        Return value cast to unicode.
+        
+        :returns: value cast to unicode
+        
+        :rises: ElementParseError if value is None but required.
+        """
         if value is not None:
             return unicode(value)
         elif self.required:
             raise ElementParseError, u"%s is required" % self
 
     def clean_set(self, value):
+        """
+        Return MyElement with value as content or EmptyElement if value
+        is empty.
+        
+        :returns:
+            MyElement with value as content.
+            
+            EmptyElement if value is empty.        
+            
+        """
         if value is None:
             return EmptyElement()
         r = MyElement((self.uri, self.xmlnode))
@@ -102,7 +164,9 @@ class StringNode(NodeProp):
         return r
 
 class DateTimeNode(StringNode):
+    """Node contained date and time info."""
     def get_from_el(self, el):
+        """Return date and time info from element in datetime format."""
         el = super(DateTimeNode, self).get_from_el(el)
         el = super(DateTimeNode, self).clean(el)
         if el:
@@ -112,6 +176,8 @@ class DateTimeNode(StringNode):
         return value
 
     def clean_set(self, value):
+        """        
+        """
         if not value:
             return EmptyElement()
         res = value.strftime("%Y-%m-%dT%H:%M:%S")
@@ -128,7 +194,16 @@ class DateTimeNode(StringNode):
         return super(DateTimeNode, self).clean_set(res)
 
 class FlagNode(NodeProp):
+    """Flag node."""
     def get_from_el(self, el):
+        """ 
+        :returns:
+           True if there's attribute in element with the same name as
+           xmlnode.
+           
+           False otherwise.
+           
+        """
         els = [e for e in el.children \
                if getattr(e, 'name', None) == self.xmlnode]
         if els:
@@ -136,18 +211,36 @@ class FlagNode(NodeProp):
         return False
 
     def clean(self, value):
+        """
+        :returns:
+            True if value is exist.
+            
+            False otherwise.
+            
+        """
         if value:
             return True
         else:
             return False
 
     def clean_set(self, value):
+        """
+        :returns:
+            MyElement 
+            
+            EmptyElement
+            
+        """
         if value:
             return MyElement((None, self.xmlnode))
         return EmptyElement()
 
 class IntegerNode(StringNode):
+    """Integer node."""
     def clean(self, value):
+        """
+        Return value cast to integer if it's possible.
+        """
         value = super(IntegerNode, self).clean(value)
         if value is not None:
             try:
@@ -157,7 +250,13 @@ class IntegerNode(StringNode):
             return res
 
 class Base64Node(StringNode):
+    """Base64 node."""
     def clean(self, value):
+        """
+        Return value in base64 format if it's possible.
+        :returns: value cast to Base64.
+        :rises: ElementParseError
+        """
         value = super(Base64Node, self).clean(value)
         try:
             value = base64.b64decode(value)
@@ -166,6 +265,9 @@ class Base64Node(StringNode):
         return value
 
     def clean_set(self, value):
+        """
+        Return MyElement with value cast to base64 as content.
+        """
         if value is not None:
             r = MyElement((None, self.xmlnode))
             r.content = base64.b64encode(unicode(value))
