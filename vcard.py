@@ -10,7 +10,11 @@ from twilix.disco import Feature
 from twilix.base import WrongElement, VElement
 
 class Name(VElement):
-    
+    """
+    Extends VElement class from twilix.base.
+    Used for representation name data (family name, given name and 
+    middle name)
+    """    
     elementName = 'N'
     
     family_name = fields.StringNode('FAMILY', required=False)
@@ -18,6 +22,11 @@ class Name(VElement):
     middle_name = fields.StringNode('MIDDLE', required=False)
 
 class Organization(VElement):
+    """
+    Extends VElement class from twilix.base.
+    Used for representation organization data (organization name and
+    organization unit)
+    """
     elementName = 'ORG'
 
     name = fields.StringNode('ORGNAME', required=False)
@@ -25,23 +34,43 @@ class Organization(VElement):
 
 class Telephone(VElement):
     # TODO
+    """
+    Extends VElement class from twilix.base.
+    Used for representation telephone data.
+    """
     pass
 
 class Address(VElement):
     # TODO
+    """
+    Extends VElement class from twilix.base.
+    Used for representation adress data.
+    """
     pass
 
 class Email(VElement):
     # TODO
+    """
+    Extends VElement class from twilix.base.
+    Used for representation e-mail data.
+    """
     pass
 
 class Photo(VElement):
+    """
+    Extends VElement class from twilix.base.
+    Used for representation photo data (type and binary value)
+    """
     elementName = 'PHOTO'
 
     type_ = fields.StringNode('TYPE', required=False)
     binval = fields.Base64Node('BINVAL', required=False)
 
 class VCardQuery(Query):
+    """
+    Extends Query class from twilix.stanzas.
+    Contains fields with nodes for personal data.
+    """
     elementName = 'vCard'
     elementUri = 'vcard-temp'
 
@@ -62,6 +91,9 @@ class VCardQuery(Query):
     photo = fields.ElementNode('PHOTO', Photo, required=False, listed=False)
 
 class MyVCardQuery(VCardQuery):
+    """
+    Extends VCardQuery.
+    """
     def getHandler(self):
         if self.host.myvcard and self.host.dispatcher.myjid == self.iq.to:
             iq = self.iq.makeResult()
