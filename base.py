@@ -1,11 +1,11 @@
 from twisted.words.xish.domish import Element
 
 class ElementParseError(Exception):
-    """Rises when attribute is required and value is None."""
+    """Raises when attribute is required and value is None."""
     pass
 
 class WrongElement(Exception):
-    """Rises when there is an attempt to create an element from improper."""
+    """Raises when there is an attempt to create an element from improper."""
     pass
 
 class EmptyStanza(object):
@@ -57,7 +57,7 @@ class MyElement(Element):
         
         :returns: class instance with host and kwargs of element
         
-        :rises: WrongElement   
+        :raises: WrongElement   
         """
         if isinstance(cls.elementUri, (tuple, list)):
             if el.uri not in cls.elementUri:
@@ -193,7 +193,7 @@ class MyElement(Element):
         
         :returns: value - clean value
         
-        :rises: ElementParseError
+        :raises: ElementParseError
         """
         if not setter:
             value = attr.clean(value)
@@ -266,7 +266,7 @@ class MyElement(Element):
         
         :returns: unicode content
         
-        :rises: ValueError
+        :raises: ValueError
         
         """
         r = u''
