@@ -6,6 +6,13 @@ from twilix.base import WrongElement, VElement
 from twilix import fields
 
 class RosterItem(VElement):
+    """
+    Class for xml roster item node. Inheritor of VElement.
+    
+    Class has attributes-identificators for filter xml nodes, info 
+    string-type fields and jid of roster element.
+    
+    """
     elementName = 'item'
     elementUri = 'jabber:iq:roster'
 
@@ -26,14 +33,31 @@ class RosterItem(VElement):
 
     @property
     def nick(self):
+        """Property for nickname attribute"""
         return self._nick
 
     def addGroup(self, group_name):
+        """
+        Adds new group in roster's list of groups
+        
+        :param group_name: name of new group.
+        
+        :returns: True if group was added else None if same group already exist.
+        
+        """
         if not group_name in self._groups:
             self.groups = list(self._groups) + [group_name]
             return True
 
     def removeGroup(self, group_name):
+        """
+        Deletes group from roster's list of groups
+        
+        :param group_name: name of deleted group.
+        
+        :returns: True if group was deleted else None if group not exist.
+        
+        """
         if group_name in self._groups:
             _groups = list(self._groups)
             _groups.remove(group_name)
@@ -41,6 +65,9 @@ class RosterItem(VElement):
             return True
 
     def __unicode__(self):
+        """
+        Unicode converter
+        """
         return '<RosterItem %s %s, subscription %s>' % \
                (self.jid, self.nick, self.subscription)
 
@@ -48,6 +75,16 @@ class RosterItem(VElement):
         return self.__unicode__()
 
 class RosterQuery(Query):
+    """
+    Class for xml roster queries. Inheritor of Query.
+    
+    Class attributes:
+    
+    elementUri -- identificator/filter for xml nodes
+    
+    items -- list of RosterItem instances
+    
+    """
     elementUri = 'jabber:iq:roster'
 
     items = fields.ElementNode(RosterItem, listed=True, unique=True,
@@ -57,15 +94,31 @@ class RosterQuery(Query):
         super(RosterQuery, self).__init__(**kwargs)
 
     def setHandler(self):
+        """
+        Method for handle set-type roster queries.
+        Calls updateRoster method from host class.
+        
+        """
         self.iq.from_ = None
         self.host.updateRoster(self)
         return self.iq.makeResult()
 
     def getHandler(self):
+        """
+        Method for handle get-type roster queries.
+        Not acceptable. Returns error stanza.
+        
+        """
         self.iq.from_ = None
         return self.iq.makeError('cancel', 'not-acceptable')
 
 class RosterPresence(Presence):
+    """
+    Class for xml roster presence. Inheritor of Presence.
+    Describes some handlers for other presences.
+    Handlers send necessary signal with dispatcher (from pydispatch module)
+    
+    """
     def availableHandler(self):
         i = self.host.getItemByJid(self.from_)
         if i is None:
@@ -112,6 +165,8 @@ class RosterPresence(Presence):
 
 class Roster(object): #List of RosterItem
     # Signals
+    """
+    """
     roster_got = object()
     roster_item_added = object()
     roster_item_removed = object()
@@ -127,11 +182,22 @@ class Roster(object): #List of RosterItem
     unsubscribed = object()
 
     def __init__(self, dispatcher, mypresence=None):
+        """
+        Sets some instance attributes
+        
+        :param dispatcher: dispatcher for send/receive stanzas
+        
+        """
         self.dispatcher = dispatcher
         self.items = []
         self.mypresence = mypresence
 
     def init(self):
+        """
+        Registers handlers for roster stanzas.
+        Links roster_got signal with instance method.
+        Sends roster get query.
+        """
         self.dispatcher.registerHandler((RosterQuery, self))
         self.dispatcher.registerHandler((RosterPresence, self))
         dispatcher.connect(self._send_initial_presence, self.roster_got,
@@ -141,27 +207,57 @@ class Roster(object): #List of RosterItem
         iq.result_class = RosterQuery
         iq.deferred.addCallback(self.gotRoster)
         self.dispatcher.send(iq)
-
+    
     def _send_initial_presence(self, sender):
+        """
+        
+        """
         assert self is sender
         if self.mypresence is not None:
             self.updatePresence(self.mypresence)
 
     def updatePresence(self, presence, send=True):
+        """
+        Sets value of mypresence and maybe send it
+        
+        :param presence: new value
+        
+        :param send: boolean, true for send new presence
+        
+        """
         self.mypresence = presence
         if send:
             self.dispatcher.send(presence)
         
     def gotRoster(self, query):
+        """
+        Saves roster items from query instance and send 
+        roster_got signal to dispatcher (from pydispatch module)
+        
+        :param query: instance with roster items
+        
+        """
         self.items = list(query.items)
         dispatcher.send(self.roster_got, self)
 
     def addItem(self, item):
+        """
+        Sends set-type query for addition new item in roster
+        
+        :param item: value of new item
+        
+        """
         query = RosterQuery(self, parent=Iq(type_='set'))
         query.link(item)
         self.dispatcher.send(query.iq)
 
     def removeItem(self, item):
+        """
+        Sends set-type query for deletion item from roster
+        
+        :param item: value of removed item
+        
+        """
         item.subscription = 'remove'
         query = RosterQuery(self, parent=Iq(type_='set'))
         query.link(item)

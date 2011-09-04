@@ -1,3 +1,9 @@
+"""
+Module describes the Dispatcher : class which controlling any data exchange.
+This class realize direct handling of input and output stanzas.
+
+"""
+
 from twisted.internet.defer import inlineCallbacks, returnValue
 from twilix.stanzas import Iq, Message, Presence, Stanza
 from twilix.jid import internJID
@@ -5,7 +11,37 @@ from twilix.base import MyElement, WrongElement, EmptyStanza, ElementParseError,
 from twilix import errors
 
 class Dispatcher(object):
+    """
+    Main class for input-output controlling.
+    
+    Attributes :
+    
+        xs -- xmlstream
+    
+        myjid -- jabber id value
+    
+        _handlers -- list of (handler class, host)-style pairs 
+                (see register/unregisterHandler methods)
+    
+        _callbacks -- dict of callbacks with format :
+    
+            key is an id of stanza that wait callback value
+        
+            value is a (deffered, resultclass, errorclass)-style tuple
+    
+    Methods :
+        
+        registerHandler -- adds new handler
+        
+        unregisterHandler -- dels some handler
+        
+        dispatch -- inlineCallbacks decorated method for handling of input stanzas
+        
+        send -- method realize sending of any stanzas
+    
+    """
     def __init__(self, xs, myjid):
+        """Initializating by values of xmlstream and JID"""
         self.xmlstream = xs
         self.xmlstream.addObserver('/message', self.dispatch)
         self.xmlstream.addObserver('/presence', self.dispatch)
@@ -32,17 +68,31 @@ class Dispatcher(object):
         return self._hooks.get(hook_name, ())
 
     def registerHandler(self, handler):
+        """Registers new pair of any stanza handler class and his host"""
         if not handler in self._handlers:
             self._handlers.append(handler)
             return True
 
     def unregisterHandler(self, handler):
+        """Unregisters pair of any stanza handler class and his host"""
         if handler in self._handlers:
             self._handlers.remove(handler)
             return True
 
     @inlineCallbacks
     def dispatch(self, el):
+        """
+        This function realize direct input data handling.
+        
+        There is a handling :
+        
+        -- returns callback/errorback value for result/error-type stanzas
+        
+        -- calls handlers for other stanzas and then send the results
+        
+        :param el: is an input stanza
+        
+        """
         results = []
         el = MyElement.makeFromElement(el)
         for cls in (Iq, Message, Presence):
@@ -109,6 +159,18 @@ class Dispatcher(object):
         returnValue(None)
 
     def send(self, els):
+        """
+        This function realize direct output data handling.
+        
+        There is a handling :
+        
+        -- set callbacks for deferred stanza's objects
+        
+        -- send result stanzas
+        
+        :param els: is an output stanza or stanzas
+        
+        """
         deferred = None
         if not isinstance(els, (tuple, list)):
             deferred = getattr(els, 'deferred', None)

@@ -1,3 +1,6 @@
+"""
+Module implements vcard-temp feature
+"""
 # XEP-0054
 import copy
 
@@ -7,6 +10,7 @@ from twilix.disco import Feature
 from twilix.base import WrongElement, VElement
 
 class Name(VElement):
+    
     elementName = 'N'
     
     family_name = fields.StringNode('FAMILY', required=False)
@@ -58,7 +62,6 @@ class VCardQuery(Query):
     photo = fields.ElementNode('PHOTO', Photo, required=False, listed=False)
 
 class MyVCardQuery(VCardQuery):
-
     def getHandler(self):
         if self.host.myvcard and self.host.dispatcher.myjid == self.iq.to:
             iq = self.iq.makeResult()
