@@ -30,11 +30,11 @@ class StringAttr(AttributeProp):
     def clean(self, value):
         """
         Return value cast to unicode. 
-        Rise ElementParseError if there's no value but it's required.
+        Raise ElementParseError if there's no value but it's required.
         
         :returns: value cast to unicode.
         
-        :rises: ElementParseError.
+        :raises: ElementParseError.
         """
         if value is not None:
             return unicode(value)
@@ -99,7 +99,7 @@ class NodeProp(object):
             
             element otherwise.
         
-        :rises:
+        :raises:
             ElementParseError       
         """
         r = filter(lambda el: not isinstance(el, (str, unicode)) and \
@@ -140,7 +140,7 @@ class StringNode(NodeProp):
         
         :returns: value cast to unicode
         
-        :rises: ElementParseError if value is None but required.
+        :raises: ElementParseError if value is None but required.
         """
         if value is not None:
             return unicode(value)
@@ -272,7 +272,7 @@ class Base64Node(StringNode):
         """
         Return value in base64 format if it's possible.
         :returns: value cast to base64.
-        :rises: ElementParseError
+        :raises: ElementParseError
         """
         value = super(Base64Node, self).clean(value)
         try:
