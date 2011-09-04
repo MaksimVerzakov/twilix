@@ -28,7 +28,8 @@ class AttributeProp(object):
 class StringAttr(AttributeProp):
     """String attribute."""
     def clean(self, value):
-        """Return value cast to unicode. 
+        """
+        Return value cast to unicode. 
         Rise ElementParseError if there's no value but it's required.
         
         :returns: value cast to unicode.
@@ -90,9 +91,8 @@ class NodeProp(object):
 
     def get_from_el(self, el):
         """
-        Get all non-string and non-unicode elements from el which names 
-        is the same to xmlnode or just non-string and non-unicode elements
-        if xmlnod is None.
+        Get all nodes from el which names is the same to xmlnode or just
+        all nodes if xmlnod is None.
         
         :returns:
             list of relevant elements if node is listed.
@@ -122,6 +122,7 @@ class NodeProp(object):
         return 'NodeProp %s' % self.xmlnode
 
 class StringNode(NodeProp):
+    """Used for nodes contains string."""
     def __init__(self, *args, **kwargs):
         """
         Initialize StringNode object.
@@ -164,7 +165,7 @@ class StringNode(NodeProp):
         return r
 
 class DateTimeNode(StringNode):
-    """Node contained date and time info."""
+    """Used for nodes containes date and time info."""
     def get_from_el(self, el):
         """Return date and time info from element in datetime format."""
         el = super(DateTimeNode, self).get_from_el(el)
@@ -173,10 +174,20 @@ class DateTimeNode(StringNode):
             return parse_timestamp(el)
 
     def clean(self, value):
+        """Overrides clean method of StringNode."""
         return value
 
     def clean_set(self, value):
-        """        
+        """
+        Return element contains unicode string with date, time and utc
+        offset.
+        
+        :returns:
+            EmptyElement() if there's no value.
+            
+            MyElement contains unicode string with date, time and utc
+            offset.
+            
         """
         if not value:
             return EmptyElement()
@@ -194,9 +205,9 @@ class DateTimeNode(StringNode):
         return super(DateTimeNode, self).clean_set(res)
 
 class FlagNode(NodeProp):
-    """Flag node."""
+    """Used for flag nodes."""
     def get_from_el(self, el):
-        """ 
+        """
         :returns:
            True if there's attribute in element with the same name as
            xmlnode.
@@ -226,9 +237,9 @@ class FlagNode(NodeProp):
     def clean_set(self, value):
         """
         :returns:
-            MyElement 
+            MyElement if value is exist.
             
-            EmptyElement
+            EmptyElement otherwise.
             
         """
         if value:
@@ -236,10 +247,16 @@ class FlagNode(NodeProp):
         return EmptyElement()
 
 class IntegerNode(StringNode):
-    """Integer node."""
+    """Used for nodes containes integer number."""
     def clean(self, value):
         """
+        Call clean method of parents class to value.
         Return value cast to integer if it's possible.
+        :returns:
+            value cast to integer.
+            
+            None if there's ValueError.
+            
         """
         value = super(IntegerNode, self).clean(value)
         if value is not None:
@@ -250,11 +267,11 @@ class IntegerNode(StringNode):
             return res
 
 class Base64Node(StringNode):
-    """Base64 node."""
+    """Used for nodes containes base64 data."""
     def clean(self, value):
         """
         Return value in base64 format if it's possible.
-        :returns: value cast to Base64.
+        :returns: value cast to base64.
         :rises: ElementParseError
         """
         value = super(Base64Node, self).clean(value)
@@ -265,17 +282,16 @@ class Base64Node(StringNode):
         return value
 
     def clean_set(self, value):
-        """
-        Return MyElement with value cast to base64 as content.
-        """
+        """Return MyElement with value cast to base64 as content."""
         if value is not None:
             r = MyElement((None, self.xmlnode))
             r.content = base64.b64encode(unicode(value))
             return r
 
 class ElementNode(NodeProp):
+    """Used for nodes containes another element."""
     def __init__(self, *args, **kwargs):
-        if isinstance(args[0], (str, unicode)):
+        if isinstance(args[0], (str, unicode)):     #XXX: extra checking.
             args = args[1:]
         cls = args[0]
         if len(args) > 1:

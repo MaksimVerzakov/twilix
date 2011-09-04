@@ -31,7 +31,8 @@ class MyElement(Element):
     @classmethod
     def makeFromElement(cls, el):
         """
-        Class method. Make copy of element.  !
+        Class method. Make new element according to class that calls
+        this method from element el.
         
         :param el: element to copy
         :type el: Element
@@ -51,8 +52,8 @@ class MyElement(Element):
     @classmethod
     def createFromElement(cls, el, host=None, **kwargs):
         """
-        Class method. Make class instance of element     !
-        if it's suits to class.
+        Class method. Make class instance of element if it's suits
+        to class.
         
         :returns: class instance with host and kwargs of element
         
