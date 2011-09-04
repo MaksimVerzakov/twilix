@@ -289,9 +289,9 @@ class Base64Node(StringNode):
             return r
 
 class ElementNode(NodeProp):
-    """Used for nodes containes another element."""
+    """Used for nodes containes element."""
     def __init__(self, *args, **kwargs):
-        if isinstance(args[0], (str, unicode)):     #XXX: extra checking.
+        if isinstance(args[0], (str, unicode)):     
             args = args[1:]
         cls = args[0]
         if len(args) > 1:
@@ -302,6 +302,14 @@ class ElementNode(NodeProp):
         self.cls = cls
 
     def get_from_el(self, el):
+        """
+        Return all elements with appropriate name and URI.
+        :returns:
+            tuple of elements if node is listed.
+            
+            element otherwise.
+            
+        """
         r = filter(lambda c_el: \
                     (self.cls.elementName is None or \
                      getattr(c_el, 'name', None) == self.cls.elementName) and \
@@ -318,7 +326,8 @@ class ElementNode(NodeProp):
             return r[0]
 
     def clean(self, value):
+        """Return element according to class with value."""
         if value is None:
-            return
+            return                                 #XXX: EmptyElement()?
         return self.cls.createFromElement(value)
 
