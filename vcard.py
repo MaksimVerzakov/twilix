@@ -142,7 +142,8 @@ class VCard(object):
 
     def get(self, jid, from_=None):
         """
-        Create and send VCardQuery.
+        Create VCardQuery with get iq as parent.
+        Send get iq to dispatcher.
         Return deferred object with result.
         :returns:
             query.iq.deferred         
@@ -155,7 +156,13 @@ class VCard(object):
         return query.iq.deferred
 
     def set(self, vcard):
-        """???"""
+        """
+        Get copy of vcard.
+        Set it as child to set iq.
+        Send set iq to dispatcher.
+        :returns:
+            query.iq.deferred
+        """
         query = copy.copy(vcard)
         iq = Iq(type_='set')
         iq.link(query)
