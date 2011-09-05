@@ -69,7 +69,7 @@ class Photo(VElement):
 class VCardQuery(Query):
     """
     Extends Query class from twilix.stanzas.
-    Contains fields with nodes for personal data.
+    Contains fields with nodes for personal info.
     """
     elementName = 'vCard'
     elementUri = 'vcard-temp'
@@ -93,8 +93,17 @@ class VCardQuery(Query):
 class MyVCardQuery(VCardQuery):
     """
     Extends VCardQuery.
+    Define get and set Handlers.
     """
     def getHandler(self):
+        """
+        Make result iq with myvcard.
+        :returns:
+            result iq with myvcard if it's exist and destination is correct.
+            
+            error stanza if myvcard isn't exist.
+            
+        """
         if self.host.myvcard and self.host.dispatcher.myjid == self.iq.to:
             iq = self.iq.makeResult()
             iq.link(self.host.myvcard)
@@ -103,15 +112,23 @@ class MyVCardQuery(VCardQuery):
             return self.iq.makeError('cancel', 'item-not-found')
 
     def setHandler(self):
+        """Forbid the ability to set vcard."""
         return self.iq.makeError('auth', 'forbidden')
 
 class VCard(object):
+    """Class describes interaction with personal info in myvcard."""
     def __init__(self, dispatcher, myvcard=None):
+        """Initialize dispatcher, myvcard and list of handlers."""
         self.dispatcher = dispatcher
         self.myvcard = myvcard
         self._handlers = []
 
     def init(self, disco=None, handlers=None):
+        """
+        Register MyVCardQuery as handler. 
+        Register handlers from arguments.
+        Add feature to Disco if it's required.
+        """
         if handlers is None:
             handlers = ()
 
@@ -124,6 +141,12 @@ class VCard(object):
             disco.root_info.addFeatures(Feature(var='vcard-temp'))
 
     def get(self, jid, from_=None):
+        """
+        Create and send VCardQuery.
+        Return deferred object with result.
+        :returns:
+            query.iq.deferred         
+        """
         if from_ is None:
             from_ = self.dispatcher.myjid
         query = VCardQuery(parent=Iq(type_='get', to=jid, from_=from_))
@@ -132,6 +155,7 @@ class VCard(object):
         return query.iq.deferred
 
     def set(self, vcard):
+        """???"""
         query = copy.copy(vcard)
         iq = Iq(type_='set')
         iq.link(query)
