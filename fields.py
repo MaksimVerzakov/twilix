@@ -1,3 +1,6 @@
+"""
+Contains description of main attribute properties and node properties.
+"""
 import base64
 
 from twilix.jid import internJID

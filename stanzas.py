@@ -112,7 +112,7 @@ class Iq(Stanza):
         
         clean_id -- controls for valid id value
         
-        makeResult -- stes the result type for self-stanza
+        makeResult -- sets the result type for self-stanza
         
     """
     elementName = 'iq'

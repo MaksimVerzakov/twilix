@@ -1,3 +1,4 @@
+"""Contains classes that realize service discovery."""
 import hashlib
 import base64
 
@@ -7,6 +8,10 @@ from twilix.jid import internJID
 from twilix import fields
 
 class CapsElement(VElement):
+    """
+    Extends VElement. 
+    Describe node for entity capabilities.     
+    """
     elementName = 'c'
     elementUri = 'http://jabber.org/protocol/caps'
 
@@ -15,6 +20,10 @@ class CapsElement(VElement):
     ver = fields.StringAttr('ver')
 
 class Identity(VElement):
+    """
+    Extends VElement. 
+    Describe node for identity.     
+    """
     elementName = 'identity'
     
     category = fields.StringAttr('category')
@@ -22,11 +31,19 @@ class Identity(VElement):
     iname = fields.StringAttr('name', required=False)
 
 class Feature(VElement):
+    """
+    Extends VElement. 
+    Describe node for feature.     
+    """
     elementName = 'feature'
 
     var = fields.StringAttr('var')
 
 class DiscoInfoQuery(Query):
+    """
+    Extends Query class.
+    Contains information about features and identities.
+    """
     elementUri = 'http://jabber.org/protocol/disco#info'
     
     identities = fields.ElementNode(Identity, required=False,
@@ -36,8 +53,16 @@ class DiscoInfoQuery(Query):
     node = fields.StringAttr('node', required=False)
 
 class VDiscoInfoQuery(DiscoInfoQuery):
+    """
+    Extends class DiscoInfoQuery.
+    Set MyIq as parent class. 
+    Describe get handler.
+    """
     parentClass = MyIq
     def getHandler(self):
+        """
+        
+        """
         node = self.node or ''
         info_query = None
         if self.host.static_info.has_key(node):
@@ -50,6 +75,11 @@ class VDiscoInfoQuery(DiscoInfoQuery):
         return iq
 
 class DiscoItem(VElement):
+    """
+    Extends VElement.
+    Describe base discovery item. 
+    Contains fields for jid, name and node.
+    """
     elementName = 'item'
 
     jid = fields.JidAttr('jid')
@@ -57,6 +87,9 @@ class DiscoItem(VElement):
     node = fields.StringAttr('node', required=False)
 
 class DiscoItemsQuery(Query):
+    """
+    
+    """
     elementUri = 'http://jabber.org/protocol/disco#items'
 
     items = fields.ElementNode(DiscoItem, required=False, listed=True,
@@ -78,18 +111,32 @@ class VDiscoItemsQuery(DiscoItemsQuery):
         return iq
 
 class NotFoundQuery(object):
+    """Contains handler for making error if item isn't found."""
     parentClass = MyIq
     def anyHandler(self):
         return self.iq.makeError('cancel', 'item-not-found')
 
 class NotFoundDiscoItemsQuery(NotFoundQuery, DiscoItemsQuery):
+    """
+    Inherit NotFoundQuery and DiscoItemsQuery.
+    Handler for cases when disco item isn't found.
+    """
     pass
 
 class NotFoundDiscoInfoQuery(NotFoundQuery, DiscoInfoQuery):
+    """
+    Inherit NotFoundQuery and DiscoItemsQuery.
+    Handler for cases when disco info isn't found.
+    """
     pass
 
 class Disco(object):
+    """Describe interaction with service discovery."""
     def __init__(self, dispatcher):
+        """
+        Initialize class. 
+        Set dispatcher and base fields.
+        """
         self.dispatcher = dispatcher
 
         self.static_info = {'': DiscoInfoQuery()}
@@ -98,6 +145,12 @@ class Disco(object):
         self.root_items = self.static_items['']
 
     def init(self, handlers=None):
+        """
+        Register VDiscoInfoQuery, VDiscoItemsQuery, 
+        NotFoundDiscoInfoQuery, NotFoundDiscoItemsQuery as handlers.
+        Register other handlers if argument handlers isn't None.
+        Add features to self.root_info.
+        """
         if handlers is None:
             handlers = ()
         self.dispatcher.registerHandler((VDiscoInfoQuery, self))
@@ -114,6 +167,12 @@ class Disco(object):
         self.root_info.addFeatures(features)
 
     def getItems(self, jid, node=None, from_=None):
+        """
+        Send get iq with DiscoItemsQuery as child to dispatcher.
+        Return deferred object with the result.
+        :returns:
+            query.iq.deferred - deferrer object with result or error.
+        """
         if from_ is None:
             from_ = self.dispatcher.myjid
         query = DiscoItemsQuery(host=self, node=node,
@@ -123,6 +182,12 @@ class Disco(object):
         return query.iq.deferred
 
     def getInfo(self, jid, node=None, from_=None):
+        """
+        Send get iq with DiscoInfoQuery as child to dispatcher.
+        Return deferred object with the result.
+        :returns:
+            query.iq.deferred - deferrer object with result or error.
+        """
         if from_ is None:
             from_ = self.dispatcher.myjid
         query = DiscoInfoQuery(host=self, node=node,

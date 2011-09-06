@@ -1,3 +1,4 @@
+"""Describe all expected classes of errors."""
 import string
 import sys
 
