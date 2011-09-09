@@ -6,28 +6,28 @@ from twilix.base import VElement, MyElement
 from twilix import fields
 
 conditions = {
-    'bad-request': 'Bad request',
-    'conflict': 'Conflict',
-    'feature-not-implemented': 'Feature not implemented',
-    'forbidden': 'Forbidden',
-    'gone': 'Gone',
-    'internal-server-error': 'Internal server error',
-    'item-not-found': 'Item not found',
-    'jid-malformed': 'JID malformed',
-    'not-acceptable': 'Not acceptable',
-    'not-allowed': 'Not allowed',
-    'not-authorized': 'Not authorized',
-    'payment-required': 'Payment required',
-    'recepient-unavailable': 'Recepient unavalable',
-    'redirect': 'Redirect',
-    'registration-required': 'Registration required',
-    'remote-server-not-found': 'Remote server not found',
-    'remote-server-timeout': 'Remote server timeout',
-    'resource-constraint': 'Resource constraint',
-    'service-unavailable': 'Service unavalable',
-    'subscription-required': 'Subscription required',
+    'bad-request': 'modify',
+    'conflict': 'cancel',
+    'feature-not-implemented': 'cancel',
+    'forbidden': 'auth',
+    'gone': 'modify',
+    'internal-server-error': 'wait',
+    'item-not-found': 'cancel',
+    'jid-malformed': 'modify',
+    'not-acceptable': 'modify',
+    'not-allowed': 'cancel',
+    'not-authorized': 'auth',
+    'payment-required': 'auth',
+    'recepient-unavailable': 'wait',
+    'redirect': 'modify',
+    'registration-required': 'auth',
+    'remote-server-not-found': 'cancel',
+    'remote-server-timeout': 'wait',
+    'resource-constraint': 'wait',
+    'service-unavailable': 'cancel',
+    'subscription-required': 'auth',
     'undefined-condition': 'Undefined condition',
-    'unexpected-request': 'Unexpected request',
+    'unexpected-request': 'wait',
 }
 
 module = sys.modules[__name__]
@@ -46,25 +46,25 @@ def exception_by_condition(condition):
     exc = getattr(module, '%sException' % condition_to_name(condition.name))
     return exc(condition.content, conditions[condition.name])
 
-class ExceptionWithReason(Exception):
-    """Extends class Exception. Define reason field."""
-    def __init__(self, reason, *args, **kwargs):
+class ExceptionWithType(Exception):
+    """Extends class ExceptionWithContent. Define type field."""
+    def __init__(self, type=None, reason=None, *args, **kwargs):
         self.reason = reason
-        super(ExceptionWithReason, self).__init__(*args, **kwargs)
-
-class ExceptionWithContent(ExceptionWithReason):
-    """Extends class ExceptionWithReason. Define content field."""
-    def __init__(self, content, *args, **kwargs):
-        self.content = content
-        super(ExceptionWithContent, self).__init__(*args, **kwargs)
+        self.type = type
+        if self.type == None:
+            self.type =  conditions[self.condition]
+        self.content = Error(condition=self.condition,
+                             text=self.reason,
+                             type_=self.type)
+        super(ExceptionWithType, self).__init__(*args, **kwargs)
 
 for condition in conditions:
     """Defining exception for all possible conditions."""
-    reason = conditions[condition]
-    class DummyException(ExceptionWithContent):
+    class DummyException(ExceptionWithType):
         pass
     name = '%sException' % condition_to_name(condition)
     DummyException.__name__ = name
+    DummyException.condition = condition
     setattr(module, name, DummyException)
 
 class ConditionNode(fields.ElementNode):

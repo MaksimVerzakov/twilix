@@ -137,25 +137,32 @@ class Dispatcher(object):
                 func = getattr(d, '%sHandler' % d.topElement().type_, None) or \
                        getattr(d, 'anyHandler', None)
                 if func is not None:
-                    result = yield func()
-                    if isinstance(result, (list, tuple)):
-                        results.extend(result)
-                    elif result is not None:
-                        results.append(result)
-                    if (result and handler.topClass().elementName == 'iq') \
-                      or filter(lambda x: isinstance(x, BreakStanza), results):
-                        break
+                    try:
+                        result = yield func()
+                    except Exception as e:
+                        if isinstance(e, ExceptionWithContent):
+                            self.send(el.makeError(e.content))
+                        else:
+                            pass #TODO: InternalServerError
+                    else:
+                        if isinstance(result, (list, tuple)):
+                            results.extend(result)
+                        elif result is not None:
+                            results.append(result)
+                        if (result and handler.topClass().elementName == 'iq') \
+                          or filter(lambda x: isinstance(x, BreakStanza), results):
+                            break       
             if results:
                 self.send(results)
             elif el.to != self.myjid and el.type_ not in ('error', 'result'):
-                self.send(el.makeError("cancel",
-                                       "service-unavailable"))
+                self.send(el.makeError(errors.Error(condition="service-unavailable",
+                                                    type_="cancel")))                        
             elif el.type_ not in ('error', 'result') and bad_request:
-                self.send(el.makeError("modify",
-                                       "bad-request"))
+                self.send(el.makeError(errors.Error(type_="modify",
+                                       condition="bad-request")))
             elif el.type_ not in ('error', 'result') and isinstance(el, Iq):
-                self.send(el.makeError("cancel",
-                                       "feature-not-implemented"))
+                self.send(el.makeError(errors.Error(type_="cancel",
+                                       condition="feature-not-implemented")))
         returnValue(None)
 
     def send(self, els):

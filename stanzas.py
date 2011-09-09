@@ -64,22 +64,16 @@ class Stanza(VElement):
         """Makes avaliable to show stanza in xml format"""
         return self.toXml()
 
-    def makeError(self, etype, condition, description=None):
+    def makeError(self, content):
         """
         Creates ErrorStanza from self and then returns it
         
-        :param etype: ErrorStanza's type (see twilix.error module)
-        
-        :param condition: ErrorStanza's condition (see twilix.error module)
-        
-        :param description: ErrorStanza's description (default None) (see twilix.error module)
-        
+        :param content: Error element.
+                
         """
         res = ErrorStanza(to=self.from_, from_=self.to, type_='error',
                           el_name=self.elementName, id=self.id,
-                          error=Error(condition=condition,
-                                      text=description,
-                                      type_=etype))
+                          error=content)
         res.children = self.children + res.children
         return res
 

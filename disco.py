@@ -7,7 +7,7 @@ from twilix.stanzas import Query, Iq, MyIq
 from twilix.jid import internJID
 from twilix import fields
 
-class CapsElement(VElement):
+class CapsElement(VElement): #XXX: invate automatize caps calculation
     """
     Extends VElement. 
     Describe node for entity capabilities.     
@@ -197,6 +197,10 @@ class Disco(object):
         return query.iq.deferred
 
     def getCapsHash(self):
+        """
+        Return hash of identities and features in base64 format. 
+        Used to understand what capabilities client has.
+        """
         s = u''
         info = self.root_info
         for i in info.identities: #XXX: add identities sort
