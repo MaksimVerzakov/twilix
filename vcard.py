@@ -8,6 +8,7 @@ from twilix.stanzas import Query, Iq
 from twilix import fields
 from twilix.disco import Feature
 from twilix.base import WrongElement, VElement
+from twilix import errors
 
 class Name(VElement):
     """
@@ -109,7 +110,8 @@ class MyVCardQuery(VCardQuery):
             iq.link(self.host.myvcard)
             return iq
         elif not self.host.myvcard:
-            return self.iq.makeError('cancel', 'item-not-found')
+            #return self.iq.makeError('cancel', 'item-not-found')
+            raise errors.ItemNotFoundException()
 
     def setHandler(self):
         """Forbid the ability to set vcard."""

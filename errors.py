@@ -26,7 +26,6 @@ conditions = {
     'resource-constraint': 'wait',
     'service-unavailable': 'cancel',
     'subscription-required': 'auth',
-    'undefined-condition': 'Undefined condition',
     'unexpected-request': 'wait',
 }
 
@@ -34,6 +33,7 @@ module = sys.modules[__name__]
 def condition_to_name(condition):
     """
     Bring condition to CapWords style.
+    Used to define standart exception from rfc 3920.
     :returns:
         condition in CapWords style.
     """
@@ -47,25 +47,55 @@ def exception_by_condition(condition):
     return exc(condition.content, conditions[condition.name])
 
 class ExceptionWithType(Exception):
-    """Extends class ExceptionWithContent. Define type field."""
+    """
+    Extends class Exception. Define type and reason fields.
+    Base class for special exceptions.
+    """
     def __init__(self, type=None, reason=None, *args, **kwargs):
         self.reason = reason
         self.type = type
         if self.type == None:
             self.type =  conditions[self.condition]
+        super(ExceptionWithType, self).__init__(*args, **kwargs)
+
+class ExceptionWithContent(ExceptionWithType):
+    """
+    Extends class ExceptionWithType. 
+    Contains content field - Error element.
+    """
+    def __init__(self, *args, **kwargs):
+        super(ExceptionWithContent, self).__init__(*args, **kwargs)
         self.content = Error(condition=self.condition,
                              text=self.reason,
                              type_=self.type)
-        super(ExceptionWithType, self).__init__(*args, **kwargs)
 
+class ExceptionWithAppCondition(ExceptionWithType):
+    """
+    Extends class ExceptionWithType.
+    Used to describe undefined exception with special application 
+    description of error.
+    Contains content field - Application Error element.
+    """
+    def __init__(self, app_condition, *args, **kwargs):
+        super(ExceptionWithAppCondition, self).__init__(*args, **kwargs)
+        self.app_condition = app_condition
+        self.content = AppError(condition=self.condition,
+                                text=self.reason,
+                                type_=self.type,
+                                app_text=self.app_condition)
+    
 for condition in conditions:
     """Defining exception for all possible conditions."""
-    class DummyException(ExceptionWithType):
+    class DummyException(ExceptionWithContent):
         pass
     name = '%sException' % condition_to_name(condition)
     DummyException.__name__ = name
     DummyException.condition = condition
     setattr(module, name, DummyException)
+
+class UndefinedConditionException(ExceptionWithAppCondition):
+    """Describe undefined condition."""
+    condition = 'undefined-condition'
 
 class ConditionNode(fields.ElementNode):
     """
@@ -87,7 +117,8 @@ class Condition(VElement):
 class Error(VElement):
     """
     Extends VElement from twilix.base.
-    Contains string attribute type, condition node and text node.    
+    Contains string attribute type, condition node and text node as
+    described in rfc 3920. 
     """
     elementName = 'error'
 
@@ -107,3 +138,12 @@ class Error(VElement):
         if value not in ('cancel', 'continue', 'modify', 'auth', 'wait'):
             raise ElementParseError, 'Wrong Error Type %s' % value
         return value
+
+class AppError(Error):
+    """
+    Extends class Error.
+    Contains String Node for special application condition as described 
+    in rfc 3920.    
+    """
+    app_text = fields.StringNode('text', required=False,
+                                 uri='application-ns')
