@@ -11,28 +11,7 @@ from twilix.htmlim import XHtmlIm
 from twilix import fields
 
 class Stanza(VElement):
-    """
-    Extends VElement class from twilix.base
-    
-    Class attributes :
-    
-        to -- reciever's jid
-        
-        from_ -- sender's jid
-        
-        type_ -- stanza's type
-        
-        id -- stanza's id (for some kinds of stanzas)
-        
-        lang -- language of stanza's text
-    
-    methods :
-        
-        makeError -- creates an ErrorStanza from self
-        
-        get_reply -- creates the reply stanza
-    
-    """
+    """Extends VElement class from twilix.base"""
     elementUri = (
                   'jabber:client',
                   'jabber:server',
@@ -93,21 +72,6 @@ class ErrorStanza(Stanza):
 class Iq(Stanza):
     """
     Stanza-inheritor class that implements an answer-query type mechanism.
-    
-    Class attributes : 
-    
-        type_  -- Iq stanza's type
-        
-        id -- Iq stanza's id. This one is required attribute for Iq stanzas
-    
-    Methods :
-        
-        clean_type_ -- filters stanzas by type 
-        
-        clean_id -- controls for valid id value
-        
-        makeResult -- sets the result type for self-stanza
-        
     """
     elementName = 'iq'
 
@@ -227,15 +191,6 @@ class Query(VElement):
     """
     VElement-inheritor class. Base for other query-type classes. 
     There is a query part of query-answer mechanism.
-    
-    Class methods :
-    
-        createFromElement -- create new Query element from some element
-        
-    Attributes :
-        
-        _iq -- instance of Iq stanza
-    
     """
     elementName = 'query'
     parentClass = Iq

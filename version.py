@@ -73,8 +73,9 @@ class ClientVersion(object):
         
         :param jid: reciever for get version query
         :param addres: sender for get version query
-        :returns: deferred object which waits for result stanza 
-        with version info (or error stanza) from query's target
+        :returns: 
+            deferred object which waits for result stanza with version 
+            info (or error stanza) from query's target
         
         """
         if from_ is None:

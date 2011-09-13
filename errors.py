@@ -34,8 +34,7 @@ def condition_to_name(condition):
     """
     Bring condition to CapWords style.
     Used to define standart exception from rfc 3920.
-    :returns:
-        condition in CapWords style.
+    :returns: condition in CapWords style.
     """
     words = condition.split('-')
     words = map(string.capitalize, words)
@@ -130,10 +129,8 @@ class Error(VElement):
     def clean_type_(self, value):
         """
         Cut off errors with wrong type.
-        :returns:
-            value if it has correct type.
-        :raises:
-            ElementParseError if value has a wrong type.
+        :returns: value if it has correct type.
+        :raises: ElementParseError if value has a wrong type.
         """
         if value not in ('cancel', 'continue', 'modify', 'auth', 'wait'):
             raise ElementParseError, 'Wrong Error Type %s' % value

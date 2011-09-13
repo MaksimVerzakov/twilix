@@ -1,0 +1,217 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Twilix.VCard Documentation &mdash; twilix v1.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="twilix v1.1 documentation" href="index.html" />
+    <link rel="prev" title="Twilix.Utils Documentation" href="utils.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utils.html" title="Twilix.Utils Documentation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">twilix v1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-twilix.vcard">
+<span id="twilix-vcard-documentation"></span><h1>Twilix.VCard Documentation<a class="headerlink" href="#module-twilix.vcard" title="Permalink to this headline">¶</a></h1>
+<p>Module implements vcard-temp feature</p>
+<dl class="class">
+<dt id="twilix.vcard.Address">
+<em class="property">class </em><tt class="descclassname">twilix.vcard.</tt><tt class="descname">Address</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.vcard.Address" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extends VElement class from twilix.base.
+Used for representation adress data.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="twilix.vcard.Email">
+<em class="property">class </em><tt class="descclassname">twilix.vcard.</tt><tt class="descname">Email</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.vcard.Email" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extends VElement class from twilix.base.
+Used for representation e-mail data.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="twilix.vcard.MyVCardQuery">
+<em class="property">class </em><tt class="descclassname">twilix.vcard.</tt><tt class="descname">MyVCardQuery</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.vcard.MyVCardQuery" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extends VCardQuery.
+Define get and set Handlers.</p>
+<dl class="method">
+<dt id="twilix.vcard.MyVCardQuery.getHandler">
+<tt class="descname">getHandler</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.vcard.MyVCardQuery.getHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make result iq with myvcard.
+:returns:</p>
+<blockquote>
+<div><p>result iq with myvcard if it&#8217;s exist and destination is correct.</p>
+<p>error stanza if myvcard isn&#8217;t exist.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.vcard.MyVCardQuery.setHandler">
+<tt class="descname">setHandler</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.vcard.MyVCardQuery.setHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Forbid the ability to set vcard.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="twilix.vcard.Name">
+<em class="property">class </em><tt class="descclassname">twilix.vcard.</tt><tt class="descname">Name</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.vcard.Name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extends VElement class from twilix.base.
+Used for representation name data (family name, given name and 
+middle name)</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="twilix.vcard.Organization">
+<em class="property">class </em><tt class="descclassname">twilix.vcard.</tt><tt class="descname">Organization</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.vcard.Organization" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extends VElement class from twilix.base.
+Used for representation organization data (organization name and
+organization unit)</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="twilix.vcard.Photo">
+<em class="property">class </em><tt class="descclassname">twilix.vcard.</tt><tt class="descname">Photo</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.vcard.Photo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extends VElement class from twilix.base.
+Used for representation photo data (type and binary value)</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="twilix.vcard.Telephone">
+<em class="property">class </em><tt class="descclassname">twilix.vcard.</tt><tt class="descname">Telephone</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.vcard.Telephone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extends VElement class from twilix.base.
+Used for representation telephone data.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="twilix.vcard.VCard">
+<em class="property">class </em><tt class="descclassname">twilix.vcard.</tt><tt class="descname">VCard</tt><big>(</big><em>dispatcher</em>, <em>myvcard=None</em><big>)</big><a class="headerlink" href="#twilix.vcard.VCard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class describes interaction with personal info in myvcard.</p>
+<dl class="method">
+<dt id="twilix.vcard.VCard.get">
+<tt class="descname">get</tt><big>(</big><em>jid</em>, <em>from_=None</em><big>)</big><a class="headerlink" href="#twilix.vcard.VCard.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create VCardQuery with get iq as parent.
+Send get iq to dispatcher.
+Return deferred object with result.
+:returns:</p>
+<blockquote>
+<div>query.iq.deferred</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.vcard.VCard.init">
+<tt class="descname">init</tt><big>(</big><em>disco=None</em>, <em>handlers=None</em><big>)</big><a class="headerlink" href="#twilix.vcard.VCard.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register MyVCardQuery as handler. 
+Register handlers from arguments.
+Add feature to Disco if it&#8217;s required.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.vcard.VCard.set">
+<tt class="descname">set</tt><big>(</big><em>vcard</em><big>)</big><a class="headerlink" href="#twilix.vcard.VCard.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get copy of vcard.
+Set it as child to set iq.
+Send set iq to dispatcher.
+:returns:</p>
+<blockquote>
+<div>query.iq.deferred</div></blockquote>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="twilix.vcard.VCardQuery">
+<em class="property">class </em><tt class="descclassname">twilix.vcard.</tt><tt class="descname">VCardQuery</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.vcard.VCardQuery" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extends Query class from twilix.stanzas.
+Contains fields with nodes for personal info.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="utils.html"
+                        title="previous chapter">Twilix.Utils Documentation</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/vcard.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utils.html" title="Twilix.Utils Documentation"
+             >previous</a> |</li>
+        <li><a href="index.html">twilix v1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, JRuDevels.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

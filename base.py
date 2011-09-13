@@ -58,6 +58,7 @@ class MyElement(Element):
         :returns: class instance with host and kwargs of element
         
         :raises: WrongElement   
+        
         """
         if isinstance(cls.elementUri, (tuple, list)):
             if el.uri not in cls.elementUri:
@@ -114,7 +115,8 @@ class MyElement(Element):
         Return function adder or remover if it's required and node is
         listed.
         
-        Call __getattr__ method of super class otherwise.         
+        Call __getattr__ method of super class otherwise.  
+               
         """
         need_adder = False
         need_remover = False
@@ -194,6 +196,7 @@ class MyElement(Element):
         :returns: value - clean value
         
         :raises: ElementParseError
+        
         """
         if not setter:
             value = attr.clean(value)
@@ -215,6 +218,7 @@ class MyElement(Element):
         Set new value to attribute with name if it's exist. 
         
         Call __setattr__ method of super class otherwise.
+        
         """
         attr = self.attributesProps.get(name, None)
         node = self.nodesProps.get(name, None)
@@ -358,10 +362,10 @@ def get_declared_fields(bases, attrs):
     and nodes.
     
     :param bases: list of parents.
+    
     :param attrs: list of attributes.
     
-    :returns: dictionaries of field_name/value pair for attributes and 
-    nodes.
+    :returns: dictionaries of field_name/value pair for attributes and nodes.
     
     """
     from twilix import fields
@@ -425,7 +429,9 @@ class VElement(MyElement):
         Overrides comparison operator ==.
         :returns:
             False if elements ain't equal.
+            
             True if elements are equal.
+            
         """
         if self.uri != other.uri or self.name != other.name:
             return False

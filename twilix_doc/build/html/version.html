@@ -1,0 +1,172 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Twilix.Version Documentation &mdash; twilix v1.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="twilix v1.1 documentation" href="index.html" />
+    <link rel="prev" title="Twilix.VCard Documentation" href="vcard.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vcard.html" title="Twilix.VCard Documentation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">twilix v1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-twilix.version">
+<span id="twilix-version-documentation"></span><h1>Twilix.Version Documentation<a class="headerlink" href="#module-twilix.version" title="Permalink to this headline">¶</a></h1>
+<p>Module implements jabber:iq:version feature</p>
+<dl class="class">
+<dt id="twilix.version.ClientVersion">
+<em class="property">class </em><tt class="descclassname">twilix.version.</tt><tt class="descname">ClientVersion</tt><big>(</big><em>dispatcher</em>, <em>client_name=None</em>, <em>client_version=None</em>, <em>client_os=None</em><big>)</big><a class="headerlink" href="#twilix.version.ClientVersion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for linking with host, dispatcher and query-handlers objects</p>
+<dl class="method">
+<dt id="twilix.version.ClientVersion.getVersion">
+<tt class="descname">getVersion</tt><big>(</big><em>jid</em>, <em>from_=None</em><big>)</big><a class="headerlink" href="#twilix.version.ClientVersion.getVersion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes get version query to some JID</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>jid</strong> &#8211; reciever for get version query</li>
+<li><strong>addres</strong> &#8211; sender for get version query</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">deferred object which waits for result stanza with version 
+info (or error stanza) from query&#8217;s target</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.version.ClientVersion.init">
+<tt class="descname">init</tt><big>(</big><em>disco=None</em>, <em>handlers=None</em><big>)</big><a class="headerlink" href="#twilix.version.ClientVersion.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers handlers and adds version feature in disco</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="twilix.version.MyVersionQuery">
+<em class="property">class </em><tt class="descclassname">twilix.version.</tt><tt class="descname">MyVersionQuery</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.version.MyVersionQuery" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class handler for set/get version queries</p>
+<dl class="method">
+<dt id="twilix.version.MyVersionQuery.getHandler">
+<tt class="descname">getHandler</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.version.MyVersionQuery.getHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls from dispatcher when there is get version query.</p>
+<p>Returns iq stanza with version&#8217;s info.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="twilix.version.MyVersionQuery.parentClass">
+<tt class="descname">parentClass</tt><a class="headerlink" href="#twilix.version.MyVersionQuery.parentClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">MyIq</span></tt></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.version.MyVersionQuery.setHandler">
+<tt class="descname">setHandler</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.version.MyVersionQuery.setHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls from dispatcher when there is set version query.</p>
+<p>There is incorrect query. Method returns error stanza.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="twilix.version.VersionQuery">
+<em class="property">class </em><tt class="descclassname">twilix.version.</tt><tt class="descname">VersionQuery</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.version.VersionQuery" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for version queries</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="vcard.html"
+                        title="previous chapter">Twilix.VCard Documentation</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/version.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vcard.html" title="Twilix.VCard Documentation"
+             >previous</a> |</li>
+        <li><a href="index.html">twilix v1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, JRuDevels.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

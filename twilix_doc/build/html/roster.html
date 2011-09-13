@@ -1,0 +1,256 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Twilix.Roster Documentation &mdash; twilix v1.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="twilix v1.1 documentation" href="index.html" />
+    <link rel="prev" title="Twilix.Register Documentation" href="register.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="register.html" title="Twilix.Register Documentation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">twilix v1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-twilix.roster">
+<span id="twilix-roster-documentation"></span><h1>Twilix.Roster Documentation<a class="headerlink" href="#module-twilix.roster" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="twilix.roster.Roster">
+<em class="property">class </em><tt class="descclassname">twilix.roster.</tt><tt class="descname">Roster</tt><big>(</big><em>dispatcher</em>, <em>mypresence=None</em><big>)</big><a class="headerlink" href="#twilix.roster.Roster" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="twilix.roster.Roster.addItem">
+<tt class="descname">addItem</tt><big>(</big><em>item</em><big>)</big><a class="headerlink" href="#twilix.roster.Roster.addItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends set-type query for addition new item in roster</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item</strong> &#8211; value of new item</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.roster.Roster.gotRoster">
+<tt class="descname">gotRoster</tt><big>(</big><em>query</em><big>)</big><a class="headerlink" href="#twilix.roster.Roster.gotRoster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves roster items from query instance and send 
+roster_got signal to dispatcher (from pydispatch module)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>query</strong> &#8211; instance with roster items</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.roster.Roster.init">
+<tt class="descname">init</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.roster.Roster.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers handlers for roster stanzas.
+Links roster_got signal with instance method.
+Sends roster get query.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.roster.Roster.removeItem">
+<tt class="descname">removeItem</tt><big>(</big><em>item</em><big>)</big><a class="headerlink" href="#twilix.roster.Roster.removeItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends set-type query for deletion item from roster</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item</strong> &#8211; value of removed item</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.roster.Roster.updatePresence">
+<tt class="descname">updatePresence</tt><big>(</big><em>presence</em>, <em>send=True</em><big>)</big><a class="headerlink" href="#twilix.roster.Roster.updatePresence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets value of mypresence and maybe send it</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>presence</strong> &#8211; new value</li>
+<li><strong>send</strong> &#8211; boolean, true for send new presence</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="twilix.roster.RosterItem">
+<em class="property">class </em><tt class="descclassname">twilix.roster.</tt><tt class="descname">RosterItem</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.roster.RosterItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for xml roster item node. Inheritor of VElement.</p>
+<p>Class has attributes-identificators for filter xml nodes, info 
+string-type fields and jid of roster element.</p>
+<dl class="method">
+<dt id="twilix.roster.RosterItem.addGroup">
+<tt class="descname">addGroup</tt><big>(</big><em>group_name</em><big>)</big><a class="headerlink" href="#twilix.roster.RosterItem.addGroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds new group in roster&#8217;s list of groups</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>group_name</strong> &#8211; name of new group.</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">True if group was added else None if same group already exist.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="twilix.roster.RosterItem.nick">
+<tt class="descname">nick</tt><a class="headerlink" href="#twilix.roster.RosterItem.nick" title="Permalink to this definition">¶</a></dt>
+<dd><p>Property for nickname attribute</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.roster.RosterItem.removeGroup">
+<tt class="descname">removeGroup</tt><big>(</big><em>group_name</em><big>)</big><a class="headerlink" href="#twilix.roster.RosterItem.removeGroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes group from roster&#8217;s list of groups</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>group_name</strong> &#8211; name of deleted group.</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">True if group was deleted else None if group not exist.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="twilix.roster.RosterPresence">
+<em class="property">class </em><tt class="descclassname">twilix.roster.</tt><tt class="descname">RosterPresence</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.roster.RosterPresence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for xml roster presence. Inheritor of Presence.
+Describes some handlers for other presences.
+Handlers send necessary signal with dispatcher (from pydispatch module)</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="twilix.roster.RosterQuery">
+<em class="property">class </em><tt class="descclassname">twilix.roster.</tt><tt class="descname">RosterQuery</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.roster.RosterQuery" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for xml roster queries. Inheritor of Query.</p>
+<p>Class attributes:</p>
+<p>elementUri &#8211; identificator/filter for xml nodes</p>
+<p>items &#8211; list of RosterItem instances</p>
+<dl class="method">
+<dt id="twilix.roster.RosterQuery.getHandler">
+<tt class="descname">getHandler</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.roster.RosterQuery.getHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for handle get-type roster queries.
+Not acceptable. Returns error stanza.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.roster.RosterQuery.setHandler">
+<tt class="descname">setHandler</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.roster.RosterQuery.setHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for handle set-type roster queries.
+Calls updateRoster method from host class.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="register.html"
+                        title="previous chapter">Twilix.Register Documentation</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/roster.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="register.html" title="Twilix.Register Documentation"
+             >previous</a> |</li>
+        <li><a href="index.html">twilix v1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, JRuDevels.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

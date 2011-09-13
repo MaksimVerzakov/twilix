@@ -1,0 +1,83 @@
+.. chat documentation master file, created by
+   sphinx-quickstart on Fri Jul 29 14:03:37 2011.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+
+Twilix Documentation
+===========================
+
+.. automodule:: twilix
+
+Disco
+------
+
+.. automodule:: twilix.disco
+   :members:
+
+Dispatcher
+-----------
+
+.. automodule:: twilix.dispatcher
+   :members:
+
+Errors
+--------
+
+.. automodule:: twilix.errors
+   :members:
+
+Fields
+--------------
+
+.. automodule:: twilix.fields
+   :members:
+
+
+HTMLim
+-------
+
+.. automodule:: twilix.htmlim
+   :members:
+
+JID
+----
+
+.. automodule:: twilix.jid
+   :members:
+
+Register
+---------
+
+.. automodule:: twilix.register
+   :members:
+
+Roster
+-------
+
+.. automodule:: twilix.roster
+   :members:
+
+Stanzas
+--------
+
+.. automodule:: twilix.stanzas
+   :members:
+
+Utils
+------
+
+.. automodule:: twilix.utils
+   :members:
+
+VCard
+------
+
+.. automodule:: twilix.vcard
+   :members:
+
+Version
+--------
+
+.. automodule:: twilix.version
+   :members:

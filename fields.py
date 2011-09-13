@@ -32,6 +32,7 @@ class StringAttr(AttributeProp):
     """String attribute."""
     def clean(self, value):
         """
+        
         Return value cast to unicode. 
         Raise ElementParseError if there's no value but it's required.
         
