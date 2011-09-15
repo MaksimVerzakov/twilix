@@ -28,8 +28,7 @@ class Stanza(VElement):
     def __init__(self, *args, **kwargs):
         """
         Makes a superclass intialization and set 
-        attributes for deferred-style stanzas
-        
+        attributes for deferred-style stanzas.        
         """
         super(Stanza, self).__init__(*args, **kwargs)
         self.result_class = kwargs.get('result_class', None)
@@ -45,9 +44,12 @@ class Stanza(VElement):
 
     def makeError(self, content):
         """
-        Creates ErrorStanza from self and then returns it
+        Creates ErrorStanza from self and then returns it.
+        Used to make Error Stanza as reply on any Stanza.
         
         :param content: Error element.
+        
+        :returns: Error Stanza with Error element.
                 
         """
         res = ErrorStanza(to=self.from_, from_=self.to, type_='error',
@@ -59,8 +61,7 @@ class Stanza(VElement):
     def get_reply(self):
         """
         Creates the reply stanza. 
-        There is REPLY_CLASS (if defined) or self-type stanza's class.
-        
+        There is REPLY_CLASS (if defined) or self-type stanza's class.        
         """
         cls = getattr(self, 'REPLY_CLASS', None) or self.__class__
         return cls(to=self.from_, from_=self.to, type_=self.type_, id=self.id)

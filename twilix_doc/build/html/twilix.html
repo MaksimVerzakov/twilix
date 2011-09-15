@@ -47,10 +47,235 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-twilix.base">
-<span id="twilix-documentation"></span><h1>Twilix Documentation<a class="headerlink" href="#module-twilix.base" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-twilix">
+<span id="twilix-documentation"></span><h1>Twilix Documentation<a class="headerlink" href="#module-twilix" title="Permalink to this headline">¶</a></h1>
+<dl class="docutils">
+<dt>NAME </dt>
+<dd>Twilix</dd>
+<dt>DESCRIPTION</dt>
+<dd>Package</dd>
+<dt>PACKAGE CONTENTS</dt>
+<dd><p class="first">base</p>
+<p>disco</p>
+<p>dispatcher</p>
+<p>errors</p>
+<p>fields</p>
+<p>htmlim</p>
+<p>jid</p>
+<p>register</p>
+<p>roster</p>
+<p>stanzas</p>
+<p>utils</p>
+<p>vcard</p>
+<p class="last">version</p>
+</dd>
+</dl>
+<div class="section" id="module-twilix.base">
+<span id="twilix-base"></span><h2>Twilix.Base<a class="headerlink" href="#module-twilix.base" title="Permalink to this headline">¶</a></h2>
+<p>Module contains</p>
+<dl class="class">
+<dt id="twilix.base.DeclarativeFieldsMetaClass">
+<em class="property">class </em><tt class="descclassname">twilix.base.</tt><tt class="descname">DeclarativeFieldsMetaClass</tt><a class="headerlink" href="#twilix.base.DeclarativeFieldsMetaClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Metaclass for VElement.
+Set get_declared_fields as getter for fields &#8216;attributesProps&#8217; and
+&#8216;nodesProps&#8217;.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="twilix.base.ElementParseError">
+<em class="property">exception </em><tt class="descclassname">twilix.base.</tt><tt class="descname">ElementParseError</tt><a class="headerlink" href="#twilix.base.ElementParseError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raises when attribute is required and value is None.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="twilix.base.EmptyElement">
+<em class="property">class </em><tt class="descclassname">twilix.base.</tt><tt class="descname">EmptyElement</tt><a class="headerlink" href="#twilix.base.EmptyElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Element without value.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="twilix.base.EmptyStanza">
+<em class="property">class </em><tt class="descclassname">twilix.base.</tt><tt class="descname">EmptyStanza</tt><a class="headerlink" href="#twilix.base.EmptyStanza" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stanza without any attributes.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="twilix.base.MyElement">
+<em class="property">class </em><tt class="descclassname">twilix.base.</tt><tt class="descname">MyElement</tt><big>(</big><em>qname</em>, <em>defaultUri=None</em>, <em>attribs=None</em>, <em>localPrefixes=None</em><big>)</big><a class="headerlink" href="#twilix.base.MyElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extend class Element from twisted.words.xish.domish.
+Base class for all Elements.</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd><p class="first">attributesProps - dictionary of attribute&#8217;s name/value.</p>
+<p class="last">nodesProps - dictionary of node&#8217;s name/value.</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="twilix.base.MyElement.addElement">
+<tt class="descname">addElement</tt><big>(</big><em>name</em>, <em>defaultUri=None</em>, <em>content=None</em><big>)</big><a class="headerlink" href="#twilix.base.MyElement.addElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Append element to childrens. 
+Return element with specified name, Uri and content.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.base.MyElement.cleanAttribute">
+<tt class="descname">cleanAttribute</tt><big>(</big><em>attrib</em><big>)</big><a class="headerlink" href="#twilix.base.MyElement.cleanAttribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete attribute if it&#8217;s exist.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="twilix.base.MyElement.content">
+<tt class="descname">content</tt><a class="headerlink" href="#twilix.base.MyElement.content" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter for property descriptor.
+Return content.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">unicode content</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body">ValueError</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="twilix.base.MyElement.createFromElement">
+<em class="property">classmethod </em><tt class="descname">createFromElement</tt><big>(</big><em>el</em>, <em>host=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.base.MyElement.createFromElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make class instance of element if it&#8217;s suits to class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">class instance with host and kwargs of element</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body">WrongElement</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.base.MyElement.getFirstChild">
+<tt class="descname">getFirstChild</tt><big>(</big><em>name=None</em><big>)</big><a class="headerlink" href="#twilix.base.MyElement.getFirstChild" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return first child element with name if exist.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.base.MyElement.getFirstChildContent">
+<tt class="descname">getFirstChildContent</tt><big>(</big><em>name=None</em><big>)</big><a class="headerlink" href="#twilix.base.MyElement.getFirstChildContent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return content of first child element with name if exist.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.base.MyElement.link">
+<tt class="descname">link</tt><big>(</big><em>el</em>, <em>unique=True</em><big>)</big><a class="headerlink" href="#twilix.base.MyElement.link" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace child element with the same name and uri as element
+if uniqueness is required or just add element.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="twilix.base.MyElement.makeFromElement">
+<em class="property">classmethod </em><tt class="descname">makeFromElement</tt><big>(</big><em>el</em><big>)</big><a class="headerlink" href="#twilix.base.MyElement.makeFromElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make new element according to class that calls
+this method from element el.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>el</strong> (<em>Element</em>) &#8211; element to copy</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">myel &#8211; copy of element el</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.base.MyElement.removeChilds">
+<tt class="descname">removeChilds</tt><big>(</big><em>name=None</em>, <em>uri=None</em>, <em>element=None</em><big>)</big><a class="headerlink" href="#twilix.base.MyElement.removeChilds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove all content and child elements appropriate 
+to name-uri pair.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="twilix.base.MyElement.topClass">
+<em class="property">classmethod </em><tt class="descname">topClass</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.base.MyElement.topClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return top class in class hierarchy.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">cls if class have not parent class<p>top class of parent class otherwise</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.base.MyElement.topElement">
+<tt class="descname">topElement</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.base.MyElement.topElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return top element in elements hierarchy.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">self if instance have not parent elements<p>top element of parent element otherwise</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.base.MyElement.validate">
+<tt class="descname">validate</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.base.MyElement.validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate all attributes.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="twilix.base.VElement">
+<em class="property">class </em><tt class="descclassname">twilix.base.</tt><tt class="descname">VElement</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.base.VElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for stanzas and other items.
+Uses DeclarativeFieldsMetaClass as metaclass.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="twilix.base.WrongElement">
+<em class="property">exception </em><tt class="descclassname">twilix.base.</tt><tt class="descname">WrongElement</tt><a class="headerlink" href="#twilix.base.WrongElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raises when there is invalid element.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="twilix.base.get_declared_fields">
+<tt class="descclassname">twilix.base.</tt><tt class="descname">get_declared_fields</tt><big>(</big><em>bases</em>, <em>attrs</em><big>)</big><a class="headerlink" href="#twilix.base.get_declared_fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter for metaclass.
+Make lists of tuples with field name and value of attributes 
+and nodes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>bases</strong> &#8211; list of parents.</li>
+<li><strong>attrs</strong> &#8211; list of attributes.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">dictionaries of field_name/value pair for attributes and nodes.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
 <div class="section" id="module-twilix.disco">
-<span id="disco"></span><h2>Disco<a class="headerlink" href="#module-twilix.disco" title="Permalink to this headline">¶</a></h2>
+<span id="twilix-disco"></span><h2>Twilix.Disco<a class="headerlink" href="#module-twilix.disco" title="Permalink to this headline">¶</a></h2>
 <p>Contains classes that realize service discovery.</p>
 <dl class="class">
 <dt id="twilix.disco.CapsElement">
@@ -74,20 +299,30 @@ Used to understand what capabilities client has.</p>
 <dt id="twilix.disco.Disco.getInfo">
 <tt class="descname">getInfo</tt><big>(</big><em>jid</em>, <em>node=None</em>, <em>from_=None</em><big>)</big><a class="headerlink" href="#twilix.disco.Disco.getInfo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send get iq with DiscoInfoQuery as child to dispatcher.
-Return deferred object with the result.
-:returns:</p>
-<blockquote>
-<div>query.iq.deferred - deferrer object with result or error.</div></blockquote>
+Return deferred object with the result.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">query.iq.deferred - deferrer object with result or error.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="twilix.disco.Disco.getItems">
 <tt class="descname">getItems</tt><big>(</big><em>jid</em>, <em>node=None</em>, <em>from_=None</em><big>)</big><a class="headerlink" href="#twilix.disco.Disco.getItems" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send get iq with DiscoItemsQuery as child to dispatcher.
-Return deferred object with the result.
-:returns:</p>
-<blockquote>
-<div>query.iq.deferred - deferrer object with result or error.</div></blockquote>
+Return deferred object with the result.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">query.iq.deferred - deferrer object with result or error.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -182,7 +417,7 @@ Describe get handler.</p>
 
 </div>
 <div class="section" id="module-twilix.dispatcher">
-<span id="dispatcher"></span><h2>Dispatcher<a class="headerlink" href="#module-twilix.dispatcher" title="Permalink to this headline">¶</a></h2>
+<span id="twilix-dispatcher"></span><h2>Twilix.Dispatcher<a class="headerlink" href="#module-twilix.dispatcher" title="Permalink to this headline">¶</a></h2>
 <p>Module describes the Dispatcher : class which controlling any data exchange.
 This class realize direct handling of input and output stanzas.</p>
 <dl class="class">
@@ -260,7 +495,7 @@ This class realize direct handling of input and output stanzas.</p>
 
 </div>
 <div class="section" id="module-twilix.errors">
-<span id="errors"></span><h2>Errors<a class="headerlink" href="#module-twilix.errors" title="Permalink to this headline">¶</a></h2>
+<span id="twilix-errors"></span><h2>Twilix.Errors<a class="headerlink" href="#module-twilix.errors" title="Permalink to this headline">¶</a></h2>
 <p>Describe all expected classes of errors.</p>
 <dl class="class">
 <dt id="twilix.errors.AppError">
@@ -294,17 +529,8 @@ described in rfc 3920.</p>
 <dt id="twilix.errors.Error.clean_type_">
 <tt class="descname">clean_type_</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#twilix.errors.Error.clean_type_" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cut off errors with wrong type.
-:returns:</p>
-<blockquote>
-<div>value if it has correct type.</div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body">ElementParseError if value has a wrong type.</td>
-</tr>
-</tbody>
-</table>
+:returns: value if it has correct type.
+:raises: ElementParseError if value has a wrong type.</p>
 </dd></dl>
 
 </dd></dl>
@@ -343,9 +569,7 @@ Base class for special exceptions.</p>
 <tt class="descclassname">twilix.errors.</tt><tt class="descname">condition_to_name</tt><big>(</big><em>condition</em><big>)</big><a class="headerlink" href="#twilix.errors.condition_to_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bring condition to CapWords style.
 Used to define standart exception from rfc 3920.
-:returns:</p>
-<blockquote>
-<div>condition in CapWords style.</div></blockquote>
+:returns: condition in CapWords style.</p>
 </dd></dl>
 
 <dl class="function">
@@ -356,7 +580,7 @@ Used to define standart exception from rfc 3920.
 
 </div>
 <div class="section" id="module-twilix.fields">
-<span id="fields"></span><h2>Fields<a class="headerlink" href="#module-twilix.fields" title="Permalink to this headline">¶</a></h2>
+<span id="twilix-fields"></span><h2>Twilix.Fields<a class="headerlink" href="#module-twilix.fields" title="Permalink to this headline">¶</a></h2>
 <p>Contains description of main attribute properties and node properties.</p>
 <dl class="class">
 <dt id="twilix.fields.AttributeProp">
@@ -660,7 +884,7 @@ is empty.</p>
 
 </div>
 <div class="section" id="module-twilix.htmlim">
-<span id="htmlim"></span><h2>HTMLim<a class="headerlink" href="#module-twilix.htmlim" title="Permalink to this headline">¶</a></h2>
+<span id="twilix-htmlim"></span><h2>Twilix.HTMLim<a class="headerlink" href="#module-twilix.htmlim" title="Permalink to this headline">¶</a></h2>
 <p>Realize elements of XHTML-IM protocol.</p>
 <dl class="class">
 <dt id="twilix.htmlim.HtmlBody">
@@ -685,12 +909,12 @@ Realize element according xhtml-im protocol.</p>
 
 </div>
 <div class="section" id="module-twilix.jid">
-<span id="jid"></span><h2>JID<a class="headerlink" href="#module-twilix.jid" title="Permalink to this headline">¶</a></h2>
+<span id="twilix-jid"></span><h2>Twilix.JID<a class="headerlink" href="#module-twilix.jid" title="Permalink to this headline">¶</a></h2>
 <p>Module extends the JID class from twisted library.</p>
 <dl class="class">
 <dt id="twilix.jid.MyJID">
 <em class="property">class </em><tt class="descclassname">twilix.jid.</tt><tt class="descname">MyJID</tt><big>(</big><em>str=None</em>, <em>tuple=None</em><big>)</big><a class="headerlink" href="#twilix.jid.MyJID" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extends class JID.</p>
+<dd><p>Extends class JID from twisted.words.protocols.jabber.jid</p>
 <dl class="method">
 <dt id="twilix.jid.MyJID.bare">
 <tt class="descname">bare</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.jid.MyJID.bare" title="Permalink to this definition">¶</a></dt>
@@ -714,10 +938,10 @@ Realize element according xhtml-im protocol.</p>
 
 </div>
 <div class="section" id="module-twilix.register">
-<span id="register"></span><h2>Register<a class="headerlink" href="#module-twilix.register" title="Permalink to this headline">¶</a></h2>
+<span id="twilix-register"></span><h2>Twilix.Register<a class="headerlink" href="#module-twilix.register" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-twilix.roster">
-<span id="roster"></span><h2>Roster<a class="headerlink" href="#module-twilix.roster" title="Permalink to this headline">¶</a></h2>
+<span id="twilix-roster"></span><h2>Twilix.Roster<a class="headerlink" href="#module-twilix.roster" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="twilix.roster.Roster">
 <em class="property">class </em><tt class="descclassname">twilix.roster.</tt><tt class="descname">Roster</tt><big>(</big><em>dispatcher</em>, <em>mypresence=None</em><big>)</big><a class="headerlink" href="#twilix.roster.Roster" title="Permalink to this definition">¶</a></dt>
@@ -871,7 +1095,7 @@ Calls updateRoster method from host class.</p>
 
 </div>
 <div class="section" id="module-twilix.stanzas">
-<span id="stanzas"></span><h2>Stanzas<a class="headerlink" href="#module-twilix.stanzas" title="Permalink to this headline">¶</a></h2>
+<span id="twilix-stanzas"></span><h2>Twilix.Stanzas<a class="headerlink" href="#module-twilix.stanzas" title="Permalink to this headline">¶</a></h2>
 <p>Module discribes stanza-class and basic types of used stanzas. 
 There are Message, Presence, Iq classes inherit from Stanza.</p>
 <dl class="class">
@@ -884,17 +1108,6 @@ There are Message, Presence, Iq classes inherit from Stanza.</p>
 <dt id="twilix.stanzas.Iq">
 <em class="property">class </em><tt class="descclassname">twilix.stanzas.</tt><tt class="descname">Iq</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.stanzas.Iq" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stanza-inheritor class that implements an answer-query type mechanism.</p>
-<p>Class attributes :</p>
-<blockquote>
-<div><p><a href="#id1"><span class="problematic" id="id2">type_</span></a>  &#8211; Iq stanza&#8217;s type</p>
-<p>id &#8211; Iq stanza&#8217;s id. This one is required attribute for Iq stanzas</p>
-</div></blockquote>
-<p>Methods :</p>
-<blockquote>
-<div><p><a href="#id3"><span class="problematic" id="id4">clean_type_</span></a> &#8211; filters stanzas by type</p>
-<p>clean_id &#8211; controls for valid id value</p>
-<p>makeResult &#8211; sets the result type for self-stanza</p>
-</div></blockquote>
 <dl class="method">
 <dt id="twilix.stanzas.Iq.clean_id">
 <tt class="descname">clean_id</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#twilix.stanzas.Iq.clean_id" title="Permalink to this definition">¶</a></dt>
@@ -987,12 +1200,6 @@ Sets None type for invalid stanzas</p>
 <em class="property">class </em><tt class="descclassname">twilix.stanzas.</tt><tt class="descname">Query</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.stanzas.Query" title="Permalink to this definition">¶</a></dt>
 <dd><p>VElement-inheritor class. Base for other query-type classes. 
 There is a query part of query-answer mechanism.</p>
-<p>Class methods :</p>
-<blockquote>
-<div>createFromElement &#8211; create new Query element from some element</div></blockquote>
-<p>Attributes :</p>
-<blockquote>
-<div>_iq &#8211; instance of Iq stanza</div></blockquote>
 <dl class="classmethod">
 <dt id="twilix.stanzas.Query.createFromElement">
 <em class="property">classmethod </em><tt class="descname">createFromElement</tt><big>(</big><em>el</em>, <em>host=None</em>, <em>dont_defer=False</em><big>)</big><a class="headerlink" href="#twilix.stanzas.Query.createFromElement" title="Permalink to this definition">¶</a></dt>
@@ -1039,19 +1246,6 @@ There is a query part of query-answer mechanism.</p>
 <dt id="twilix.stanzas.Stanza">
 <em class="property">class </em><tt class="descclassname">twilix.stanzas.</tt><tt class="descname">Stanza</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.stanzas.Stanza" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extends VElement class from twilix.base</p>
-<p>Class attributes :</p>
-<blockquote>
-<div><p>to &#8211; reciever&#8217;s jid</p>
-<p><a href="#id5"><span class="problematic" id="id6">from_</span></a> &#8211; sender&#8217;s jid</p>
-<p><a href="#id7"><span class="problematic" id="id8">type_</span></a> &#8211; stanza&#8217;s type</p>
-<p>id &#8211; stanza&#8217;s id (for some kinds of stanzas)</p>
-<p>lang &#8211; language of stanza&#8217;s text</p>
-</div></blockquote>
-<p>methods :</p>
-<blockquote>
-<div><p>makeError &#8211; creates an ErrorStanza from self</p>
-<p>get_reply &#8211; creates the reply stanza</p>
-</div></blockquote>
 <dl class="method">
 <dt id="twilix.stanzas.Stanza.get_reply">
 <tt class="descname">get_reply</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.stanzas.Stanza.get_reply" title="Permalink to this definition">¶</a></dt>
@@ -1062,12 +1256,15 @@ There is REPLY_CLASS (if defined) or self-type stanza&#8217;s class.</p>
 <dl class="method">
 <dt id="twilix.stanzas.Stanza.makeError">
 <tt class="descname">makeError</tt><big>(</big><em>content</em><big>)</big><a class="headerlink" href="#twilix.stanzas.Stanza.makeError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates ErrorStanza from self and then returns it</p>
+<dd><p>Creates ErrorStanza from self and then returns it.
+Used to make Error Stanza as reply on any Stanza.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>content</strong> &#8211; Error element.</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">Error Stanza with Error element.</td>
 </tr>
 </tbody>
 </table>
@@ -1077,7 +1274,7 @@ There is REPLY_CLASS (if defined) or self-type stanza&#8217;s class.</p>
 
 </div>
 <div class="section" id="module-twilix.utils">
-<span id="utils"></span><h2>Utils<a class="headerlink" href="#module-twilix.utils" title="Permalink to this headline">¶</a></h2>
+<span id="twilix-utils"></span><h2>Twilix.Utils<a class="headerlink" href="#module-twilix.utils" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="twilix.utils.parse_timestamp">
 <tt class="descclassname">twilix.utils.</tt><tt class="descname">parse_timestamp</tt><big>(</big><em>s</em><big>)</big><a class="headerlink" href="#twilix.utils.parse_timestamp" title="Permalink to this definition">¶</a></dt>
@@ -1086,7 +1283,7 @@ There is REPLY_CLASS (if defined) or self-type stanza&#8217;s class.</p>
 
 </div>
 <div class="section" id="module-twilix.vcard">
-<span id="vcard"></span><h2>VCard<a class="headerlink" href="#module-twilix.vcard" title="Permalink to this headline">¶</a></h2>
+<span id="twilix-vcard"></span><h2>Twilix.VCard<a class="headerlink" href="#module-twilix.vcard" title="Permalink to this headline">¶</a></h2>
 <p>Module implements vcard-temp feature</p>
 <dl class="class">
 <dt id="twilix.vcard.Address">
@@ -1201,7 +1398,7 @@ Contains fields with nodes for personal info.</p>
 
 </div>
 <div class="section" id="module-twilix.version">
-<span id="version"></span><h2>Version<a class="headerlink" href="#module-twilix.version" title="Permalink to this headline">¶</a></h2>
+<span id="twilix-version"></span><h2>Twilix.Version<a class="headerlink" href="#module-twilix.version" title="Permalink to this headline">¶</a></h2>
 <p>Module implements jabber:iq:version feature</p>
 <dl class="class">
 <dt id="twilix.version.ClientVersion">
@@ -1221,12 +1418,12 @@ Contains fields with nodes for personal info.</p>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">deferred object which waits for result stanza</p>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">deferred object which waits for result stanza with version 
+info (or error stanza) from query&#8217;s target</p>
 </td>
 </tr>
 </tbody>
 </table>
-<p>with version info (or error stanza) from query&#8217;s target</p>
 </dd></dl>
 
 <dl class="method">
@@ -1281,18 +1478,19 @@ Contains fields with nodes for personal info.</p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Twilix Documentation</a><ul>
-<li><a class="reference internal" href="#module-twilix.disco">Disco</a></li>
-<li><a class="reference internal" href="#module-twilix.dispatcher">Dispatcher</a></li>
-<li><a class="reference internal" href="#module-twilix.errors">Errors</a></li>
-<li><a class="reference internal" href="#module-twilix.fields">Fields</a></li>
-<li><a class="reference internal" href="#module-twilix.htmlim">HTMLim</a></li>
-<li><a class="reference internal" href="#module-twilix.jid">JID</a></li>
-<li><a class="reference internal" href="#module-twilix.register">Register</a></li>
-<li><a class="reference internal" href="#module-twilix.roster">Roster</a></li>
-<li><a class="reference internal" href="#module-twilix.stanzas">Stanzas</a></li>
-<li><a class="reference internal" href="#module-twilix.utils">Utils</a></li>
-<li><a class="reference internal" href="#module-twilix.vcard">VCard</a></li>
-<li><a class="reference internal" href="#module-twilix.version">Version</a></li>
+<li><a class="reference internal" href="#module-twilix.base">Twilix.Base</a></li>
+<li><a class="reference internal" href="#module-twilix.disco">Twilix.Disco</a></li>
+<li><a class="reference internal" href="#module-twilix.dispatcher">Twilix.Dispatcher</a></li>
+<li><a class="reference internal" href="#module-twilix.errors">Twilix.Errors</a></li>
+<li><a class="reference internal" href="#module-twilix.fields">Twilix.Fields</a></li>
+<li><a class="reference internal" href="#module-twilix.htmlim">Twilix.HTMLim</a></li>
+<li><a class="reference internal" href="#module-twilix.jid">Twilix.JID</a></li>
+<li><a class="reference internal" href="#module-twilix.register">Twilix.Register</a></li>
+<li><a class="reference internal" href="#module-twilix.roster">Twilix.Roster</a></li>
+<li><a class="reference internal" href="#module-twilix.stanzas">Twilix.Stanzas</a></li>
+<li><a class="reference internal" href="#module-twilix.utils">Twilix.Utils</a></li>
+<li><a class="reference internal" href="#module-twilix.vcard">Twilix.VCard</a></li>
+<li><a class="reference internal" href="#module-twilix.version">Twilix.Version</a></li>
 </ul>
 </li>
 </ul>

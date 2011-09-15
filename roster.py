@@ -1,7 +1,7 @@
 from pydispatch import dispatcher
 
 from twilix.stanzas import Iq, Query, Presence
-from twilix.base import WrongElement, VElement
+from twilix.base import VElement
 
 from twilix import fields
 

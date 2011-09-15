@@ -9,21 +9,9 @@ Welcome to twilix's documentation!
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    
-   base
-   disco
-   dispatcher
-   errors
-   fields
-   htmlim
-   jid
-   register
-   roster
-   stanzas
-   utils
-   vcard
-   version
+   twilix
 
 Indices and tables
 ==================

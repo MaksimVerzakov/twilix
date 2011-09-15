@@ -2,7 +2,7 @@
 import hashlib
 import base64
 
-from twilix.base import WrongElement, VElement
+from twilix.base import VElement
 from twilix.stanzas import Query, Iq, MyIq
 from twilix.jid import internJID
 from twilix import fields
@@ -170,8 +170,10 @@ class Disco(object):
         """
         Send get iq with DiscoItemsQuery as child to dispatcher.
         Return deferred object with the result.
+        
         :returns:
             query.iq.deferred - deferrer object with result or error.
+            
         """
         if from_ is None:
             from_ = self.dispatcher.myjid
@@ -185,8 +187,10 @@ class Disco(object):
         """
         Send get iq with DiscoInfoQuery as child to dispatcher.
         Return deferred object with the result.
+        
         :returns:
             query.iq.deferred - deferrer object with result or error.
+            
         """
         if from_ is None:
             from_ = self.dispatcher.myjid

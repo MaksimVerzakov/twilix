@@ -1,6 +1,5 @@
 """
 Module extends the JID class from twisted library.
-
 """
 
 import copy
@@ -8,7 +7,7 @@ import copy
 from twisted.words.protocols.jabber.jid import JID, InvalidFormat
 
 class MyJID(JID):
-    """Extends class JID."""
+    """Extends class JID from twisted.words.protocols.jabber.jid"""
     @property
     def is_bare(self):
         """Checks for bare jid (without resourse part)."""
@@ -21,7 +20,10 @@ class MyJID(JID):
         return new
 
     def __unicode__(self):
-        """Override unicode converter."""
+        """
+        Override unicode converter.
+        Return JID in user@server/resourse form.
+        """
         r = self.host
         if self.user:
             r = self.user + '@' + r

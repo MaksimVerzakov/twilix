@@ -7,7 +7,7 @@ import copy
 from twilix.stanzas import Query, Iq
 from twilix import fields
 from twilix.disco import Feature
-from twilix.base import WrongElement, VElement
+from twilix.base import VElement
 from twilix import errors
 
 class Name(VElement):

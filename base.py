@@ -1,3 +1,6 @@
+"""
+Module contains 
+"""
 from twisted.words.xish.domish import Element
 
 class ElementParseError(Exception):
@@ -5,24 +8,34 @@ class ElementParseError(Exception):
     pass
 
 class WrongElement(Exception):
-    """Raises when there is an attempt to create an element from improper."""
+    """
+    Raises when there is invalid element.
+    """
     pass
 
-class EmptyStanza(object):
-    """Stanza without any attributes."""
+class EmptyStanza(object):   #XXX: unused class. 
+    """
+    Stanza without any attributes.
+    """
     pass
 
 class EmptyElement(object):
     """Element without value."""
     pass
 
-class BreakStanza(object):
+class BreakStanza(object):   #XXX: unused class.
     pass
 
 class MyElement(Element):
     """
     Extend class Element from twisted.words.xish.domish.
     Base class for all Elements.
+    
+    Attributes:
+       attributesProps - dictionary of attribute's name/value.
+       
+       nodesProps - dictionary of node's name/value.
+    
     """
     
     attributesProps = {}
@@ -31,9 +44,9 @@ class MyElement(Element):
     @classmethod
     def makeFromElement(cls, el):
         """
-        Class method. Make new element according to class that calls
+        Make new element according to class that calls
         this method from element el.
-        
+                
         :param el: element to copy
         :type el: Element
         
@@ -52,9 +65,8 @@ class MyElement(Element):
     @classmethod
     def createFromElement(cls, el, host=None, **kwargs):
         """
-        Class method. Make class instance of element if it's suits
-        to class.
-        
+        Make class instance of element if it's suits to class.
+                
         :returns: class instance with host and kwargs of element
         
         :raises: WrongElement   
@@ -81,7 +93,6 @@ class MyElement(Element):
     @classmethod
     def topClass(cls):
         """
-        Class method. 
         Return top class in class hierarchy.
         
         :returns:  

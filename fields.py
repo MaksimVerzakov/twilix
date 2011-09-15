@@ -4,7 +4,7 @@ Contains description of main attribute properties and node properties.
 import base64
 
 from twilix.jid import internJID
-from twilix.base import ElementParseError, WrongElement, MyElement, EmptyElement
+from twilix.base import ElementParseError, MyElement, EmptyElement
 from twilix.utils import parse_timestamp
 
 class AttributeProp(object):
@@ -32,7 +32,6 @@ class StringAttr(AttributeProp):
     """String attribute."""
     def clean(self, value):
         """
-        
         Return value cast to unicode. 
         Raise ElementParseError if there's no value but it's required.
         

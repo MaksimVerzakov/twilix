@@ -4,8 +4,8 @@
    contain the root `toctree` directive
 
 
-Dispatcher Documentation
-===========================
+Twilix.Dispatcher Documentation
+===============================
 
 .. automodule:: twilix.dispatcher
    :members:

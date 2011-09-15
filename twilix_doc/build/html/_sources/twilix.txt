@@ -5,79 +5,84 @@
 
 
 Twilix Documentation
-===========================
+=====================
+
+.. automodule:: twilix
+
+Twilix.Base 
+-----------
 
 .. automodule:: twilix.base
+   :members:
 
-Disco
-------
+Twilix.Disco 
+------------
 
 .. automodule:: twilix.disco
    :members:
 
-Dispatcher
------------
+Twilix.Dispatcher
+-----------------
 
 .. automodule:: twilix.dispatcher
    :members:
 
-Errors
---------
+Twilix.Errors 
+--------------
 
 .. automodule:: twilix.errors
    :members:
 
-Fields
+Twilix.Fields 
 --------------
 
 .. automodule:: twilix.fields
    :members:
 
-
-HTMLim
--------
+Twilix.HTMLim 
+--------------
 
 .. automodule:: twilix.htmlim
    :members:
 
-JID
-----
+Twilix.JID 
+--------------
 
 .. automodule:: twilix.jid
    :members:
 
-Register
----------
+Twilix.Register
+----------------
 
 .. automodule:: twilix.register
    :members:
 
-Roster
--------
+Twilix.Roster 
+----------------
 
 .. automodule:: twilix.roster
    :members:
 
-Stanzas
---------
+Twilix.Stanzas 
+----------------
 
 .. automodule:: twilix.stanzas
    :members:
 
-Utils
-------
+Twilix.Utils 
+----------------
 
 .. automodule:: twilix.utils
    :members:
 
-VCard
-------
+Twilix.VCard 
+----------------
 
 .. automodule:: twilix.vcard
    :members:
 
-Version
---------
+Twilix.Version 
+----------------
 
 .. automodule:: twilix.version
    :members:
