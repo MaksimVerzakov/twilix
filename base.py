@@ -1,5 +1,5 @@
 """
-Module contains 
+Module contains base classes for all stanzas and other elements.
 """
 from twisted.words.xish.domish import Element
 
@@ -14,9 +14,7 @@ class WrongElement(Exception):
     pass
 
 class EmptyStanza(object):   #XXX: unused class. 
-    """
-    Stanza without any attributes.
-    """
+    """Stanza without any attributes."""
     pass
 
 class EmptyElement(object):

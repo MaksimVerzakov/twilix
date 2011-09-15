@@ -99,6 +99,7 @@ class MyVCardQuery(VCardQuery):
     def getHandler(self):
         """
         Make result iq with myvcard.
+        
         :returns:
             result iq with myvcard if it's exist and destination is correct.
             
@@ -147,6 +148,7 @@ class VCard(object):
         Create VCardQuery with get iq as parent.
         Send get iq to dispatcher.
         Return deferred object with result.
+        
         :returns:
             query.iq.deferred         
         """
@@ -162,6 +164,7 @@ class VCard(object):
         Get copy of vcard.
         Set it as child to set iq.
         Send set iq to dispatcher.
+        
         :returns:
             query.iq.deferred
         """

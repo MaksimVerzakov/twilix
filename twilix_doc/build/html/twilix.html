@@ -53,7 +53,11 @@
 <dt>NAME </dt>
 <dd>Twilix</dd>
 <dt>DESCRIPTION</dt>
-<dd>Package</dd>
+<dd>Twilix is an API provide the functionality to work with XMPP protocol.</dd>
+<dt>AUTHORS</dt>
+<dd>JRuDevels</dd>
+<dt>LICENSE</dt>
+<dd>LGPL v3</dd>
 <dt>PACKAGE CONTENTS</dt>
 <dd><p class="first">base</p>
 <p>disco</p>
@@ -72,7 +76,7 @@
 </dl>
 <div class="section" id="module-twilix.base">
 <span id="twilix-base"></span><h2>Twilix.Base<a class="headerlink" href="#module-twilix.base" title="Permalink to this headline">¶</a></h2>
-<p>Module contains</p>
+<p>Module contains base classes for all stanzas and other elements.</p>
 <dl class="class">
 <dt id="twilix.base.DeclarativeFieldsMetaClass">
 <em class="property">class </em><tt class="descclassname">twilix.base.</tt><tt class="descname">DeclarativeFieldsMetaClass</tt><a class="headerlink" href="#twilix.base.DeclarativeFieldsMetaClass" title="Permalink to this definition">¶</a></dt>
@@ -589,12 +593,16 @@ Used to define standart exception from rfc 3920.
 <dl class="method">
 <dt id="twilix.fields.AttributeProp.get_from_el">
 <tt class="descname">get_from_el</tt><big>(</big><em>el</em><big>)</big><a class="headerlink" href="#twilix.fields.AttributeProp.get_from_el" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return required xml attribute from element.
-:returns:</p>
-<blockquote>
-<div><p>xml attribute from element.</p>
-<p>None if attribute isn&#8217;t exist.</p>
-</div></blockquote>
+<dd><p>Return required xml attribute from element.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">xml attribute from element.<p>None if attribute isn&#8217;t exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -688,12 +696,16 @@ offset.</p>
 <dl class="method">
 <dt id="twilix.fields.ElementNode.get_from_el">
 <tt class="descname">get_from_el</tt><big>(</big><em>el</em><big>)</big><a class="headerlink" href="#twilix.fields.ElementNode.get_from_el" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return all elements with appropriate name and URI.
-:returns:</p>
-<blockquote>
-<div><p>tuple of elements if node is listed.</p>
-<p>element otherwise.</p>
-</div></blockquote>
+<dd><p>Return all elements with appropriate name and URI.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">tuple of elements if node is listed.<p>element otherwise.</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -755,12 +767,16 @@ xmlnode.<p>False otherwise.</p>
 <dt id="twilix.fields.IntegerNode.clean">
 <tt class="descname">clean</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#twilix.fields.IntegerNode.clean" title="Permalink to this definition">¶</a></dt>
 <dd><p>Call clean method of parents class to value.
-Return value cast to integer if it&#8217;s possible.
-:returns:</p>
-<blockquote>
-<div><p>value cast to integer.</p>
-<p>None if there&#8217;s ValueError.</p>
-</div></blockquote>
+Return value cast to integer if it&#8217;s possible.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">value cast to integer.<p>None if there&#8217;s ValueError.</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -1307,12 +1323,16 @@ Define get and set Handlers.</p>
 <dl class="method">
 <dt id="twilix.vcard.MyVCardQuery.getHandler">
 <tt class="descname">getHandler</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.vcard.MyVCardQuery.getHandler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make result iq with myvcard.
-:returns:</p>
-<blockquote>
-<div><p>result iq with myvcard if it&#8217;s exist and destination is correct.</p>
-<p>error stanza if myvcard isn&#8217;t exist.</p>
-</div></blockquote>
+<dd><p>Make result iq with myvcard.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">result iq with myvcard if it&#8217;s exist and destination is correct.<p>error stanza if myvcard isn&#8217;t exist.</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1362,10 +1382,15 @@ Used for representation telephone data.</p>
 <tt class="descname">get</tt><big>(</big><em>jid</em>, <em>from_=None</em><big>)</big><a class="headerlink" href="#twilix.vcard.VCard.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create VCardQuery with get iq as parent.
 Send get iq to dispatcher.
-Return deferred object with result.
-:returns:</p>
-<blockquote>
-<div>query.iq.deferred</div></blockquote>
+Return deferred object with result.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">query.iq.deferred</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1381,10 +1406,15 @@ Add feature to Disco if it&#8217;s required.</p>
 <tt class="descname">set</tt><big>(</big><em>vcard</em><big>)</big><a class="headerlink" href="#twilix.vcard.VCard.set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get copy of vcard.
 Set it as child to set iq.
-Send set iq to dispatcher.
-:returns:</p>
-<blockquote>
-<div>query.iq.deferred</div></blockquote>
+Send set iq to dispatcher.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">query.iq.deferred</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>

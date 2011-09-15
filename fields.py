@@ -16,6 +16,7 @@ class AttributeProp(object):
     def get_from_el(self, el):
         """
         Return required xml attribute from element.
+        
         :returns:
             xml attribute from element.
             
@@ -255,6 +256,7 @@ class IntegerNode(StringNode):
         """
         Call clean method of parents class to value.
         Return value cast to integer if it's possible.
+        
         :returns:
             value cast to integer.
             
@@ -307,6 +309,7 @@ class ElementNode(NodeProp):
     def get_from_el(self, el):
         """
         Return all elements with appropriate name and URI.
+        
         :returns:
             tuple of elements if node is listed.
             

@@ -3,7 +3,13 @@ NAME
     Twilix
 
 DESCRIPTION
-    Package 
+    Twilix is an API provide the functionality to work with XMPP protocol.
+
+AUTHORS
+    JRuDevels
+
+LICENSE
+    LGPL v3
 
 PACKAGE CONTENTS
     base
