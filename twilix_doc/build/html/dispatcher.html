@@ -1,0 +1,190 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Twilix.Dispatcher Documentation &mdash; twilix v1.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="twilix v1.1 documentation" href="index.html" />
+    <link rel="next" title="Twilix.Errors Documentation" href="errors.html" />
+    <link rel="prev" title="Twilix.Disco Documentation" href="disco.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="errors.html" title="Twilix.Errors Documentation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="disco.html" title="Twilix.Disco Documentation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">twilix v1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-twilix.dispatcher">
+<span id="twilix-dispatcher-documentation"></span><h1>Twilix.Dispatcher Documentation<a class="headerlink" href="#module-twilix.dispatcher" title="Permalink to this headline">¶</a></h1>
+<p>Module describes the Dispatcher : class which controlling any data exchange.
+This class realize direct handling of input and output stanzas.</p>
+<dl class="class">
+<dt id="twilix.dispatcher.Dispatcher">
+<em class="property">class </em><tt class="descclassname">twilix.dispatcher.</tt><tt class="descname">Dispatcher</tt><big>(</big><em>xs</em>, <em>myjid</em><big>)</big><a class="headerlink" href="#twilix.dispatcher.Dispatcher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main class for input-output controlling.</p>
+<p>Attributes :</p>
+<blockquote>
+<div><p>xs &#8211; xmlstream</p>
+<p>myjid &#8211; jabber id value</p>
+<dl class="docutils">
+<dt>_handlers &#8211; list of (handler class, host)-style pairs </dt>
+<dd>(see register/unregisterHandler methods)</dd>
+</dl>
+<p>_callbacks &#8211; dict of callbacks with format :</p>
+<blockquote>
+<div><p>key is an id of stanza that wait callback value</p>
+<p>value is a (deffered, resultclass, errorclass)-style tuple</p>
+</div></blockquote>
+</div></blockquote>
+<p>Methods :</p>
+<blockquote>
+<div><p>registerHandler &#8211; adds new handler</p>
+<p>unregisterHandler &#8211; dels some handler</p>
+<p>dispatch &#8211; inlineCallbacks decorated method for handling of input stanzas</p>
+<p>send &#8211; method realize sending of any stanzas</p>
+</div></blockquote>
+<dl class="method">
+<dt id="twilix.dispatcher.Dispatcher.dispatch">
+<tt class="descname">dispatch</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.dispatcher.Dispatcher.dispatch" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function realize direct input data handling.</p>
+<p>There is a handling :</p>
+<p>&#8211; returns callback/errorback value for result/error-type stanzas</p>
+<p>&#8211; calls handlers for other stanzas and then send the results</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>el</strong> &#8211; is an input stanza</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.dispatcher.Dispatcher.registerHandler">
+<tt class="descname">registerHandler</tt><big>(</big><em>handler</em><big>)</big><a class="headerlink" href="#twilix.dispatcher.Dispatcher.registerHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers new pair of any stanza handler class and his host</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.dispatcher.Dispatcher.send">
+<tt class="descname">send</tt><big>(</big><em>els</em><big>)</big><a class="headerlink" href="#twilix.dispatcher.Dispatcher.send" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function realize direct output data handling.</p>
+<p>There is a handling :</p>
+<p>&#8211; set callbacks for deferred stanza&#8217;s objects</p>
+<p>&#8211; send result stanzas</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>els</strong> &#8211; is an output stanza or stanzas</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.dispatcher.Dispatcher.unregisterHandler">
+<tt class="descname">unregisterHandler</tt><big>(</big><em>handler</em><big>)</big><a class="headerlink" href="#twilix.dispatcher.Dispatcher.unregisterHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unregisters pair of any stanza handler class and his host</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="disco.html"
+                        title="previous chapter">Twilix.Disco Documentation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="errors.html"
+                        title="next chapter">Twilix.Errors Documentation</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/dispatcher.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="errors.html" title="Twilix.Errors Documentation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="disco.html" title="Twilix.Disco Documentation"
+             >previous</a> |</li>
+        <li><a href="index.html">twilix v1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, JRuDevels.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

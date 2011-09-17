@@ -1,0 +1,330 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Twilix.Stanzas Documentation &mdash; twilix v1.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="twilix v1.1 documentation" href="index.html" />
+    <link rel="next" title="Twilix.Utils Documentation" href="utils.html" />
+    <link rel="prev" title="Twilix.Roster Documentation" href="roster.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utils.html" title="Twilix.Utils Documentation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="roster.html" title="Twilix.Roster Documentation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">twilix v1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-twilix.stanzas">
+<span id="twilix-stanzas-documentation"></span><h1>Twilix.Stanzas Documentation<a class="headerlink" href="#module-twilix.stanzas" title="Permalink to this headline">¶</a></h1>
+<p>Module discribes stanza-class and basic types of used stanzas. 
+There are Message, Presence, Iq classes inherit from Stanza.</p>
+<dl class="class">
+<dt id="twilix.stanzas.ErrorStanza">
+<em class="property">class </em><tt class="descclassname">twilix.stanzas.</tt><tt class="descname">ErrorStanza</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.stanzas.ErrorStanza" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stanza-inheritor class for any errors.
+Contains fields corresponding to the protocol.</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd>error &#8211; element node with Error element.</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="twilix.stanzas.Iq">
+<em class="property">class </em><tt class="descclassname">twilix.stanzas.</tt><tt class="descname">Iq</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.stanzas.Iq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stanza-inheritor class that implements an answer-query type mechanism.</p>
+<dl class="method">
+<dt id="twilix.stanzas.Iq.clean_id">
+<tt class="descname">clean_id</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#twilix.stanzas.Iq.clean_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set correct value for invalid id.
+Used for validation of id.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.stanzas.Iq.clean_type_">
+<tt class="descname">clean_type_</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#twilix.stanzas.Iq.clean_type_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filters stanzas by type. 
+Used for validation of type_ field.
+Raises exception for invalid stanzas.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body">ElementParseError</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.stanzas.Iq.makeResult">
+<tt class="descname">makeResult</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.stanzas.Iq.makeResult" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns result-type Iq stanza</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="twilix.stanzas.Message">
+<em class="property">class </em><tt class="descclassname">twilix.stanzas.</tt><tt class="descname">Message</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.stanzas.Message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stanza-inheritor class that implements a message transfer with
+other entities.
+Contains fields corresponding to the protocol.</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd><p class="first">body &#8211; string node &#8216;body&#8217;</p>
+<p>subject  &#8211; string node &#8216;subject&#8217;</p>
+<p>thread  &#8211; string attribue &#8216;thread&#8217;</p>
+<p class="last">html  &#8211; element node with XHtmlIm element</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="twilix.stanzas.Message.clean_type_">
+<tt class="descname">clean_type_</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#twilix.stanzas.Message.clean_type_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filters stanzas by type. 
+Sets some correct type for invalid stanzas.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="twilix.stanzas.MyIq">
+<em class="property">class </em><tt class="descclassname">twilix.stanzas.</tt><tt class="descname">MyIq</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.stanzas.MyIq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class-inheritor from Iq and MyValidator.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="twilix.stanzas.MyValidator">
+<em class="property">class </em><tt class="descclassname">twilix.stanzas.</tt><tt class="descname">MyValidator</tt><a class="headerlink" href="#twilix.stanzas.MyValidator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for filter stanzas by &#8216;to&#8217; value.</p>
+<dl class="method">
+<dt id="twilix.stanzas.MyValidator.clean_to">
+<tt class="descname">clean_to</tt><big>(</big><em>v</em><big>)</big><a class="headerlink" href="#twilix.stanzas.MyValidator.clean_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method raises exception if receiver jid is not host jid.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body">WrongElement</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="twilix.stanzas.Presence">
+<em class="property">class </em><tt class="descclassname">twilix.stanzas.</tt><tt class="descname">Presence</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.stanzas.Presence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stanza-inheritor class that implements an entity&#8217;s presence info.
+Contains fields corresponding to the protocol.</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd><p class="first">show &#8211; string node &#8216;show&#8217;</p>
+<p>status  &#8211; string node &#8216;status&#8217;</p>
+<p class="last">priority  &#8211; integer attribue &#8216;priority&#8217;</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="twilix.stanzas.Presence.clean_type_">
+<tt class="descname">clean_type_</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#twilix.stanzas.Presence.clean_type_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filters stanzas by type. 
+Sets None type for invalid stanzas.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="twilix.stanzas.Presence.type_">
+<tt class="descname">type_</tt><a class="headerlink" href="#twilix.stanzas.Presence.type_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return type of presence when it&#8217;s requested. 
+If type is None return &#8216;available&#8217;.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="twilix.stanzas.Query">
+<em class="property">class </em><tt class="descclassname">twilix.stanzas.</tt><tt class="descname">Query</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.stanzas.Query" title="Permalink to this definition">¶</a></dt>
+<dd><p>VElement-inheritor class. Base for other query-type classes. 
+There is a query part of query-answer mechanism.
+Contains fields corresponding to the protocol.</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd>node &#8211; string attribute &#8216;node&#8217;</dd>
+</dl>
+<dl class="classmethod">
+<dt id="twilix.stanzas.Query.createFromElement">
+<em class="property">classmethod </em><tt class="descname">createFromElement</tt><big>(</big><em>el</em>, <em>host=None</em>, <em>dont_defer=False</em><big>)</big><a class="headerlink" href="#twilix.stanzas.Query.createFromElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates new Query element from some element or 
+raises an exception if created failed</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>el</strong> &#8211; is a source for creating</li>
+<li><strong>host</strong> &#8211; host for new element (default None)</li>
+<li><strong>dont_defer</strong> &#8211; boolean flag for deferred elements</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first">WrongElement</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">new element creating from source</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="twilix.stanzas.Query.iq">
+<tt class="descname">iq</tt><a class="headerlink" href="#twilix.stanzas.Query.iq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return valid iq when it&#8217;s requested.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="twilix.stanzas.Query.parentClass">
+<tt class="descname">parentClass</tt><a class="headerlink" href="#twilix.stanzas.Query.parentClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#twilix.stanzas.Iq" title="twilix.stanzas.Iq"><tt class="xref py py-class docutils literal"><span class="pre">Iq</span></tt></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="twilix.stanzas.Stanza">
+<em class="property">class </em><tt class="descclassname">twilix.stanzas.</tt><tt class="descname">Stanza</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.stanzas.Stanza" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extends VElement class from twilix.base.
+Contains fields corresponding to the protocol.</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd><p class="first">to &#8211; jid attribue &#8216;to&#8217;</p>
+<p>from_  &#8211; jid attribue &#8216;from&#8217;</p>
+<p>type  &#8211; string attribue &#8216;type&#8217;</p>
+<p>id  &#8211; string attribue &#8216;id&#8217;</p>
+<p class="last">lang  &#8211; string attribue &#8216;xml:lang&#8217;</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="twilix.stanzas.Stanza.get_reply">
+<tt class="descname">get_reply</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.stanzas.Stanza.get_reply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the reply stanza. 
+There is REPLY_CLASS (if defined) or self-type stanza&#8217;s class.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.stanzas.Stanza.makeError">
+<tt class="descname">makeError</tt><big>(</big><em>content</em><big>)</big><a class="headerlink" href="#twilix.stanzas.Stanza.makeError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates ErrorStanza from self and then returns it.
+Used to make Error Stanza as reply on any Stanza.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>content</strong> &#8211; Error element.</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">Error Stanza with Error element.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="roster.html"
+                        title="previous chapter">Twilix.Roster Documentation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="utils.html"
+                        title="next chapter">Twilix.Utils Documentation</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/stanzas.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="utils.html" title="Twilix.Utils Documentation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="roster.html" title="Twilix.Roster Documentation"
+             >previous</a> |</li>
+        <li><a href="index.html">twilix v1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, JRuDevels.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

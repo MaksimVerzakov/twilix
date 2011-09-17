@@ -11,7 +11,20 @@ Contents:
 .. toctree::
    :maxdepth: 3
    
-   twilix
+   base
+   disco
+   dispatcher
+   errors
+   fields
+   htmlim
+   jid
+   muc
+   register
+   roster
+   stanzas
+   utils
+   vcard
+   version
 
 Indices and tables
 ==================
