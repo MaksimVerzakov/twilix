@@ -1,3 +1,6 @@
+"""
+Module describes roster.
+"""
 from pydispatch import dispatcher
 
 from twilix.stanzas import Iq, Query, Presence

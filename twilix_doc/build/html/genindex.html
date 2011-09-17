@@ -55,9 +55,10 @@
     <dt><a href="twilix.html#twilix.base.MyElement.addElement">addElement() (twilix.base.MyElement method)</a></dt>
     <dt><a href="twilix.html#twilix.roster.RosterItem.addGroup">addGroup() (twilix.roster.RosterItem method)</a></dt>
     <dt><a href="twilix.html#twilix.roster.Roster.addItem">addItem() (twilix.roster.Roster method)</a></dt>
+    <dt><a href="twilix.html#twilix.vcard.Address">Address (class in twilix.vcard)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
-    <dt><a href="twilix.html#twilix.vcard.Address">Address (class in twilix.vcard)</a></dt>
+    <dt><a href="twilix.html#twilix.disco.NotFoundQuery.anyHandler">anyHandler() (twilix.disco.NotFoundQuery method)</a></dt>
     <dt><a href="twilix.html#twilix.errors.AppError">AppError (class in twilix.errors)</a></dt>
     <dt><a href="twilix.html#twilix.fields.AttributeProp">AttributeProp (class in twilix.fields)</a></dt>
 </dl></td>
@@ -127,12 +128,13 @@
     <dt><a href="twilix.html#twilix.base.DeclarativeFieldsMetaClass">DeclarativeFieldsMetaClass (class in twilix.base)</a></dt>
     <dt><a href="twilix.html#twilix.disco.Disco">Disco (class in twilix.disco)</a></dt>
     <dt><a href="twilix.html#twilix.disco.DiscoInfoQuery">DiscoInfoQuery (class in twilix.disco)</a></dt>
+    <dt><a href="twilix.html#twilix.disco.DiscoItem">DiscoItem (class in twilix.disco)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
-    <dt><a href="twilix.html#twilix.disco.DiscoItem">DiscoItem (class in twilix.disco)</a></dt>
     <dt><a href="twilix.html#twilix.disco.DiscoItemsQuery">DiscoItemsQuery (class in twilix.disco)</a></dt>
     <dt><a href="twilix.html#twilix.dispatcher.Dispatcher.dispatch">dispatch() (twilix.dispatcher.Dispatcher method)</a></dt>
     <dt><a href="twilix.html#twilix.dispatcher.Dispatcher">Dispatcher (class in twilix.dispatcher)</a></dt>
+    <dt><a href="twilix.html#twilix.utils.TzInfo.dst">dst() (twilix.utils.TzInfo method)</a></dt>
 </dl></td>
 </tr></table>
 
@@ -185,6 +187,7 @@
     <dt><a href="twilix.html#twilix.base.MyElement.getFirstChildContent">getFirstChildContent() (twilix.base.MyElement method)</a></dt>
     <dt><a href="twilix.html#twilix.disco.VDiscoInfoQuery.getHandler">getHandler() (twilix.disco.VDiscoInfoQuery method)</a></dt>
     <dd><dl>
+      <dt><a href="twilix.html#twilix.disco.VDiscoItemsQuery.getHandler">(twilix.disco.VDiscoItemsQuery method)</a></dt>
       <dt><a href="twilix.html#twilix.roster.RosterQuery.getHandler">(twilix.roster.RosterQuery method)</a></dt>
       <dt><a href="twilix.html#twilix.vcard.MyVCardQuery.getHandler">(twilix.vcard.MyVCardQuery method)</a></dt>
       <dt><a href="twilix.html#twilix.version.MyVersionQuery.getHandler">(twilix.version.MyVersionQuery method)</a></dt>
@@ -212,6 +215,7 @@
     <dt><a href="twilix.html#twilix.disco.Identity">Identity (class in twilix.disco)</a></dt>
     <dt><a href="twilix.html#twilix.disco.Disco.init">init() (twilix.disco.Disco method)</a></dt>
     <dd><dl>
+      <dt><a href="twilix.html#twilix.register.Register.init">(twilix.register.Register method)</a></dt>
       <dt><a href="twilix.html#twilix.roster.Roster.init">(twilix.roster.Roster method)</a></dt>
       <dt><a href="twilix.html#twilix.vcard.VCard.init">(twilix.vcard.VCard method)</a></dt>
       <dt><a href="twilix.html#twilix.version.ClientVersion.init">(twilix.version.ClientVersion method)</a></dt>
@@ -248,10 +252,11 @@
     <dt><a href="twilix.html#twilix.stanzas.Iq.makeResult">makeResult() (twilix.stanzas.Iq method)</a></dt>
     <dt><a href="twilix.html#twilix.stanzas.Message">Message (class in twilix.stanzas)</a></dt>
     <dt><a href="twilix.html#twilix.base.MyElement">MyElement (class in twilix.base)</a></dt>
+    <dt><a href="twilix.html#twilix.stanzas.MyIq">MyIq (class in twilix.stanzas)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
-    <dt><a href="twilix.html#twilix.stanzas.MyIq">MyIq (class in twilix.stanzas)</a></dt>
     <dt><a href="twilix.html#twilix.jid.MyJID">MyJID (class in twilix.jid)</a></dt>
+    <dt><a href="twilix.html#twilix.register.MyRegisterQuery">MyRegisterQuery (class in twilix.register)</a></dt>
     <dt><a href="twilix.html#twilix.stanzas.MyValidator">MyValidator (class in twilix.stanzas)</a></dt>
     <dt><a href="twilix.html#twilix.vcard.MyVCardQuery">MyVCardQuery (class in twilix.vcard)</a></dt>
     <dt><a href="twilix.html#twilix.version.MyVersionQuery">MyVersionQuery (class in twilix.version)</a></dt>
@@ -285,6 +290,8 @@
     <dt><a href="twilix.html#twilix.disco.NotFoundQuery.parentClass">parentClass (twilix.disco.NotFoundQuery attribute)</a></dt>
     <dd><dl>
       <dt><a href="twilix.html#twilix.disco.VDiscoInfoQuery.parentClass">(twilix.disco.VDiscoInfoQuery attribute)</a></dt>
+      <dt><a href="twilix.html#twilix.disco.VDiscoItemsQuery.parentClass">(twilix.disco.VDiscoItemsQuery attribute)</a></dt>
+      <dt><a href="twilix.html#twilix.register.MyRegisterQuery.parentClass">(twilix.register.MyRegisterQuery attribute)</a></dt>
       <dt><a href="twilix.html#twilix.stanzas.Query.parentClass">(twilix.stanzas.Query attribute)</a></dt>
       <dt><a href="twilix.html#twilix.version.MyVersionQuery.parentClass">(twilix.version.MyVersionQuery attribute)</a></dt>
   </dl></dd>
@@ -306,12 +313,14 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
+    <dt><a href="twilix.html#twilix.register.Register">Register (class in twilix.register)</a></dt>
     <dt><a href="twilix.html#twilix.dispatcher.Dispatcher.registerHandler">registerHandler() (twilix.dispatcher.Dispatcher method)</a></dt>
+    <dt><a href="twilix.html#twilix.register.RegisterQuery">RegisterQuery (class in twilix.register)</a></dt>
     <dt><a href="twilix.html#twilix.base.MyElement.removeChilds">removeChilds() (twilix.base.MyElement method)</a></dt>
     <dt><a href="twilix.html#twilix.roster.RosterItem.removeGroup">removeGroup() (twilix.roster.RosterItem method)</a></dt>
-    <dt><a href="twilix.html#twilix.roster.Roster.removeItem">removeItem() (twilix.roster.Roster method)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
+    <dt><a href="twilix.html#twilix.roster.Roster.removeItem">removeItem() (twilix.roster.Roster method)</a></dt>
     <dt><a href="twilix.html#twilix.roster.Roster">Roster (class in twilix.roster)</a></dt>
     <dt><a href="twilix.html#twilix.roster.RosterItem">RosterItem (class in twilix.roster)</a></dt>
     <dt><a href="twilix.html#twilix.roster.RosterPresence">RosterPresence (class in twilix.roster)</a></dt>
@@ -349,9 +358,9 @@
     <dt><a href="twilix.html#module-twilix.dispatcher">twilix.dispatcher (module)</a></dt>
     <dt><a href="twilix.html#module-twilix.errors">twilix.errors (module)</a></dt>
     <dt><a href="twilix.html#module-twilix.fields">twilix.fields (module)</a></dt>
+    <dt><a href="twilix.html#module-twilix.htmlim">twilix.htmlim (module)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
-    <dt><a href="twilix.html#module-twilix.htmlim">twilix.htmlim (module)</a></dt>
     <dt><a href="twilix.html#module-twilix.jid">twilix.jid (module)</a></dt>
     <dt><a href="twilix.html#module-twilix.register">twilix.register (module)</a></dt>
     <dt><a href="twilix.html#module-twilix.roster">twilix.roster (module)</a></dt>
@@ -360,6 +369,8 @@
     <dt><a href="twilix.html#module-twilix.vcard">twilix.vcard (module)</a></dt>
     <dt><a href="twilix.html#module-twilix.version">twilix.version (module)</a></dt>
     <dt><a href="twilix.html#twilix.stanzas.Presence.type_">type_ (twilix.stanzas.Presence attribute)</a></dt>
+    <dt><a href="twilix.html#twilix.utils.TzInfo">TzInfo (class in twilix.utils)</a></dt>
+    <dt><a href="twilix.html#twilix.utils.TzInfo.tzname">tzname() (twilix.utils.TzInfo method)</a></dt>
 </dl></td>
 </tr></table>
 
@@ -371,6 +382,7 @@
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
     <dt><a href="twilix.html#twilix.roster.Roster.updatePresence">updatePresence() (twilix.roster.Roster method)</a></dt>
+    <dt><a href="twilix.html#twilix.utils.TzInfo.utcoffset">utcoffset() (twilix.utils.TzInfo method)</a></dt>
 </dl></td>
 </tr></table>
 
@@ -380,9 +392,10 @@
     <dt><a href="twilix.html#twilix.base.MyElement.validate">validate() (twilix.base.MyElement method)</a></dt>
     <dt><a href="twilix.html#twilix.vcard.VCard">VCard (class in twilix.vcard)</a></dt>
     <dt><a href="twilix.html#twilix.vcard.VCardQuery">VCardQuery (class in twilix.vcard)</a></dt>
+    <dt><a href="twilix.html#twilix.disco.VDiscoInfoQuery">VDiscoInfoQuery (class in twilix.disco)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
-    <dt><a href="twilix.html#twilix.disco.VDiscoInfoQuery">VDiscoInfoQuery (class in twilix.disco)</a></dt>
+    <dt><a href="twilix.html#twilix.disco.VDiscoItemsQuery">VDiscoItemsQuery (class in twilix.disco)</a></dt>
     <dt><a href="twilix.html#twilix.base.VElement">VElement (class in twilix.base)</a></dt>
     <dt><a href="twilix.html#twilix.version.VersionQuery">VersionQuery (class in twilix.version)</a></dt>
 </dl></td>

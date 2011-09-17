@@ -276,8 +276,11 @@ class Base64Node(StringNode):
     def clean(self, value):
         """
         Return value in base64 format if it's possible.
+        
         :returns: value cast to base64.
-        :raises: ElementParseError
+        
+        :raises: ElementParseError.
+        
         """
         value = super(Base64Node, self).clean(value)
         try:

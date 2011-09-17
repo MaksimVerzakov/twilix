@@ -1,13 +1,11 @@
-"""
-Module extends the JID class from twisted library.
-"""
+"""Module extends the JID class from twisted library."""
 
 import copy
 
 from twisted.words.protocols.jabber.jid import JID, InvalidFormat
 
 class MyJID(JID):
-    """Extends class JID from twisted.words.protocols.jabber.jid"""
+    """Extends class JID from twisted.words.protocols.jabber.jid."""
     @property
     def is_bare(self):
         """Checks for bare jid (without resourse part)."""

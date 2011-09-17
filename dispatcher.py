@@ -1,7 +1,6 @@
 """
 Module describes the Dispatcher : class which controlling any data exchange.
 This class realize direct handling of input and output stanzas.
-
 """
 
 from twisted.internet.defer import inlineCallbacks, returnValue

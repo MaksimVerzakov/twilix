@@ -1,5 +1,5 @@
 """
-Module implements vcard-temp feature
+Module implements vcard-temp feature.
 """
 # XEP-0054
 import copy
@@ -13,8 +13,15 @@ from twilix import errors
 class Name(VElement):
     """
     Extends VElement class from twilix.base.
-    Used for representation name data (family name, given name and 
-    middle name)
+    Used for representation name data.
+    
+    Attributes:
+        family_name -- string node 'FAMILY'
+        
+        given_name -- string node 'GIVEN'
+        
+        middle_name -- string node 'MIDDLE'
+        
     """    
     elementName = 'N'
     
@@ -25,8 +32,13 @@ class Name(VElement):
 class Organization(VElement):
     """
     Extends VElement class from twilix.base.
-    Used for representation organization data (organization name and
-    organization unit)
+    Used for representation organization data.
+    
+    Attributes:
+        name -- string node 'ORGNAME'
+        
+        unit -- string node 'ORGUNIT'
+        
     """
     elementName = 'ORG'
 
@@ -60,7 +72,13 @@ class Email(VElement):
 class Photo(VElement):
     """
     Extends VElement class from twilix.base.
-    Used for representation photo data (type and binary value)
+    Used for representation photo data.
+    
+    Attributes:
+        type\_ -- string node 'TYPE'
+        
+        binval -- base64 node 'BINVAL'
+        
     """
     elementName = 'PHOTO'
 
@@ -98,12 +116,13 @@ class MyVCardQuery(VCardQuery):
     """
     def getHandler(self):
         """
-        Make result iq with myvcard.
+        Make result iq with myvcard when dispatcher receives 'get' query.
         
         :returns:
             result iq with myvcard if it's exist and destination is correct.
-            
-            error stanza if myvcard isn't exist.
+        
+        :raises:
+            ItemNotFoundException
             
         """
         if self.host.myvcard and self.host.dispatcher.myjid == self.iq.to:
@@ -116,7 +135,8 @@ class MyVCardQuery(VCardQuery):
 
     def setHandler(self):
         """Forbid the ability to set vcard."""
-        return self.iq.makeError('auth', 'forbidden')
+        #return self.iq.makeError('auth', 'forbidden')
+        raise errors.ForbiddenException()
 
 class VCard(object):
     """Class describes interaction with personal info in myvcard."""
@@ -145,9 +165,8 @@ class VCard(object):
 
     def get(self, jid, from_=None):
         """
-        Create VCardQuery with get iq as parent.
-        Send get iq to dispatcher.
-        Return deferred object with result.
+        Make get VCard query.
+        Return deferred object with result of get VCard query.
         
         :returns:
             query.iq.deferred         
@@ -161,9 +180,8 @@ class VCard(object):
 
     def set(self, vcard):
         """
-        Get copy of vcard.
-        Set it as child to set iq.
-        Send set iq to dispatcher.
+        Make set VCard query.
+        Return deferred object with result of set VCard query.
         
         :returns:
             query.iq.deferred

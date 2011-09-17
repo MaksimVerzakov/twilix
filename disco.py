@@ -5,12 +5,21 @@ import base64
 from twilix.base import VElement
 from twilix.stanzas import Query, Iq, MyIq
 from twilix.jid import internJID
-from twilix import fields
+from twilix import fields, errors
 
 class CapsElement(VElement): #XXX: invate automatize caps calculation
     """
     Extends VElement. 
-    Describe node for entity capabilities.     
+    Describe node for entity capabilities with fields that corresponds 
+    to the protocol.
+    
+    Attributes:
+        hash\_ - string attribute
+        
+        node -- string attribute
+        
+        ver -- string attribute
+       
     """
     elementName = 'c'
     elementUri = 'http://jabber.org/protocol/caps'
@@ -22,7 +31,16 @@ class CapsElement(VElement): #XXX: invate automatize caps calculation
 class Identity(VElement):
     """
     Extends VElement. 
-    Describe node for identity.     
+    Describe node for identity with fields that corresponds to the
+    protocol.
+    
+    Attributes:
+        category -- string attribute
+        
+        type\_ -- string attribute
+        
+        iname -- string attribute
+            
     """
     elementName = 'identity'
     
@@ -33,7 +51,12 @@ class Identity(VElement):
 class Feature(VElement):
     """
     Extends VElement. 
-    Describe node for feature.     
+    Describes node for feature with field that corresponds to the
+    protocol.
+    
+    Attributes:
+        var -- string attribute
+                 
     """
     elementName = 'feature'
 
@@ -61,7 +84,7 @@ class VDiscoInfoQuery(DiscoInfoQuery):
     parentClass = MyIq
     def getHandler(self):
         """
-        
+        Return result iq when dispatcher gets get Disco Info query.
         """
         node = self.node or ''
         info_query = None
@@ -77,8 +100,16 @@ class VDiscoInfoQuery(DiscoInfoQuery):
 class DiscoItem(VElement):
     """
     Extends VElement.
-    Describe base discovery item. 
-    Contains fields for jid, name and node.
+    Describe base discovery item element with fields that corresponds 
+    to the protocol.
+    
+    Attributes:
+        jid -- jid attribute
+        
+        iname -- string attribute
+        
+        node -- string attribute
+                 
     """
     elementName = 'item'
 
@@ -88,7 +119,13 @@ class DiscoItem(VElement):
 
 class DiscoItemsQuery(Query):
     """
+    Extends Query class.
     
+    Attibutes:
+        items -- element node with DiscoItem
+        
+        node -- string attribute 'node'
+            
     """
     elementUri = 'http://jabber.org/protocol/disco#items'
 
@@ -97,8 +134,16 @@ class DiscoItemsQuery(Query):
     node = fields.StringAttr('node', required=False)
 
 class VDiscoItemsQuery(DiscoItemsQuery):
+    """
+    Extends DiscoItemsQuery.
+    Set MyIq as parent class.
+    Describe get handler for disco items query.
+    """
     parentClass = MyIq
     def getHandler(self):
+        """
+        Return result iq when dispatcher gets get Disco Items query.
+        """
         node = self.node or ''
         items_query = None
         if self.host.static_info.has_key(node):
@@ -114,7 +159,9 @@ class NotFoundQuery(object):
     """Contains handler for making error if item isn't found."""
     parentClass = MyIq
     def anyHandler(self):
-        return self.iq.makeError('cancel', 'item-not-found')
+        """Raise ItemNotFoundException in any case."""
+        raise errors.ItemNotFoundException()
+        #return self.iq.makeError('cancel', 'item-not-found')
 
 class NotFoundDiscoItemsQuery(NotFoundQuery, DiscoItemsQuery):
     """
@@ -131,7 +178,7 @@ class NotFoundDiscoInfoQuery(NotFoundQuery, DiscoInfoQuery):
     pass
 
 class Disco(object):
-    """Describe interaction with service discovery."""
+    """Describe interaction dispatcher with service discovery."""
     def __init__(self, dispatcher):
         """
         Initialize class. 
