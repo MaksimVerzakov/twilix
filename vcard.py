@@ -139,7 +139,10 @@ class MyVCardQuery(VCardQuery):
         raise errors.ForbiddenException()
 
 class VCard(object):
-    """Class describes interaction with personal info in myvcard."""
+    """
+    Class describes interaction dispatcher with personal info
+    in myvcard.
+    """
     def __init__(self, dispatcher, myvcard=None):
         """Initialize dispatcher, myvcard and list of handlers."""
         self.dispatcher = dispatcher

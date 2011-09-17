@@ -1099,7 +1099,8 @@ Contains special fields described in XEP-0077 for register query.</p>
 <dl class="class">
 <dt id="twilix.roster.Roster">
 <em class="property">class </em><tt class="descclassname">twilix.roster.</tt><tt class="descname">Roster</tt><big>(</big><em>dispatcher</em>, <em>mypresence=None</em><big>)</big><a class="headerlink" href="#twilix.roster.Roster" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<dd><p>Class describes interaction dispatcher with roster.</p>
+<dl class="method">
 <dt id="twilix.roster.Roster.addItem">
 <tt class="descname">addItem</tt><big>(</big><em>item</em><big>)</big><a class="headerlink" href="#twilix.roster.Roster.addItem" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends set-type query for addition new item in roster</p>
@@ -1111,6 +1112,24 @@ Contains special fields described in XEP-0077 for register query.</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.roster.Roster.getGroupUsers">
+<tt class="descname">getGroupUsers</tt><big>(</big><em>group</em><big>)</big><a class="headerlink" href="#twilix.roster.Roster.getGroupUsers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return list of items in group.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.roster.Roster.getGroups">
+<tt class="descname">getGroups</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.roster.Roster.getGroups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return list of groups.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.roster.Roster.getItemByJid">
+<tt class="descname">getItemByJid</tt><big>(</big><em>jid</em><big>)</big><a class="headerlink" href="#twilix.roster.Roster.getItemByJid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find item with same bare jid and return it.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1168,14 +1187,27 @@ Sends roster get query.</p>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="twilix.roster.Roster.updateRoster">
+<tt class="descname">updateRoster</tt><big>(</big><em>query</em><big>)</big><a class="headerlink" href="#twilix.roster.Roster.updateRoster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update items in roster as in query.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
 <dt id="twilix.roster.RosterItem">
 <em class="property">class </em><tt class="descclassname">twilix.roster.</tt><tt class="descname">RosterItem</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.roster.RosterItem" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class for xml roster item node. Inheritor of VElement.</p>
-<p>Class has attributes-identificators for filter xml nodes, info 
-string-type fields and jid of roster element.</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd><p class="first">jid &#8211; jid attribute &#8216;jid&#8217;</p>
+<p>subscription &#8211; string attribute &#8216;subscription&#8217;</p>
+<p>ask &#8211; string attribute &#8216;ask&#8217;</p>
+<p>nick &#8211; string attribute &#8216;name&#8217;</p>
+<p class="last">group &#8211; string attribute &#8216;group&#8217;</p>
+</dd>
+</dl>
 <dl class="method">
 <dt id="twilix.roster.RosterItem.addGroup">
 <tt class="descname">addGroup</tt><big>(</big><em>group_name</em><big>)</big><a class="headerlink" href="#twilix.roster.RosterItem.addGroup" title="Permalink to this definition">¶</a></dt>
@@ -1186,7 +1218,8 @@ string-type fields and jid of roster element.</p>
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>group_name</strong> &#8211; name of new group.</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">True if group was added else None if same group already exist.</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">True if group was added<p>None if same group already exist.</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1208,7 +1241,8 @@ string-type fields and jid of roster element.</p>
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>group_name</strong> &#8211; name of deleted group.</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">True if group was deleted else None if group not exist.</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">True if group was deleted.<p>None if group not exist.</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1221,21 +1255,78 @@ string-type fields and jid of roster element.</p>
 <em class="property">class </em><tt class="descclassname">twilix.roster.</tt><tt class="descname">RosterPresence</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.roster.RosterPresence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class for xml roster presence. Inheritor of Presence.
 Describes some handlers for other presences.
-Handlers send necessary signal with dispatcher (from pydispatch module)</p>
+Describe handlers for all available types of presence stanzas.</p>
+<dl class="method">
+<dt id="twilix.roster.RosterPresence.availableHandler">
+<tt class="descname">availableHandler</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.roster.RosterPresence.availableHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls when received &#8216;available&#8217; presence stanza.
+Send relevant information about changing of status.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.roster.RosterPresence.errorHandler">
+<tt class="descname">errorHandler</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.roster.RosterPresence.errorHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls when received &#8216;error&#8217; presence stanza.
+Make item unavailable.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.roster.RosterPresence.subscribeHandler">
+<tt class="descname">subscribeHandler</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.roster.RosterPresence.subscribeHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls when received &#8216;subscribe&#8217; presence stanza.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.roster.RosterPresence.subscribedHandler">
+<tt class="descname">subscribedHandler</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.roster.RosterPresence.subscribedHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls when received &#8216;subscribed&#8217; presence stanza.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.roster.RosterPresence.unavailableHandler">
+<tt class="descname">unavailableHandler</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.roster.RosterPresence.unavailableHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls when received &#8216;unavailable&#8217; presence stanza.
+Remove item from list of presence.
+Send info about unavailability.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.roster.RosterPresence.unsubscribeHandler">
+<tt class="descname">unsubscribeHandler</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.roster.RosterPresence.unsubscribeHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls when received &#8216;unsubscribe&#8217; presence stanza.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.roster.RosterPresence.unsubscribedHandler">
+<tt class="descname">unsubscribedHandler</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.roster.RosterPresence.unsubscribedHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls when received &#8216;subscribed&#8217; presence stanza.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
 <dt id="twilix.roster.RosterQuery">
 <em class="property">class </em><tt class="descclassname">twilix.roster.</tt><tt class="descname">RosterQuery</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.roster.RosterQuery" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class for xml roster queries. Inheritor of Query.</p>
-<p>Class attributes:</p>
-<p>elementUri &#8211; identificator/filter for xml nodes</p>
-<p>items &#8211; list of RosterItem instances</p>
+<dl class="docutils">
+<dt>Class attributes:</dt>
+<dd><p class="first">elementUri &#8211; identificator/filter for xml nodes</p>
+<p class="last">items &#8211; list of RosterItem instances</p>
+</dd>
+</dl>
 <dl class="method">
 <dt id="twilix.roster.RosterQuery.getHandler">
 <tt class="descname">getHandler</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.roster.RosterQuery.getHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method for handle get-type roster queries.
-Not acceptable. Returns error stanza.</p>
+Not acceptable. Raise error stanza.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body">NotAcceptableException</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1597,7 +1688,8 @@ Used for representation telephone data.</p>
 <dl class="class">
 <dt id="twilix.vcard.VCard">
 <em class="property">class </em><tt class="descclassname">twilix.vcard.</tt><tt class="descname">VCard</tt><big>(</big><em>dispatcher</em>, <em>myvcard=None</em><big>)</big><a class="headerlink" href="#twilix.vcard.VCard" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class describes interaction with personal info in myvcard.</p>
+<dd><p>Class describes interaction dispatcher with personal info
+in myvcard.</p>
 <dl class="method">
 <dt id="twilix.vcard.VCard.get">
 <tt class="descname">get</tt><big>(</big><em>jid</em>, <em>from_=None</em><big>)</big><a class="headerlink" href="#twilix.vcard.VCard.get" title="Permalink to this definition">¶</a></dt>
