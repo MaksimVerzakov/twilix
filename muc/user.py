@@ -1,70 +1,77 @@
+from pydispatch import dispatcher
+
 from twilix.stanzas import Presence
 from twilix.base import VElement
 from twilix import fields
 
 class UserItemInfo(VElement):
     """
-    Class for user info from xml message
+    VElement-inheritor class for user info from xml stanzas.
+    Used in multi-user chat presences and also in administrator's queries.
+
     """
     elementName = 'item'
     elementUri = 'http://jabber.org/protocol/muc#user'
 
-    affiliation = fields.StringAttr('affiliation', required=True)
-    role = fields.StringAttr('role', required=True)
+    affiliation = fields.StringAttr('affiliation', required=False)
+    role = fields.StringAttr('role', required=False)
+    nick = fields.StringAttr('nick', required=False)
+    jid = fields.JidAttr('jid', required=False)
+    
+    reason = fields.StringNode('reason', required=False)
 
 class UserItem(VElement):
     """
-    Class container for user info
-    """
-    elementName = 'x'
-    elementUri = 'http://jabber.org/protocol/muc#user'
-    item = fields.ElementNode(UserItemInfo, required=False)
-
-class User(object):
-    """
-    Class for user's info
+    VElement-inheritor class container for user info class.
     
     Attributes : 
         
-        nick -- nickname of room's occupant
+        item -- UserItemInfo-type user's info class
         
-        role -- role of room's occupant
-        
-        affiliation -- affiliation of room's occupant
-    
     """
-    def __init__(self, nick, role, affiliation):
-        self.nick = nick
-        self.role = role
-        self.affiliation = affiliation
-        
-    def __unicode__(self):
-        return unicode(self.__dict__)
+    elementName = 'x'
+    elementUri = 'http://jabber.org/protocol/muc#user'
     
-    def __repr__(self):
-        return self.__unicode__()
+    item = fields.ElementNode(UserItemInfo, required=False)
 
 class UserPresence(Presence):
-    """Class for multi chat occupant's info"""
+    """
+    Presence-inheritor class for multi user chat occupant's info.
+    Also handles user online/offline presences.
+    
+    Attributes :
+        
+        user -- UserItem-type node for information about user.
+        
+    Methods : 
+        
+        anyHandler -- handles all of this type presences.
+        
+    """   
+        
     user = fields.ElementNode(UserItem, required=False)
     
     def anyHandler(self):
         """
-        Saves list of info about active users in rooms
-        """
-        """
-        user = User(self.from_.resource, 
-                    self.user.item.role,
-                    self.user.item.affiliation)
-        """
+        Changes list of info about users in chat.
+        There is addition in roster for 'available'-type presences and 
+        deletion from roster for 'unavailable'-type.
+        Also sends 'user_available'/'user_unavailbale' signals for dispatcher 
+        (from pydispatch module).
         
+        """
+                
         if self.user is None:
             return
         
         room_jid = self.from_.bare()
+        if room_jid not in self.host.roster:
+            return
         
-                    
+        self.host.roster[room_jid] = filter(lambda el: el.from_.resource != self.from_.resource, self.host.roster[room_jid])
+        
         if self.type_ == 'unavailable':
-            self.host.roster[room_jid] = filter(lambda el: el.from_.resource != self.from_resource, self.host.roster[room_jid])
+            dispatcher.send(self.host.user_unavailable, user=self)
         else:
             self.host.roster[room_jid].append(self)
+            dispatcher.send(self.host.user_available, user=self)
