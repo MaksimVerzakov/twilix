@@ -1,5 +1,6 @@
 """
-Realize elements of XHTML-IM protocol.
+Realize elements of XHTML-IM protocol. Provides the ability to send 
+messages with simple html markup.
 """
 from twilix.base import VElement
 from twilix import fields

@@ -11,7 +11,22 @@ from twilix.htmlim import XHtmlIm
 from twilix import fields
 
 class Stanza(VElement):
-    """Extends VElement class from twilix.base"""
+    """
+    Extends VElement class from twilix.base.
+    Contains fields corresponding to the protocol.
+    
+    Attributes:
+        to -- jid attribue 'to'
+        
+        from\_  -- jid attribue 'from'
+        
+        type  -- string attribue 'type'
+        
+        id  -- string attribue 'id'
+        
+        lang  -- string attribue 'xml:lang'
+        
+    """
     elementUri = (
                   'jabber:client',
                   'jabber:server',
@@ -35,11 +50,11 @@ class Stanza(VElement):
         self.error_class = kwargs.get('error_class', ErrorStanza)
 
     def __unicode__(self):
-        """Overrrides unicode converter"""
+        """Overrrides unicode converter."""
         return self.toXml()
 
     def __repr__(self):
-        """Makes avaliable to show stanza in xml format"""
+        """Makes avaliable to show stanza in xml format."""
         return self.toXml()
 
     def makeError(self, content):
@@ -67,7 +82,14 @@ class Stanza(VElement):
         return cls(to=self.from_, from_=self.to, type_=self.type_, id=self.id)
 
 class ErrorStanza(Stanza):
-    """Stanza-inheritor class for any errors"""
+    """
+    Stanza-inheritor class for any errors.
+    Contains fields corresponding to the protocol.
+    
+    Attributes:
+        error -- element node with Error element.
+        
+    """
     error = fields.ElementNode(Error)
 
 class Iq(Stanza):
@@ -83,7 +105,7 @@ class Iq(Stanza):
         """
         Constructor controls for valid value of id,
         calls superclass-constructor and sets deferred 
-        attribute for set/get -type queries
+        attribute for set/get - type queries
         
         """
         if 'id' not in kwargs:
@@ -97,6 +119,7 @@ class Iq(Stanza):
     def clean_type_(self, value):
         """
         Filters stanzas by type. 
+        Used for validation of type\_ field.
         Raises exception for invalid stanzas.
         
         :raises: ElementParseError
@@ -107,7 +130,10 @@ class Iq(Stanza):
         return value
 
     def clean_id(self, value):
-        """Set correct value for invalid id"""
+        """
+        Set correct value for invalid id.
+        Used for validation of id.    
+        """
         if value is None:
             self.addUniqueId()
             return self.id
@@ -119,7 +145,7 @@ class Iq(Stanza):
                   uri=self.uri)
 
 class MyValidator(object):
-    """Class for filter stanzas by 'to' value"""
+    """Class for filter stanzas by 'to' value."""
     def clean_to(self, v):
         """
         Method raises exception if receiver jid is not host jid.
@@ -132,12 +158,24 @@ class MyValidator(object):
         return v
 
 class MyIq(Iq, MyValidator):
-    """Class-inheritor from Iq and MyValidator"""
+    """Class-inheritor from Iq and MyValidator."""
     pass
 
 class Message(Stanza):
     """
-    Stanza-inheritor class that implements a message transfer with other entities.
+    Stanza-inheritor class that implements a message transfer with
+    other entities.
+    Contains fields corresponding to the protocol.
+    
+    Attributes:
+        body -- string node 'body'
+        
+        subject  -- string node 'subject'
+        
+        thread  -- string attribue 'thread'
+        
+        html  -- element node with XHtmlIm element
+        
     """
     elementName = 'message'
 
@@ -149,8 +187,7 @@ class Message(Stanza):
     def clean_type_(self, value):
         """
         Filters stanzas by type. 
-        Sets some correct type for invalid stanzas
-        
+        Sets some correct type for invalid stanzas.        
         """
         if not value in ('normal', 'chat', 'groupchat', 'headline', 'error'):
             return 'normal'
@@ -159,6 +196,15 @@ class Message(Stanza):
 class Presence(Stanza):
     """
     Stanza-inheritor class that implements an entity's presence info.
+    Contains fields corresponding to the protocol.
+    
+    Attributes:
+        show -- string node 'show'
+        
+        status  -- string node 'status'
+        
+        priority  -- integer attribue 'priority'
+                
     """
     elementName = 'presence'
 
@@ -169,7 +215,7 @@ class Presence(Stanza):
     def clean_type_(self, value):
         """
         Filters stanzas by type. 
-        Sets None type for invalid stanzas
+        Sets None type for invalid stanzas.
         
         """
         if not value in ('subscribe', 'subscribed', 'unsubscribe',
@@ -181,7 +227,8 @@ class Presence(Stanza):
     @property
     def type_(self):
         """
-        Sets 'available' type for stanzas with None type
+        Return type of presence when it's requested. 
+        If type is None return 'available'.
         """
         v = self.__getattr__('type_')
         if not v:
@@ -192,6 +239,11 @@ class Query(VElement):
     """
     VElement-inheritor class. Base for other query-type classes. 
     There is a query part of query-answer mechanism.
+    Contains fields corresponding to the protocol.
+    
+    Attributes:
+        node -- string attribute 'node'
+        
     """
     elementName = 'query'
     parentClass = Iq
@@ -207,12 +259,16 @@ class Query(VElement):
     def createFromElement(cls, el, host=None, dont_defer=False):
         """
         Creates new Query element from some element or 
-         raises an exception if created failed
+        raises an exception if created failed
         
         :param el: is a source for creating
+        
         :param host: host for new element (default None)
+        
         :param dont_defer: boolean flag for deferred elements
+        
         :raises: WrongElement
+        
         :returns: new element creating from source
         
         """
@@ -232,7 +288,7 @@ class Query(VElement):
 
     @property
     def iq(self):
-        """Sets valid value for _iq"""
+        """Return valid iq when it's requested."""
         if self._iq is None:
             self._iq = self.topElement()
         return self._iq

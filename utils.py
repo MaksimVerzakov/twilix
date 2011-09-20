@@ -1,43 +1,29 @@
-errorCodeMap = {                                         #XXX: replace codemap?
-    "bad-request": 400,
-    "conflict": 409,
-    "feature-not-implemented": 501,
-    "forbidden": 403,
-    "gone": 302,
-    "internal-server-error": 500,
-    "item-not-found": 404,
-    "jid-malformed": 400,
-    "not-acceptable": 406,
-    "not-allowed": 405,
-    "not-authorized": 401,
-    "payment-required": 402,
-    "recipient-unavailable": 404,
-    "redirect": 302,
-    "registration-required": 407,
-    "remote-server-not-found": 404,
-    "remote-server-timeout": 504,
-    "resource-constraint": 500,
-    "service-unavailable": 503,
-    "subscription-required": 407,
-    "undefined-condition": 500,
-    "unexpected-request": 400
-}
-
+"""
+Contains special functions to 
+"""
 import datetime
 import re
 
 class TzInfo(datetime.tzinfo):
+    """
+    Overrides datetime.tzinfo class.
+    Contains info about time zone offset.
+    """
     def __init__(self, minutes=0):
+        """Set time zone offset in minutes."""
         self.__minutes = minutes
         self.__name = str(self.__minutes / 60.)
     
     def utcoffset(self, dt):
+        """Return the offset set at initialization."""
         return datetime.timedelta(minutes=self.__minutes)
 
     def tzname(self, dt):
+        """Return name."""
         return self.__name
 
     def dst(self, dt):
+        """Return zero time zone offset."""
         return datetime.timedelta(0)
 
 def parse_timestamp(s):

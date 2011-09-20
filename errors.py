@@ -29,11 +29,37 @@ conditions = {
     'unexpected-request': 'wait',
 }
 
+errorCodeMap = {                                         
+    "bad-request": 400,
+    "conflict": 409,
+    "feature-not-implemented": 501,
+    "forbidden": 403,
+    "gone": 302,
+    "internal-server-error": 500,
+    "item-not-found": 404,
+    "jid-malformed": 400,
+    "not-acceptable": 406,
+    "not-allowed": 405,
+    "not-authorized": 401,
+    "payment-required": 402,
+    "recipient-unavailable": 404,
+    "redirect": 302,
+    "registration-required": 407,
+    "remote-server-not-found": 404,
+    "remote-server-timeout": 504,
+    "resource-constraint": 500,
+    "service-unavailable": 503,
+    "subscription-required": 407,
+    "undefined-condition": 500,
+    "unexpected-request": 400
+}
+
 module = sys.modules[__name__]
 def condition_to_name(condition):
     """
     Bring condition to CapWords style.
     Used to define standart exception from rfc 3920.
+    
     :returns: condition in CapWords style.
     """
     words = condition.split('-')
@@ -116,8 +142,15 @@ class Condition(VElement):
 class Error(VElement):
     """
     Extends VElement from twilix.base.
-    Contains string attribute type, condition node and text node as
-    described in rfc 3920. 
+    Contains fields corresponding to the rfc 3920. 
+    
+    Attributes:
+        type\_ -- string attribute 'type'
+        
+        condition -- condition node with Condition
+        
+        text -- string node 'text'
+        
     """
     elementName = 'error'
 
@@ -129,8 +162,12 @@ class Error(VElement):
     def clean_type_(self, value):
         """
         Cut off errors with wrong type.
+        Used for valdaion.
+        
         :returns: value if it has correct type.
+        
         :raises: ElementParseError if value has a wrong type.
+        
         """
         if value not in ('cancel', 'continue', 'modify', 'auth', 'wait'):
             raise ElementParseError, 'Wrong Error Type %s' % value
@@ -139,8 +176,10 @@ class Error(VElement):
 class AppError(Error):
     """
     Extends class Error.
-    Contains String Node for special application condition as described 
-    in rfc 3920.    
+    Contains field corresponding to the rfc 3920.
+    
+    Attributes:
+        app_text -- string node 'text'
     """
     app_text = fields.StringNode('text', required=False,
                                  uri='application-ns')

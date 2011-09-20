@@ -1,14 +1,21 @@
-"""
-Module implements jabber:iq:version feature
-"""
+"""Module implements jabber:iq:version feature."""
 
 from twilix.stanzas import Query, MyIq, Iq
 from twilix.disco import Feature
-from twilix import fields
+from twilix import fields, errors
 
 class VersionQuery(Query):
     """
-    Base class for version queries
+    Extends Query class.
+    Base class for version queries. 
+    
+    Attributes:
+        client_name -- string node 'name'
+        
+        client_version -- string node 'version'
+        
+        client_os -- string node 'os'
+        
     """
     elementUri = 'jabber:iq:version'
     
@@ -18,7 +25,8 @@ class VersionQuery(Query):
 
 class MyVersionQuery(VersionQuery):
     """
-    Class handler for set/get version queries
+    Extends VersionQuery class.
+    Define set/get handlers for version queries.
     """
     parentClass = MyIq
 
@@ -39,25 +47,30 @@ class MyVersionQuery(VersionQuery):
         """
         Calls from dispatcher when there is set version query.
         
-        There is incorrect query. Method returns error stanza.
+        There is incorrect query. Method raises an exception.
+        
+        :raises:
+            BadRequestException
+            
         """
-        return self.iq.makeError('cancel', 'bad-request')
+        #return self.iq.makeError('cancel', 'bad-request')
+        raise errors.BadRequestException()
 
 class ClientVersion(object):
     """
-    Class for linking with host, dispatcher and query-handlers objects
+    Class for linking with host, dispatcher and query-handlers objects.
     """
     
     def __init__(self, dispatcher, client_name=None, client_version=None,
                  client_os=None):
-        """Sets version info and dispatcher value"""
+        """Sets version info and dispatcher value."""
         self.dispatcher = dispatcher
         self.client_name = client_name
         self.client_version = client_version
         self.client_os = client_os
 
     def init(self, disco=None, handlers=None):
-        """Registers handlers and adds version feature in disco"""
+        """Registers handlers and adds version feature in disco."""
         self.dispatcher.registerHandler((MyVersionQuery, self))
         if handlers is None:
             handlers = ()
@@ -69,10 +82,12 @@ class ClientVersion(object):
 
     def getVersion(self, jid, from_=None):
         """
-        Makes get version query to some JID
+        Makes get version query to some JID.
         
         :param jid: reciever for get version query
+        
         :param addres: sender for get version query
+        
         :returns: 
             deferred object which waits for result stanza with version 
             info (or error stanza) from query's target

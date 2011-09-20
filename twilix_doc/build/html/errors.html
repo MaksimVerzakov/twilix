@@ -1,0 +1,222 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Twilix.Errors Documentation &mdash; twilix v1.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="twilix v1.1 documentation" href="index.html" />
+    <link rel="next" title="Twilix.Fields Documentation" href="fields.html" />
+    <link rel="prev" title="Twilix.Dispatcher Documentation" href="dispatcher.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="fields.html" title="Twilix.Fields Documentation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="dispatcher.html" title="Twilix.Dispatcher Documentation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">twilix v1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-twilix.errors">
+<span id="twilix-errors-documentation"></span><h1>Twilix.Errors Documentation<a class="headerlink" href="#module-twilix.errors" title="Permalink to this headline">¶</a></h1>
+<p>Describe all expected classes of errors.</p>
+<dl class="class">
+<dt id="twilix.errors.AppError">
+<em class="property">class </em><tt class="descclassname">twilix.errors.</tt><tt class="descname">AppError</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.errors.AppError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extends class Error.
+Contains field corresponding to the rfc 3920.</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd>app_text &#8211; string node &#8216;text&#8217;</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="twilix.errors.Condition">
+<em class="property">class </em><tt class="descclassname">twilix.errors.</tt><tt class="descname">Condition</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.errors.Condition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extends VElement from twilix.base.
+Contains condition value.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="twilix.errors.ConditionNode">
+<em class="property">class </em><tt class="descclassname">twilix.errors.</tt><tt class="descname">ConditionNode</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.errors.ConditionNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extends ElementNode from twilix.fields.
+Contains Condition element.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="twilix.errors.Error">
+<em class="property">class </em><tt class="descclassname">twilix.errors.</tt><tt class="descname">Error</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.errors.Error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extends VElement from twilix.base.
+Contains fields corresponding to the rfc 3920.</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd><p class="first">type_ &#8211; string attribute &#8216;type&#8217;</p>
+<p>condition &#8211; condition node with Condition</p>
+<p class="last">text &#8211; string node &#8216;text&#8217;</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="twilix.errors.Error.clean_type_">
+<tt class="descname">clean_type_</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#twilix.errors.Error.clean_type_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cut off errors with wrong type.
+Used for valdaion.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">value if it has correct type.</td>
+</tr>
+<tr class="field"><th class="field-name">Raises :</th><td class="field-body">ElementParseError if value has a wrong type.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="twilix.errors.ExceptionWithAppCondition">
+<em class="property">exception </em><tt class="descclassname">twilix.errors.</tt><tt class="descname">ExceptionWithAppCondition</tt><big>(</big><em>app_condition</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.errors.ExceptionWithAppCondition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extends class ExceptionWithType.
+Used to describe undefined exception with special application 
+description of error.
+Contains content field - Application Error element.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="twilix.errors.ExceptionWithContent">
+<em class="property">exception </em><tt class="descclassname">twilix.errors.</tt><tt class="descname">ExceptionWithContent</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.errors.ExceptionWithContent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extends class ExceptionWithType. 
+Contains content field - Error element.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="twilix.errors.ExceptionWithType">
+<em class="property">exception </em><tt class="descclassname">twilix.errors.</tt><tt class="descname">ExceptionWithType</tt><big>(</big><em>type=None</em>, <em>reason=None</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.errors.ExceptionWithType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extends class Exception. Define type and reason fields.
+Base class for special exceptions.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="twilix.errors.UndefinedConditionException">
+<em class="property">exception </em><tt class="descclassname">twilix.errors.</tt><tt class="descname">UndefinedConditionException</tt><big>(</big><em>app_condition</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.errors.UndefinedConditionException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Describe undefined condition.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="twilix.errors.condition_to_name">
+<tt class="descclassname">twilix.errors.</tt><tt class="descname">condition_to_name</tt><big>(</big><em>condition</em><big>)</big><a class="headerlink" href="#twilix.errors.condition_to_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bring condition to CapWords style.
+Used to define standart exception from rfc 3920.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">condition in CapWords style.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="twilix.errors.exception_by_condition">
+<tt class="descclassname">twilix.errors.</tt><tt class="descname">exception_by_condition</tt><big>(</big><em>condition</em><big>)</big><a class="headerlink" href="#twilix.errors.exception_by_condition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return exception appropriate to condition.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="dispatcher.html"
+                        title="previous chapter">Twilix.Dispatcher Documentation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="fields.html"
+                        title="next chapter">Twilix.Fields Documentation</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/errors.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="fields.html" title="Twilix.Fields Documentation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="dispatcher.html" title="Twilix.Dispatcher Documentation"
+             >previous</a> |</li>
+        <li><a href="index.html">twilix v1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, JRuDevels.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>
