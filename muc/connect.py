@@ -3,7 +3,7 @@ from twilix.base import VElement
 
 class ConnectPresence(VElement):
     """
-    Class for connection to multi chat room.
+    VElement-inheritor class for connection to multi-user chat.
     """
     parentClass = Presence
     elementName ='x'

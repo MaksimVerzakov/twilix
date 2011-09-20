@@ -2,7 +2,7 @@ from twilix.stanzas import Message
 
 class Delay(Message):
     """
-    Class for chat history in multi chat room.
+    Message-inheritor class for chat history messages in multi-user chat.
     """
     elementName = 'delay'
     elementUri = 'urn:xmpp:delay'
