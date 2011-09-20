@@ -7,7 +7,7 @@ class xmlEmul(object):
     def addObserver(self, name, dispatcher):
         pass
         
-
+        
 class TestDispatcher(unittest.TestCase):
     
     def setUp(self):
@@ -26,7 +26,10 @@ class TestDispatcher(unittest.TestCase):
         res = self.dispatcher.unregisterHandler('handler')
         self.assertEqual(res, None)
     
+    def test_send(self):
+        pass
+    
     def test_dispatch(self):
-        
+        pass
         
         

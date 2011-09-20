@@ -21,7 +21,7 @@ class RosterItem(VElement):
         
         nick -- string attribute 'name'
         
-        group -- string attribute 'group'
+        groups -- string attribute 'group'
     
     """
     elementName = 'item'

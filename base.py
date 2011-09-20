@@ -207,6 +207,7 @@ class MyElement(Element):
         :raises: ElementParseError
         
         """
+        #import pdb; pdb.set_trace()
         if not setter:
             value = attr.clean(value)
         if setter and hasattr(attr, 'clean_set'):

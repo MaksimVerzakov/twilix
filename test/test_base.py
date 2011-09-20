@@ -1,9 +1,6 @@
 import unittest
-from twilix.base import MyElement, VElement
 
-class xmlEmul(object):
-    def send(data):
-        
+from twilix.base import MyElement, VElement
 
 class TestBase(unittest.TestCase):
     
