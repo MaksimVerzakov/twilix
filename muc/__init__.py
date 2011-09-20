@@ -92,7 +92,7 @@ class MultiChat(object):
         :param jid: JID of user
         :param affiliation: value of new user's affiliation
         :param reason: string-type argument with reason of affiliation changing
-        (default None)
+                       (default None)
         
         """
         iq = Iq(type_='set', to=room_jid, from_=self.dispatcher.myjid)
@@ -105,10 +105,13 @@ class MultiChat(object):
         Uses mostly of chat administrators.
         
         :param room_jid: JID of room-conference
+
         :param nick: string-type user's nickname
+
         :param role: value of new user's role
+
         :param reason: string-type argument with reason of role changing
-        (default None)
+                      (default None)
         
         """
         iq = Iq(type_='set', to=room_jid, from_=self.dispatcher.myjid)
@@ -122,10 +125,11 @@ class MultiChat(object):
         Uses mostly of chat administrators.
         
         :param room_jid: JID of room-conference
-        :param role: value of role for users will be filtered
-        (default None)
+
+        :param role: value of role for users will be filtered (default None)
+
         :param affiliation: value of affiliation for users will be filtered
-        (default None)
+                            (default None)
         
         """
         iq = Iq(type_='get', to=room_jid, from_=self.dispatcher.myjid)

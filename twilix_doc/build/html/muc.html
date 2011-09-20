@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Twilix.MUC &mdash; twilix v1.1 documentation</title>
+    <title>Twilix.MUC &mdash; twilix v0.9 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '1.1',
+        VERSION:     '0.9',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,8 +22,8 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="twilix v1.1 documentation" href="index.html" />
-    <link rel="next" title="Twilix.Pubsub" href="pubsub.html" />
+    <link rel="top" title="twilix v0.9 documentation" href="index.html" />
+    <link rel="next" title="Twilix.Register Documentation" href="register.html" />
     <link rel="prev" title="Twilix.JID Documentation" href="jid.html" /> 
   </head>
   <body>
@@ -37,12 +37,12 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pubsub.html" title="Twilix.Pubsub"
+          <a href="register.html" title="Twilix.Register Documentation"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="jid.html" title="Twilix.JID Documentation"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">twilix v1.1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">twilix v0.9 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -56,11 +56,12 @@
 <dl class="class">
 <dt id="twilix.muc.MultiChat">
 <em class="property">class </em><tt class="descclassname">twilix.muc.</tt><tt class="descname">MultiChat</tt><big>(</big><em>dispatcher</em><big>)</big><a class="headerlink" href="#twilix.muc.MultiChat" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class implements multi chat user extension</p>
+<dd><p>Class implements multi chat user extension.</p>
 <dl class="method">
 <dt id="twilix.muc.MultiChat.enter_room">
-<tt class="descname">enter_room</tt><big>(</big><em>presence</em>, <em>room_jid='vis&#64;conference.jabber.ru'</em>, <em>nickname='testa'</em><big>)</big><a class="headerlink" href="#twilix.muc.MultiChat.enter_room" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sends presence which allows client to enter the room</p>
+<tt class="descname">enter_room</tt><big>(</big><em>presence</em>, <em>room_jid</em>, <em>nickname</em><big>)</big><a class="headerlink" href="#twilix.muc.MultiChat.enter_room" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends &#8216;available&#8217;-type presence which allows client to enter the room.
+Fails if user already in room.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -77,9 +78,38 @@
 </dd></dl>
 
 <dl class="method">
+<dt id="twilix.muc.MultiChat.get_list">
+<tt class="descname">get_list</tt><big>(</big><em>room_jid</em>, <em>affiliation=None</em>, <em>role=None</em><big>)</big><a class="headerlink" href="#twilix.muc.MultiChat.get_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends query for receiving list of all users with fixed
+value of role or affiliation in room.
+Uses mostly of chat administrators.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>room_jid</strong> &#8211; JID of room-conference</li>
+<li><strong>role</strong> &#8211; value of role for users will be filtered (default None)</li>
+<li><strong>affiliation</strong> &#8211; value of affiliation for users will be filtered
+(default None)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.muc.MultiChat.init">
+<tt class="descname">init</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.muc.MultiChat.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes some initialization actions</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="twilix.muc.MultiChat.leave_room">
-<tt class="descname">leave_room</tt><big>(</big><em>room_jid='vis&#64;conference.jabber.ru'</em>, <em>nickname='testa'</em><big>)</big><a class="headerlink" href="#twilix.muc.MultiChat.leave_room" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sends presence which leaves client from the room</p>
+<tt class="descname">leave_room</tt><big>(</big><em>presence</em>, <em>room_jid</em>, <em>nickname</em><big>)</big><a class="headerlink" href="#twilix.muc.MultiChat.leave_room" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends &#8216;unavailable&#8217;-type presence which leaves client from the room.
+Fails if user not in room.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -94,6 +124,50 @@
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="twilix.muc.MultiChat.set_affiliation">
+<tt class="descname">set_affiliation</tt><big>(</big><em>room_jid</em>, <em>jid</em>, <em>affiliation</em>, <em>reason=None</em><big>)</big><a class="headerlink" href="#twilix.muc.MultiChat.set_affiliation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends query for changing user&#8217;s affiliation to room jid.
+Uses mostly of chat administrators.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>room_jid</strong> &#8211; JID of room-conference</li>
+<li><strong>jid</strong> &#8211; JID of user</li>
+<li><strong>affiliation</strong> &#8211; value of new user&#8217;s affiliation</li>
+<li><strong>reason</strong> &#8211; string-type argument with reason of affiliation changing
+(default None)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="twilix.muc.MultiChat.set_role">
+<tt class="descname">set_role</tt><big>(</big><em>room_jid</em>, <em>nick</em>, <em>role</em>, <em>reason=None</em><big>)</big><a class="headerlink" href="#twilix.muc.MultiChat.set_role" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends query for changing user&#8217;s role in chat to room jid.
+Uses mostly of chat administrators.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>room_jid</strong> &#8211; JID of room-conference</li>
+<li><strong>nick</strong> &#8211; string-type user&#8217;s nickname</li>
+<li><strong>role</strong> &#8211; value of new user&#8217;s role</li>
+<li><strong>reason</strong> &#8211; string-type argument with reason of role changing
+(default None)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 <div class="section" id="module-twilix.muc.connect">
@@ -101,7 +175,7 @@
 <dl class="class">
 <dt id="twilix.muc.connect.ConnectPresence">
 <em class="property">class </em><tt class="descclassname">twilix.muc.connect.</tt><tt class="descname">ConnectPresence</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.muc.connect.ConnectPresence" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class for connection to multi chat room.</p>
+<dd><p>VElement-inheritor class for connection to multi-user chat.</p>
 <dl class="attribute">
 <dt id="twilix.muc.connect.ConnectPresence.parentClass">
 <tt class="descname">parentClass</tt><a class="headerlink" href="#twilix.muc.connect.ConnectPresence.parentClass" title="Permalink to this definition">¶</a></dt>
@@ -116,44 +190,47 @@
 <dl class="class">
 <dt id="twilix.muc.delay.Delay">
 <em class="property">class </em><tt class="descclassname">twilix.muc.delay.</tt><tt class="descname">Delay</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.muc.delay.Delay" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class for chat history in multi chat room.</p>
+<dd><p>Message-inheritor class for chat history messages in multi-user chat.</p>
 </dd></dl>
 
 </div>
 <div class="section" id="module-twilix.muc.user">
 <span id="twilix-muc-user"></span><h2>Twilix.MUC.User<a class="headerlink" href="#module-twilix.muc.user" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="twilix.muc.user.User">
-<em class="property">class </em><tt class="descclassname">twilix.muc.user.</tt><tt class="descname">User</tt><big>(</big><em>nick</em>, <em>role</em>, <em>affiliation</em><big>)</big><a class="headerlink" href="#twilix.muc.user.User" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class for user&#8217;s info</p>
-<p>Attributes :</p>
-<blockquote>
-<div><p>nick &#8211; nickname of room&#8217;s occupant</p>
-<p>role &#8211; role of room&#8217;s occupant</p>
-<p>affiliation &#8211; affiliation of room&#8217;s occupant</p>
-</div></blockquote>
-</dd></dl>
-
-<dl class="class">
 <dt id="twilix.muc.user.UserItem">
 <em class="property">class </em><tt class="descclassname">twilix.muc.user.</tt><tt class="descname">UserItem</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.muc.user.UserItem" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class container for user info</p>
+<dd><p>VElement-inheritor class container for user info class.</p>
+<p>Attributes :</p>
+<blockquote>
+<div>item &#8211; UserItemInfo-type user&#8217;s info class</div></blockquote>
 </dd></dl>
 
 <dl class="class">
 <dt id="twilix.muc.user.UserItemInfo">
 <em class="property">class </em><tt class="descclassname">twilix.muc.user.</tt><tt class="descname">UserItemInfo</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.muc.user.UserItemInfo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class for user info from xml message</p>
+<dd><p>VElement-inheritor class for user info from xml stanzas.
+Used in multi-user chat presences and also in administrator&#8217;s queries.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="twilix.muc.user.UserPresence">
 <em class="property">class </em><tt class="descclassname">twilix.muc.user.</tt><tt class="descname">UserPresence</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.muc.user.UserPresence" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class for multi chat occupant&#8217;s info</p>
+<dd><p>Presence-inheritor class for multi user chat occupant&#8217;s info.
+Also handles user online/offline presences.</p>
+<p>Attributes :</p>
+<blockquote>
+<div>user &#8211; UserItem-type node for information about user.</div></blockquote>
+<p>Methods :</p>
+<blockquote>
+<div>anyHandler &#8211; handles all of this type presences.</div></blockquote>
 <dl class="method">
 <dt id="twilix.muc.user.UserPresence.anyHandler">
 <tt class="descname">anyHandler</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.muc.user.UserPresence.anyHandler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Saves list of info about active users in rooms</p>
+<dd><p>Changes list of info about users in chat.
+There is addition in roster for &#8216;available&#8217;-type presences and 
+deletion from roster for &#8216;unavailable&#8217;-type.
+Also sends &#8216;user_available&#8217;/&#8217;user_unavailbale&#8217; signals for dispatcher 
+(from pydispatch module).</p>
 </dd></dl>
 
 </dd></dl>
@@ -181,8 +258,8 @@
   <p class="topless"><a href="jid.html"
                         title="previous chapter">Twilix.JID Documentation</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="pubsub.html"
-                        title="next chapter">Twilix.Pubsub</a></p>
+  <p class="topless"><a href="register.html"
+                        title="next chapter">Twilix.Register Documentation</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/muc.txt"
@@ -215,12 +292,12 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pubsub.html" title="Twilix.Pubsub"
+          <a href="register.html" title="Twilix.Register Documentation"
              >next</a> |</li>
         <li class="right" >
           <a href="jid.html" title="Twilix.JID Documentation"
              >previous</a> |</li>
-        <li><a href="index.html">twilix v1.1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">twilix v0.9 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
