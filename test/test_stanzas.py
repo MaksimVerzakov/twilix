@@ -9,14 +9,14 @@ class TestStanza(unittest.TestCase):
         pass
     
     def testMakeError(self):
+        #stanza = stanzas.Stanza(to='to', from_='from', id='id')
+        #stanza.elementName = 'stanza'
+        #res = stanza.makeError('error')
+        #a = [res.to, res.from_, res.el_name, res.id, res.error]
+        #b = [stanza.from_, stanza.to, stanza.elementName,
+        #     stanza.id, 'error']
+        #self.assertEqual(a, b)
         pass
-     #   stanza = stanzas.Stanza(to='to', from_='from', id='id')
-     #   stanza.elementName = 'stanza'
-     #   res = stanza.makeError('error')
-     #   a = [res.to, res.from_, res.el_name, res.id, res.error]
-     #   b = [stanza.from_, stanza.to, stanza.elementName,
-     #        stanza.id, 'error']
-     #   self.assertEqual(a, b)
 
 class TestIq(unittest.TestCase):
     
@@ -68,4 +68,14 @@ class TestPresence(unittest.TestCase):
                   'probe', 'error')
         for value in values:
             self.assertEqual(prs.clean_type_(value), value)
+    
+    def test_type_(self):
+        values = ('subscribe', 'subscribed', 'unsubscribe',
+                  'unsubscribed', 'available', 'unavailable',
+                  'probe', 'error')
+        for value in values:
+            prs = stanzas.Presence(to='jid', from_='some_jid', type_=value)
+            self.assertEqual(prs.type_, value)
+        prs = stanzas.Presence(to='jid', from_='some_jid')
+        self.assertEqual(prs.type_, 'available')
 

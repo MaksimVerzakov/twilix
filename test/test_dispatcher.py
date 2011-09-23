@@ -26,6 +26,26 @@ class TestDispatcher(unittest.TestCase):
         res = self.dispatcher.unregisterHandler('handler')
         self.assertEqual(res, None)
     
+    def test_registerHook(self):
+        res = self.dispatcher.registerHook('hook_name', 'hook')
+        self.assertEqual(res, True)
+        res = self.dispatcher.registerHook('hook_name', 'hook')
+        self.assertEqual(res, None)
+    
+    def test_unregisterHook(self):
+        res = self.dispatcher.registerHook('hook_name', 'hook')
+        res = self.dispatcher.unregisterHook('hook_name', 'hook')
+        self.assertEqual(res, True)
+        res = self.dispatcher.unregisterHook('hook_name', 'hook')
+        self.assertEqual(res, None)
+    
+    def test_getHooks(self):
+        self.dispatcher.registerHook('hook_name', 'hook1')
+        self.dispatcher.registerHook('hook_name', 'hook2')
+        self.dispatcher.registerHook('hook_name', 'hook3')
+        l = ['hook1', 'hook2', 'hook3']
+        self.assertEqual(self.dispatcher.getHooks('hook_name'), l)
+        
     def test_send(self):
         pass
     

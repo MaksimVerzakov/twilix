@@ -2,7 +2,7 @@
 import string
 import sys
 
-from twilix.base import VElement, MyElement
+from twilix.base import VElement, MyElement, ElementParseError
 from twilix import fields
 
 conditions = {
@@ -66,7 +66,7 @@ def condition_to_name(condition):
     words = map(string.capitalize, words)
     return ''.join(words)
 
-def exception_by_condition(condition): 
+def exception_by_condition(condition): #XXX: unused
     """Return exception appropriate to condition."""
     exc = getattr(module, '%sException' % condition_to_name(condition.name))
     return exc(condition.content, conditions[condition.name])
