@@ -9,7 +9,8 @@ class TestParser(unittest.TestCase):
         result = (s.year, s.month, s.day, s.hour, s.minute, s.second)
         self.assertEqual(result, info)
         self.assertEqual(utils.parse_timestamp("sss"), None)
-        info = (2003, 11, 12, 12, 12, 12100)
-        s = utils.parse_timestamp("%s-%s-%sT%s:%s:%s" % info)
-        result = (s.year, s.month, s.day, s.hour, s.minute, s.second, s.microsecond)
+        info = ('2003', '11', '12', '12', '12', '12', '100000', '02', '30')
+        s = utils.parse_timestamp("%s-%s-%sT%s:%s:%s.%s-%s:%s" % info)
+        info = [t for t in info[:-2]] 
+        result = [str(t) for t in s.timetuple()[:-3]] + [str(s.microsecond)]
         self.assertEqual(result, info)

@@ -43,9 +43,9 @@ class RosterItem(VElement):
         return bool(self.presences)
 
     @property
-    def nick(self):
+    def nick(self):  
         """Property for nickname attribute"""
-        return self._nick
+        return self._nick    #XXX: unused??
 
     def addGroup(self, group_name):
         """
@@ -60,7 +60,7 @@ class RosterItem(VElement):
         
         """
         if not group_name in self._groups:
-            self.groups = list(self._groups) + [group_name]
+            self.groups = list(self._groups) + [group_name] #XXX: self.groups?
             return True
 
     def removeGroup(self, group_name):
@@ -78,7 +78,7 @@ class RosterItem(VElement):
         if group_name in self._groups:
             _groups = list(self._groups)
             _groups.remove(group_name)
-            self.groups = _groups
+            self.groups = _groups #XXX: self.groups?
             return True
 
     def __unicode__(self):
