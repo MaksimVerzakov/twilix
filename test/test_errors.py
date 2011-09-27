@@ -36,3 +36,15 @@ class TestError(unittest.TestCase):
         values = ('cancel', 'continue', 'modify', 'auth', 'wait')
         for value in values:
             self.assertEqual(error.clean_type_(value), value)
+
+class ErrCondition(object):
+    
+    def __init__(self, name, content):
+        self.name = name
+        self.content = content
+
+class TestExceptionByCondition(unittest.TestCase):
+    
+    def test_exception_by_condition(self):
+        err = errors.exception_by_condition(ErrCondition('forbidden', 'content'))
+        self.assertTrue(isinstance(err, errors.ForbiddenException))

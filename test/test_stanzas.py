@@ -1,53 +1,71 @@
 import unittest
 
+from twisted.words.protocols.jabber.jid import JID
+
 from twilix import stanzas, base
 from twilix.test import dispatcherEmul, hostEmul
 
 class TestStanza(unittest.TestCase):
     
     def setUp(self):
-        pass
+        self.from_=JID('from')
+        self.to=JID('to')
+        self.stanza = stanzas.Stanza(to=self.to, from_=self.from_)
     
     def testMakeError(self):
-        #stanza = stanzas.Stanza(to='to', from_='from', id='id')
-        #stanza.elementName = 'stanza'
-        #res = stanza.makeError('error')
-        #a = [res.to, res.from_, res.el_name, res.id, res.error]
-        #b = [stanza.from_, stanza.to, stanza.elementName,
-        #     stanza.id, 'error']
-        #self.assertEqual(a, b)
-        pass
+        res = self.stanza.makeError('error')
+        self.assertEqual(res.type_, 'error')
+        self.assertEqual(res.to, self.from_)
+        self.assertEqual(res.from_, self.to)
+        self.assertTrue(isinstance(res, stanzas.ErrorStanza))
+    
+    def test_unicode(self):
+        res = unicode(self.stanza)
+        self.assertEqual(res, u"<None to='to' from='from'/>")
+        
+    def test_repr(self):
+        res = repr(self.stanza)
+        self.assertEqual(res, u"<None to='to' from='from'/>")
+    
+    def test_get_reply(self):
+        res = self.stanza.get_reply()
+        self.assertEqual(res.to, self.from_)
+        self.assertEqual(res.from_, self.to)
+        self.assertTrue(isinstance(res, stanzas.Stanza))
+        
 
 class TestIq(unittest.TestCase):
     
+    def setUp(self):
+        self.to = JID('to')
+        self.from_ = JID('from')
+        self.iq = stanzas.Iq(type_='get', to=self.to, from_=self.from_)
+    
     def test_clean_type_(self):
-        iq = stanzas.Iq(type_='get', to='jid', from_='some_jid')
-        self.assertRaises(base.ElementParseError, iq.clean_type_, 'something')
+        self.assertRaises(base.ElementParseError, self.iq.clean_type_, 'something')
         values = ['set', 'get', 'result', 'error']
         for value in values:
-            self.assertEqual(iq.clean_type_(value), value)
+            self.assertEqual(self.iq.clean_type_(value), value)
     
     def test_clean_id(self):
-        pass
-        #iq = stanzas.Iq(type_='get', to='jid', from_='some_jid')
-        #value = 'id'
-        #self.assertEqual(iq.clean_id(value), value)
-        #self.assertEqual(iq.clean_id(None), 'H_1')
+        value = 'id'
+        self.assertEqual(self.iq.clean_id(value), value)
+        self.assertEqual(self.iq.clean_id(None), 'H_1')
     
     def test_makeResult(self):
-        pass
-        #self.Iq = stanzas.Iq(type_='get', to='jid', from_='some_jid')
-        #res = self.Iq.makeResult()
-        #iq = Iq(to=self.iq.from_, from_=self.iq.to, id=self.iq.id,
-        #        type_='result', uri=self.iq.uri)
-        #self.assertEqual(res, iq)
+        res = self.iq.makeResult()
+        self.assertEqual(res.type_, 'result')
+        self.assertEqual(res.from_, self.to)
+        self.assertEqual(res.to, self.from_)
+        self.assertTrue(isinstance(res, stanzas.Iq))
+        
         
 class TestMyValidator(unittest.TestCase):
     def test_clean_to(self):
         Validator = stanzas.MyValidator()
         disp = dispatcherEmul('myjid')
         Validator.host = hostEmul(dispatcher=disp)
-        self.assertEqual(Validator.clean_to('myjid'), disp.myjid)
+        self.assertEqual(Validator.clean_to(JID('myjid')), disp.myjid)
         self.assertRaises(base.WrongElement, Validator.clean_to, 'some_jid')
 
 class TestMessage(unittest.TestCase):
@@ -79,4 +97,14 @@ class TestPresence(unittest.TestCase):
             self.assertEqual(prs.type_, value)
         prs = stanzas.Presence(to='jid', from_='some_jid')
         self.assertEqual(prs.type_, 'available')
+       
+        
+class TestQuery(unittest.TestCase):
+    
+    def setUp(self):
+        self.query = stanzas.Query()
+    
+    def test_createFromElement(self):
+        func = self.query.createFromElement
+        self.assertRaises(base.WrongElement, func, base.VElement())
 

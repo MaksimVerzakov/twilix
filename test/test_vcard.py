@@ -1,32 +1,33 @@
 import unittest
 
+from twisted.words.protocols.jabber.jid import JID
+
 from twilix.vcard import MyVCardQuery, VCard, VCardQuery
 from twilix.stanzas import Iq
 from twilix import errors
 
 from twilix.test import dispatcherEmul, iqEmul, hostEmul
 
-class MyVCardQueryEmul(MyVCardQuery):
-    iq = iqEmul()
-
 
 class TestVCardQuery(unittest.TestCase):
     
     def setUp(self):
-        self.MyVCardQuery = MyVCardQueryEmul()
-        disp = dispatcherEmul('some_jid')
-        host = hostEmul(myvcard='myvcard', dispatcher=disp)
+        self.MyVCardQuery = MyVCardQuery(parent=Iq(type_='result', to='somejid'))
+        disp = dispatcherEmul('somejid')
+        self.vc = VCardQuery(name='John')
+        host = hostEmul(myvcard=self.vc, dispatcher=disp)
         self.MyVCardQuery.host = host         
-        self.VCard = VCard(disp, 'myvcard')
+        self.VCard = VCard(disp, self.vc)
     
     def test_getHandler(self):
         res = self.MyVCardQuery.getHandler()
-        self.assertTrue('myvcard' in res.children)
+        self.assertTrue(self.vc in res.children)
         self.MyVCardQuery.host.myvcard = None
         self.assertRaises(errors.ItemNotFoundException, self.MyVCardQuery.getHandler)
         
     def test_setHandler(self):
         self.assertRaises(errors.ForbiddenException, self.MyVCardQuery.setHandler)
+
 
 class TestVCard(unittest.TestCase):
     
@@ -40,12 +41,17 @@ class TestVCard(unittest.TestCase):
         self.assertEqual(self.VC.dispatcher._handlers, hand)
     
     def test_get(self):
-        self.VC.get('somejid')
-        #import pdb; pdb.set_trace()
-        self.assertEqual(self.VC.dispatcher.data, [VCardQuery(parent=Iq(type_='get', to='somejid', from_='jid', id='H_1')).iq,])
+        to = 'somejid'
+        self.VC.get(to)
+        result = self.VC.dispatcher.data[0]
+        self.assertEqual(result.type_, 'get')
+        self.assertEqual(result.to, JID(to))
+        self.assertEqual(result.from_, JID('jid'))
+        self.assertTrue(isinstance(result, Iq))
 
-    def test_get(self):
+    def test_set(self):
         card = VCardQuery(full_name='John')       
         self.VC.set(card)    
-        vc =  VCardQuery(parent=Iq(type_='set', id='H_2')).iq
-        self.assertEqual(self.VC.dispatcher.data, [vc,])
+        result = self.VC.dispatcher.data[0]
+        self.assertEqual(result.type_, 'set')
+        self.assertTrue(isinstance(result, Iq))

@@ -130,13 +130,12 @@ class MyVCardQuery(VCardQuery):
             iq.link(self.host.myvcard)
             return iq
         elif not self.host.myvcard:
-            #return self.iq.makeError('cancel', 'item-not-found')
             raise errors.ItemNotFoundException()
 
     def setHandler(self):
         """Forbid the ability to set vcard."""
-        #return self.iq.makeError('auth', 'forbidden')
         raise errors.ForbiddenException()
+
 
 class VCard(object):
     """

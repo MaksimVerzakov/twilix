@@ -1,4 +1,4 @@
-
+from twisted.words.protocols.jabber.jid import JID
 
 class iqEmul(object):
     
@@ -7,7 +7,7 @@ class iqEmul(object):
     name='iq' 
     to='some_jid'
     children = []
-    type_='type' 
+    type_='result' 
     id = 'any_id'
     
     def makeResult(self):
@@ -17,12 +17,12 @@ class iqEmul(object):
         self.children.append(content)
     
     def addChild(self, child):
-        self.link(shild)
+        self.link(child)
         
       
 class dispatcherEmul(object):
     def __init__(self, myjid):
-        self.myjid = myjid
+        self.myjid = JID(myjid)
         self._handlers = []
         self.data = []
     

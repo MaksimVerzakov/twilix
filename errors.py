@@ -66,7 +66,7 @@ def condition_to_name(condition):
     words = map(string.capitalize, words)
     return ''.join(words)
 
-def exception_by_condition(condition): #XXX: unused
+def exception_by_condition(condition): 
     """Return exception appropriate to condition."""
     exc = getattr(module, '%sException' % condition_to_name(condition.name))
     return exc(condition.content, conditions[condition.name])

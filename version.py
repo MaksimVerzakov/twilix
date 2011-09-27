@@ -35,7 +35,7 @@ class MyVersionQuery(VersionQuery):
         Calls from dispatcher when there is get version query.
         
         Returns iq stanza with version's info.
-        """
+        """        
         iq = self.iq.makeResult()
         query = VersionQuery(client_name=self.host.client_name,
                              client_version=self.host.client_version,
@@ -53,7 +53,6 @@ class MyVersionQuery(VersionQuery):
             BadRequestException
             
         """
-        #return self.iq.makeError('cancel', 'bad-request')
         raise errors.BadRequestException()
 
 class ClientVersion(object):
