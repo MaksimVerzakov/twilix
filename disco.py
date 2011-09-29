@@ -92,7 +92,7 @@ class VDiscoInfoQuery(DiscoInfoQuery):
             info_query = self.host.static_info[node]
             info_query.node = self.node
         if info_query is None:
-            return
+            return        
         iq = self.iq.makeResult()
         iq.link(info_query)
         return iq
@@ -160,8 +160,7 @@ class NotFoundQuery(object):
     parentClass = MyIq
     def anyHandler(self):
         """Raise ItemNotFoundException in any case."""
-        raise errors.ItemNotFoundException()
-        #return self.iq.makeError('cancel', 'item-not-found')
+        raise errors.ItemNotFoundException()        
 
 class NotFoundDiscoItemsQuery(NotFoundQuery, DiscoItemsQuery):
     """

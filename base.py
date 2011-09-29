@@ -378,11 +378,11 @@ def get_declared_fields(bases, attrs):
     :returns: dictionaries of field_name/value pair for attributes and nodes.
     
     """
-    from twilix import fields
+    from twilix.fields import AttributeProp, NodeProp
     attr_fields = [(field_name, attrs.pop(field_name)) for field_name, obj in \
-                    attrs.items() if isinstance(obj, fields.AttributeProp)]
+                    attrs.items() if isinstance(obj, AttributeProp)]
     node_fields = [(field_name, attrs.pop(field_name)) for field_name, obj in \
-                    attrs.items() if isinstance(obj, fields.NodeProp)]
+                    attrs.items() if isinstance(obj, NodeProp)]
     for base in bases[::-1]:
         if hasattr(base, 'attributesProps'):
             attr_fields = base.attributesProps.items() + attr_fields #XXX: extend?

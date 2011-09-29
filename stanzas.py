@@ -279,8 +279,6 @@ class Query(VElement):
             raise WrongElement
         if el.uri != cls.elementUri or el.name != cls.elementName:
             raise WrongElement
-        if parent.type_ == 'result' and el is None:
-            raise WrongElement
         query = super(Query, cls).createFromElement(el, host=host)
         query.parent = parent
         query.children = el.children

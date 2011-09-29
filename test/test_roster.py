@@ -9,6 +9,7 @@ class hostEmulator(hostEmul):
     def updateRoster(self, smth):
         self.update = True
 
+
 class TestRosterItem(unittest.TestCase):
     def setUp(self):
         self.ros = roster.RosterItem(jid='jid', nick='name')
@@ -18,18 +19,7 @@ class TestRosterItem(unittest.TestCase):
         self.ros.presences['1'] = 2
         self.assertEqual(self.ros.is_online(), True)
     
-    def test_nick_(self):
-        pass
-        #self.assertEqual(self.ros.nick, 'name')
-    
-    def test_addGroup(self):
-        pass
-        #self.ros._groups = []
-        #res = self.ros.addGroup('RHCP')
-        #self.assertEqual(res, True)
-        #res = self.ros.addGroup('RHCP')
-        #self.assertEqual(res, None)
-    
+   
 class TestRosterQuery(unittest.TestCase):
     def test_setHandler(self):
         rq = roster.RosterQuery(parent=Iq(type_='get', id='id0'))

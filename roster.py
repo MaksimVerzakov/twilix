@@ -42,45 +42,6 @@ class RosterItem(VElement):
     def is_online(self):
         return bool(self.presences)
 
-    @property
-    def nick(self):  
-        """Property for nickname attribute"""
-        return self._nick    #XXX: unused??
-
-    def addGroup(self, group_name):
-        """
-        Adds new group in roster's list of groups
-        
-        :param group_name: name of new group.
-        
-        :returns: 
-            True if group was added 
-            
-            None if same group already exist.
-        
-        """
-        if not group_name in self._groups:
-            self.groups = list(self._groups) + [group_name] #XXX: self.groups?
-            return True
-
-    def removeGroup(self, group_name):
-        """
-        Deletes group from roster's list of groups
-        
-        :param group_name: name of deleted group.
-        
-        :returns: 
-            True if group was deleted.
-            
-            None if group not exist.
-        
-        """
-        if group_name in self._groups:
-            _groups = list(self._groups)
-            _groups.remove(group_name)
-            self.groups = _groups #XXX: self.groups?
-            return True
-
     def __unicode__(self):
         """Unicode converter."""
         return '<RosterItem %s %s, subscription %s>' % \

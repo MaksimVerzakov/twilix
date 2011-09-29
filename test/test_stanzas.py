@@ -5,6 +5,7 @@ from twisted.words.protocols.jabber.jid import JID
 from twilix import stanzas, base
 from twilix.test import dispatcherEmul, hostEmul
 
+
 class TestStanza(unittest.TestCase):
     
     def setUp(self):
@@ -50,7 +51,7 @@ class TestIq(unittest.TestCase):
     def test_clean_id(self):
         value = 'id'
         self.assertEqual(self.iq.clean_id(value), value)
-        self.assertEqual(self.iq.clean_id(None), 'H_1')
+        self.assertEqual(self.iq.clean_id(None), 'H_2')
     
     def test_makeResult(self):
         res = self.iq.makeResult()
@@ -76,6 +77,7 @@ class TestMessage(unittest.TestCase):
         values = ('normal', 'chat', 'groupchat', 'headline', 'error')
         for value in values:
             self.assertEqual(msg.clean_type_(value), value)
+
 
 class TestPresence(unittest.TestCase):
     
@@ -103,8 +105,23 @@ class TestQuery(unittest.TestCase):
     
     def setUp(self):
         self.query = stanzas.Query()
-    
+            
     def test_createFromElement(self):
         func = self.query.createFromElement
-        self.assertRaises(base.WrongElement, func, base.VElement())
+        
+        el = stanzas.Iq(type_='result')
+        self.assertRaises(base.WrongElement, func, el)
+        
+        el.addChild(stanzas.Query())
+        res = func(el)
+        self.assertTrue(isinstance(res, stanzas.Query))
+        self.assertEqual(res.parent, el)
+                
+        el = stanzas.Iq(type_='result')
+        el.addChild(base.VElement())
+        self.assertRaises(base.WrongElement, func, el)
+    
+    def test_iq(self):
+        res = self.query.iq
+        self.assertTrue(isinstance(res, stanzas.Query))
 
