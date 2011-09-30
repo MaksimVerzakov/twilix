@@ -5,7 +5,8 @@ There are Message, Presence, Iq classes inherit from Stanza.
 from twisted.internet.defer import Deferred
 from twisted.words.xish.domish import Element
 
-from twilix.base import WrongElement, ElementParseError, VElement
+from twilix.base.velement import VElement
+from twilix.base.exceptions import ElementParseError,WrongElement
 from twilix.errors import Error
 from twilix.htmlim import XHtmlIm
 from twilix import fields

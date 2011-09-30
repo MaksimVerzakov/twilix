@@ -1,6 +1,7 @@
 import unittest
 
 from twisted.words.protocols.jabber.jid import JID
+from twisted.internet.defer import Deferred
 
 from twilix import disco, errors
 from twilix.stanzas import Iq, Query
@@ -68,7 +69,8 @@ class TestDisco(unittest.TestCase):
     
     def test_getItems(self):
         to = 'somejid'
-        self.disco.getItems(to)
+        result = self.disco.getItems(to)
+        self.assertTrue(isinstance(result, Deferred))
         result = self.disco.dispatcher.data[0]
         self.assertEqual(result.type_, 'get')
         self.assertEqual(result.to, JID(to))
@@ -77,7 +79,8 @@ class TestDisco(unittest.TestCase):
         
     def test_getInfo(self):
         to = 'somejid'
-        self.disco.getInfo(to)
+        result = self.disco.getInfo(to)
+        self.assertTrue(isinstance(result, Deferred))
         result = self.disco.dispatcher.data[0]
         self.assertEqual(result.type_, 'get')
         self.assertEqual(result.to, JID(to))

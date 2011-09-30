@@ -54,7 +54,7 @@ def parse_timestamp(s):
     values['tzinfo'] = TzInfo(tz)
     try:
         return datetime.datetime(**values)
-    except ValueError:
+    except ValueError:        
         pass
     return None
 

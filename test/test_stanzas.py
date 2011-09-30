@@ -2,7 +2,9 @@ import unittest
 
 from twisted.words.protocols.jabber.jid import JID
 
-from twilix import stanzas, base
+from twilix import stanzas
+from twilix.base.exceptions import WrongElement, ElementParseError
+from twilix.base.velement import VElement
 from twilix.test import dispatcherEmul, hostEmul
 
 
@@ -43,7 +45,7 @@ class TestIq(unittest.TestCase):
         self.iq = stanzas.Iq(type_='get', to=self.to, from_=self.from_)
     
     def test_clean_type_(self):
-        self.assertRaises(base.ElementParseError, self.iq.clean_type_, 'something')
+        self.assertRaises(ElementParseError, self.iq.clean_type_, 'something')
         values = ['set', 'get', 'result', 'error']
         for value in values:
             self.assertEqual(self.iq.clean_type_(value), value)
@@ -51,7 +53,7 @@ class TestIq(unittest.TestCase):
     def test_clean_id(self):
         value = 'id'
         self.assertEqual(self.iq.clean_id(value), value)
-        self.assertEqual(self.iq.clean_id(None), 'H_2')
+        self.assertTrue(self.iq.clean_id(None).startswith('H_'))
     
     def test_makeResult(self):
         res = self.iq.makeResult()
@@ -67,7 +69,7 @@ class TestMyValidator(unittest.TestCase):
         disp = dispatcherEmul('myjid')
         Validator.host = hostEmul(dispatcher=disp)
         self.assertEqual(Validator.clean_to(JID('myjid')), disp.myjid)
-        self.assertRaises(base.WrongElement, Validator.clean_to, 'some_jid')
+        self.assertRaises(WrongElement, Validator.clean_to, 'some_jid')
 
 class TestMessage(unittest.TestCase):
     
@@ -110,7 +112,7 @@ class TestQuery(unittest.TestCase):
         func = self.query.createFromElement
         
         el = stanzas.Iq(type_='result')
-        self.assertRaises(base.WrongElement, func, el)
+        self.assertRaises(WrongElement, func, el)
         
         el.addChild(stanzas.Query())
         res = func(el)
@@ -118,8 +120,8 @@ class TestQuery(unittest.TestCase):
         self.assertEqual(res.parent, el)
                 
         el = stanzas.Iq(type_='result')
-        el.addChild(base.VElement())
-        self.assertRaises(base.WrongElement, func, el)
+        el.addChild(VElement())
+        self.assertRaises(WrongElement, func, el)
     
     def test_iq(self):
         res = self.query.iq

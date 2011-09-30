@@ -2,7 +2,9 @@
 import string
 import sys
 
-from twilix.base import VElement, MyElement, ElementParseError
+from twilix.base.velement import VElement
+from twilix.base.myelement import MyElement
+from twilix.base.exceptions import ElementParseError
 from twilix import fields
 
 conditions = {

@@ -1,6 +1,7 @@
 import unittest
 
 from twisted.words.protocols.jabber.jid import JID
+from twisted.internet.defer import Deferred
 
 from twilix.vcard import MyVCardQuery, VCard, VCardQuery
 from twilix.stanzas import Iq
@@ -42,7 +43,8 @@ class TestVCard(unittest.TestCase):
     
     def test_get(self):
         to = 'somejid'
-        self.VC.get(to)
+        result = self.VC.get(to)
+        self.assertTrue(isinstance(result, Deferred))
         result = self.VC.dispatcher.data[0]
         self.assertEqual(result.type_, 'get')
         self.assertEqual(result.to, JID(to))
@@ -50,8 +52,9 @@ class TestVCard(unittest.TestCase):
         self.assertTrue(isinstance(result, Iq))
 
     def test_set(self):
-        card = VCardQuery(full_name='John')       
-        self.VC.set(card)    
+        card = VCardQuery(full_name='John')   
+        result = self.VC.set(card)    
+        self.assertTrue(isinstance(result, Deferred))
         result = self.VC.dispatcher.data[0]
         self.assertEqual(result.type_, 'set')
         self.assertTrue(isinstance(result, Iq))

@@ -87,8 +87,7 @@ class RosterQuery(Query):
         
         """
         self.iq.from_ = None
-        raise errors.NotAcceptableException()
-        #return self.iq.makeError('cancel', 'not-acceptable')
+        raise errors.NotAcceptableException()        
 
 class RosterPresence(Presence):
     """
@@ -238,7 +237,7 @@ class Roster(object): #List of RosterItem
         :param item: value of new item
         
         """
-        query = RosterQuery(self, parent=Iq(type_='set'))
+        query = RosterQuery(parent=Iq(type_='set'))
         query.link(item)
         self.dispatcher.send(query.iq)
 
@@ -250,7 +249,7 @@ class Roster(object): #List of RosterItem
         
         """
         item.subscription = 'remove'
-        query = RosterQuery(self, parent=Iq(type_='set'))
+        query = RosterQuery(parent=Iq(type_='set'))
         query.link(item)
         self.dispatcher.send(query.iq)
 

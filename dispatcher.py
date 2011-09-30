@@ -6,7 +6,8 @@ This class realize direct handling of input and output stanzas.
 from twisted.internet.defer import inlineCallbacks, returnValue
 from twilix.stanzas import Iq, Message, Presence, Stanza
 from twilix.jid import internJID
-from twilix.base import MyElement, WrongElement, EmptyStanza, ElementParseError, BreakStanza
+from twilix.base.myelement import MyElement, EmptyStanza, BreakStanza
+from twilix.base.exceptions import WrongElement, ElementParseError
 from twilix import errors
 
 class Dispatcher(object):

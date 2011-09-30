@@ -25,6 +25,7 @@ class dispatcherEmul(object):
         self.myjid = JID(myjid)
         self._handlers = []
         self.data = []
+        self.connect = False
     
     def registerHandler(self, handler):
         if not handler in self._handlers:

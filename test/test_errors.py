@@ -1,6 +1,7 @@
 import unittest
 
-from twilix import errors, base
+from twilix import errors
+from twilix.base.exceptions import ElementParseError
 #from twilix.test import dispatcherEmul, hostEmul
 
 class tmp(object):
@@ -32,7 +33,7 @@ class TestError(unittest.TestCase):
     def test_clean_type_(self):
         error = errors.Error(type_='get', to='jid', from_='some_jid',
                              condition='any')
-        self.assertRaises(base.ElementParseError, error.clean_type_, 'something')
+        self.assertRaises(ElementParseError, error.clean_type_, 'something')
         values = ('cancel', 'continue', 'modify', 'auth', 'wait')
         for value in values:
             self.assertEqual(error.clean_type_(value), value)
