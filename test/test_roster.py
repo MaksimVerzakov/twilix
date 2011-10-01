@@ -1,29 +1,52 @@
 import unittest
 
+from pydispatch import dispatcher
+
 from twilix import roster
 from twilix.stanzas import Iq
-from twilix.base import VElement
+from twilix.jid import MyJID
+from twilix.base.velement import VElement
 from twilix.errors import NotAcceptableException
 from twilix.test import iqEmul, hostEmul, dispatcherEmul
 
 
 class itemEmul(VElement):
-    presences = []
-    subscription = ''
+    def __init__(self, jid, groups=None, subscription='', **kwargs):
+        self.presences = []
+        self.groups = groups
+        self.subscription = subscription
+        self.jid = MyJID(jid)
+        super(itemEmul, self).__init__(**kwargs)     
 
 
 class hostEmulator(hostEmul):
-    items = []
+    roster_got = object()
+    roster_item_added = object()
+    roster_item_removed = object()
+    contact_available = object()
+    contact_unavailable = object()
+    resource_available = object()
+    resource_unavailable = object()
+    resource_changed_status = object()
+
+    subscribe = object()
+    subscribed = object()
+    unsubscribe = object()
+    unsubscribed = object()
+    
+    items = [itemEmul('fast@wok'), itemEmul('little@nation'), 
+             itemEmul('gordon@freeman')]
     
     def updateRoster(self, smth):
         self.update = True
         
     def getItemByJid(self, jid):
-        pass
+        return getattr(items, jid, None)
 
 
 class queryEmul(object):
-    items = ['1', '2', '3']
+    def __init__(self, items):
+        self.items = items
 
 
 class TestRosterItem(unittest.TestCase):
@@ -57,7 +80,7 @@ class TestRosterQuery(unittest.TestCase):
 class TestRoster(unittest.TestCase):
     
     def setUp(self):
-        self.rost = roster.Roster(dispatcherEmul('jid'), mypresence='pr')
+        self.rost = roster.Roster(dispatcherEmul('jid'), mypresence='pr')        
             
     def test_init(self):
         test_list = [(roster.RosterQuery, self.rost),
@@ -80,16 +103,97 @@ class TestRoster(unittest.TestCase):
         self.assertEqual(self.rost.updatePresence(None), None)
     
     def test_gotRoster(self):
-        self.rost.gotRoster(queryEmul())
+        self.rost.gotRoster(queryEmul([]))
         pass
     
     def test_addItem(self):
-        self.rost.addItem(itemEmul())
+        self.rost.addItem(itemEmul(jid='some@where'))
         self.assertTrue(isinstance(self.rost.dispatcher.data[0], Iq))
         self.assertEqual(self.rost.dispatcher.data[0].type_, 'set')   
         
     def test_removeItem(self):        
-        self.rost.removeItem(itemEmul())
+        self.rost.removeItem(itemEmul(jid='some@where'))
         self.assertTrue(isinstance(self.rost.dispatcher.data[0], Iq))
-        self.assertEqual(self.rost.dispatcher.data[0].type_, 'set')    
-
+        self.assertEqual(self.rost.dispatcher.data[0].type_, 'set') 
+    
+    def test_updateRoster(self):
+        self.rost.items = [itemEmul(jid='amy@wine')]
+        items = [itemEmul(subscription='remove', jid='amy@wine'), 
+                 itemEmul(subscription='both', jid='sup@per'), 
+                 itemEmul(subscription='none', jid='homer@j')]
+        q = queryEmul(items)
+        self.rost.updateRoster(q)
+        self.assertEqual(self.rost.items, items[1:])
+    
+    def test_getItemByJid(self):
+        items = [itemEmul(jid='amy@wine'), 
+                 itemEmul(jid='sup@per'), 
+                 itemEmul(jid='homer@j')]
+        self.rost.items = items
+        res = self.rost.getItemByJid(MyJID('somebody@to/love'))
+        self.assertEqual(res, None)
+        res = self.rost.getItemByJid(MyJID('amy@wine/work'))
+        self.assertEqual(res, items[0])
+    
+    def test_getGroups(self):
+        items = [itemEmul(jid='amy@wine', groups=['1', '4']), 
+                 itemEmul(jid='sup@per', groups=['dd',]), 
+                 itemEmul(jid='homer@j', groups=['1', 'gs'])]
+        self.rost.items = items
+        res = self.rost.getGroups()
+        groups = ['1', '4', 'dd', 'gs']
+        self.assertEqual(res.sort(), groups.sort())
+    
+    def test_getGroupUsers(self):
+        items = [itemEmul(jid='sup@per', groups=['dd',]),
+                 itemEmul(jid='amy@wine', groups=['1', '4']), 
+                 itemEmul(jid='homer@j', groups=['1', 'gs'])]
+        self.rost.items = items
+        res = self.rost.getGroupUsers('1')
+        self.assertEqual(res.sort(), items[1:].sort())
+        res = self.rost.getGroupUsers('dd')
+        self.assertEqual(res, items[0:1])
+        res = self.rost.getGroupUsers('gs')
+        self.assertEqual(res, items[1:2])
+        
+class TestRosterPresence(unittest.TestCase):
+    def setUp(self):
+        dispatcher.connect(self.got_signal, signal=dispatcher.Any)
+        self.rp = roster.RosterPresence(host=hostEmulator())
+    
+    def got_signal(self, signal, sender, presence):
+        self.signal = signal
+        self.sender = sender
+        self.presence = presence
+    
+    def test_subscribeHandler(self):
+        self.rp.subscribeHandler()
+        self.assertEqual(self.signal, self.rp.host.subscribe)
+        self.assertEqual(self.sender, self.rp.host)
+        self.assertEqual(self.presence, self.rp)
+    
+    def test_unsubscribeHandler(self):
+        self.rp.unsubscribeHandler()
+        self.assertEqual(self.signal, self.rp.host.unsubscribe)
+        self.assertEqual(self.sender, self.rp.host)
+        self.assertEqual(self.presence, self.rp)
+    
+    def test_subscribedHandler(self):
+        self.rp.subscribedHandler()
+        self.assertEqual(self.signal, self.rp.host.subscribed)
+        self.assertEqual(self.sender, self.rp.host)
+        self.assertEqual(self.presence, self.rp)
+        
+    def test_unsubscribedHandler(self):
+        self.rp.unsubscribedHandler()
+        self.assertEqual(self.signal, self.rp.host.unsubscribed)
+        self.assertEqual(self.sender, self.rp.host)
+        self.assertEqual(self.presence, self.rp)
+    
+    def test_availableHandler(self):
+        self.rp.from_='fast@wok'
+        self.rp.availableHandler()
+        self.assertEqual(self.signal, self.rp.host.unsubscribed)
+        self.assertEqual(self.sender, self.rp.host)
+        self.assertEqual(self.presence, self.rp)
+        
