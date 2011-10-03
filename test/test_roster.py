@@ -1,6 +1,9 @@
 import unittest
+from twisted.trial import unittest
 
 from pydispatch import dispatcher
+
+from twisted.internet import reactor
 
 from twilix import roster
 from twilix.stanzas import Iq
@@ -9,10 +12,9 @@ from twilix.base.velement import VElement
 from twilix.errors import NotAcceptableException
 from twilix.test import iqEmul, hostEmul, dispatcherEmul
 
-
 class itemEmul(VElement):
-    def __init__(self, jid, groups=None, subscription='', **kwargs):
-        self.presences = []
+    def __init__(self, jid, groups=None, subscription='', presences = {}, **kwargs):
+        self.presences = presences
         self.groups = groups
         self.subscription = subscription
         self.jid = MyJID(jid)
@@ -34,14 +36,20 @@ class hostEmulator(hostEmul):
     unsubscribe = object()
     unsubscribed = object()
     
-    items = [itemEmul('fast@wok'), itemEmul('little@nation'), 
-             itemEmul('gordon@freeman')]
+    items = [itemEmul('fast@wok'), 
+             itemEmul('little@nation', presences={'q':'w', 'r':'t'}), 
+             itemEmul('gordon@freeman', presences={'1':'2', '3':'4'})]
     
     def updateRoster(self, smth):
         self.update = True
         
     def getItemByJid(self, jid):
-        return getattr(items, jid, None)
+        r = None
+        jid = jid.bare()
+        for i in self.items:
+            if jid == i.jid:
+                r = i
+        return r
 
 
 class queryEmul(object):
@@ -160,40 +168,81 @@ class TestRosterPresence(unittest.TestCase):
     def setUp(self):
         dispatcher.connect(self.got_signal, signal=dispatcher.Any)
         self.rp = roster.RosterPresence(host=hostEmulator())
-    
+        self.signal = []
+        self.sender = []
+        self.presence = []
+         
     def got_signal(self, signal, sender, presence):
-        self.signal = signal
-        self.sender = sender
-        self.presence = presence
+        self.signal.append(signal)
+        self.sender.append(sender)
+        self.presence.append(presence)
     
     def test_subscribeHandler(self):
         self.rp.subscribeHandler()
-        self.assertEqual(self.signal, self.rp.host.subscribe)
-        self.assertEqual(self.sender, self.rp.host)
-        self.assertEqual(self.presence, self.rp)
+        self.assertEqual(self.signal[-1], self.rp.host.subscribe)
+        self.assertEqual(self.sender[-1], self.rp.host)
+        self.assertEqual(self.presence[-1], self.rp)
     
     def test_unsubscribeHandler(self):
         self.rp.unsubscribeHandler()
-        self.assertEqual(self.signal, self.rp.host.unsubscribe)
-        self.assertEqual(self.sender, self.rp.host)
-        self.assertEqual(self.presence, self.rp)
+        self.assertEqual(self.signal[-1], self.rp.host.unsubscribe)
+        self.assertEqual(self.sender[-1], self.rp.host)
+        self.assertEqual(self.presence[-1], self.rp)
     
     def test_subscribedHandler(self):
         self.rp.subscribedHandler()
-        self.assertEqual(self.signal, self.rp.host.subscribed)
-        self.assertEqual(self.sender, self.rp.host)
-        self.assertEqual(self.presence, self.rp)
+        self.assertEqual(self.signal[-1], self.rp.host.subscribed)
+        self.assertEqual(self.sender[-1], self.rp.host)
+        self.assertEqual(self.presence[-1], self.rp)
         
     def test_unsubscribedHandler(self):
         self.rp.unsubscribedHandler()
-        self.assertEqual(self.signal, self.rp.host.unsubscribed)
-        self.assertEqual(self.sender, self.rp.host)
-        self.assertEqual(self.presence, self.rp)
+        self.assertEqual(self.signal[-1], self.rp.host.unsubscribed)
+        self.assertEqual(self.sender[-1], self.rp.host)
+        self.assertEqual(self.presence[-1], self.rp)
     
     def test_availableHandler(self):
-        self.rp.from_='fast@wok'
+        self.rp.from_=MyJID('fast@wok/home')
         self.rp.availableHandler()
-        self.assertEqual(self.signal, self.rp.host.unsubscribed)
-        self.assertEqual(self.sender, self.rp.host)
-        self.assertEqual(self.presence, self.rp)
+        self.assertEqual(self.signal[-2:], 
+                         [self.rp.host.contact_available,
+                          self.rp.host.resource_available])
+        self.assertEqual(self.sender[-2:], [self.rp.host, self.rp.host])
+        self.assertEqual(self.presence[-2:], [self.rp, self.rp])
         
+        self.rp.from_=MyJID('fast@wok/home')
+        self.rp.availableHandler()
+        self.assertEqual(self.signal[-1], self.rp.host.resource_changed_status)
+        self.assertEqual(self.sender[-1], self.rp.host)
+        self.assertEqual(self.presence[-1], self.rp)
+        
+        self.rp.from_=MyJID('gordon@freeman/anywhere')
+        self.rp.availableHandler()
+        self.assertEqual(self.signal[-1], self.rp.host.resource_available)
+        self.assertEqual(self.sender[-1], self.rp.host)
+        self.assertEqual(self.presence[-1], self.rp)
+        
+        self.rp.from_=MyJID('who@lets.the/dogsout')
+        #reactor.callLater(3, self._signals_inc, len(self.signal))
+        self.rp.availableHandler()          
+    
+    def test_unavailableHandler(self):
+        self.rp.from_=MyJID('little@nation/q')
+        self.rp.unavailableHandler()
+        self.assertEqual(self.rp.host.items[1].presences, {'r':'t'})
+        self.assertEqual(self.signal[-1], self.rp.host.resource_unavailable)
+        self.assertEqual(self.sender[-1], self.rp.host)
+        self.assertEqual(self.presence[-1], self.rp)
+        
+        self.rp.from_=MyJID('little@nation/r')
+        self.rp.unavailableHandler()
+        self.assertEqual(self.rp.host.items[1].presences, {})
+        self.assertEqual(self.signal[-2:], 
+                         [self.rp.host.contact_unavailable,
+                          self.rp.host.resource_unavailable])
+        self.assertEqual(self.sender[-2:], [self.rp.host, self.rp.host])
+        self.assertEqual(self.presence[-2:], [self.rp, self.rp])
+    
+    def _signals_inc(self, num):
+        self.assertEqual(num, len(self.signal))
+
