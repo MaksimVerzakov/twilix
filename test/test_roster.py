@@ -216,15 +216,18 @@ class TestRosterPresence(unittest.TestCase):
         self.assertEqual(self.sender[-1], self.rp.host)
         self.assertEqual(self.presence[-1], self.rp)
         
+        n = len(self.signal)
         self.rp.from_=MyJID('gordon@freeman/anywhere')
         self.rp.availableHandler()
         self.assertEqual(self.signal[-1], self.rp.host.resource_available)
         self.assertEqual(self.sender[-1], self.rp.host)
         self.assertEqual(self.presence[-1], self.rp)
+        self.assertNotEqual(n, len(self.signal))
         
+        n = len(self.signal)
         self.rp.from_=MyJID('who@lets.the/dogsout')
-        #reactor.callLater(3, self._signals_inc, len(self.signal))
         self.rp.availableHandler()          
+        self.assertEqual(n, len(self.signal))
     
     def test_unavailableHandler(self):
         self.rp.from_=MyJID('little@nation/q')
@@ -242,7 +245,8 @@ class TestRosterPresence(unittest.TestCase):
                           self.rp.host.resource_unavailable])
         self.assertEqual(self.sender[-2:], [self.rp.host, self.rp.host])
         self.assertEqual(self.presence[-2:], [self.rp, self.rp])
-    
-    def _signals_inc(self, num):
-        self.assertEqual(num, len(self.signal))
-
+        
+        n = len(self.signal)
+        self.rp.from_=MyJID('who@lets.the/dogsout')
+        self.rp.availableHandler()          
+        self.assertEqual(n, len(self.signal))
