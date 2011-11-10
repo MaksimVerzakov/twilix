@@ -1,6 +1,7 @@
 import unittest
 
-from twilix.base import MyElement, VElement
+from twilix.base.myelement import MyElement
+from twilix.base.velement import VElement
 
 class TestBase(unittest.TestCase):
     

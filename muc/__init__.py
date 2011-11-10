@@ -1,7 +1,7 @@
 from pydispatch import dispatcher
 
 from twilix.stanzas import Presence, Iq
-from twilix.base import VElement, MyElement, EmptyStanza
+from twilix.base import VElement, MyElement
 from twilix import fields
 from twilix.jid import internJID
 

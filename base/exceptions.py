@@ -1,9 +1,11 @@
 class ElementParseError(Exception):
-    """Raises when attribute is required and value is None."""
+    """Raises when some error was aquired while stanza pasring, e.g. attribute
+    or node is required but not given. An error stanza with the bad-request
+    condition will be returned if such exception will be raised."""
     pass
 
 class WrongElement(Exception):
     """
-    Raises when there is invalid element.
+    Raises when an element declaration can't be compared with the given one.
     """
     pass

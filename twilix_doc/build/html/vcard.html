@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Twilix.VCard Documentation &mdash; twilix v0.9 documentation</title>
+    <title>Twilix.VCard Documentation &mdash; Twilix 0.9 documentation</title>
+    
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="twilix v0.9 documentation" href="index.html" />
+    <link rel="top" title="Twilix 0.9 documentation" href="index.html" />
     <link rel="next" title="Twilix.Version Documentation" href="version.html" />
     <link rel="prev" title="Twilix.Utils Documentation" href="utils.html" /> 
   </head>
@@ -42,7 +45,7 @@
         <li class="right" >
           <a href="utils.html" title="Twilix.Utils Documentation"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">twilix v0.9 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Twilix 0.9 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -53,7 +56,9 @@
             
   <div class="section" id="module-twilix.vcard">
 <span id="twilix-vcard-documentation"></span><h1>Twilix.VCard Documentation<a class="headerlink" href="#module-twilix.vcard" title="Permalink to this headline">¶</a></h1>
-<p>Module implements vcard-temp feature.</p>
+<p>Module implements vcard-temp feature. (XEP-0054)</p>
+<p>Can be used to serve own vcard (for services), set own vcard (for clients) and
+view vcards of other entities.</p>
 <dl class="class">
 <dt id="twilix.vcard.Address">
 <em class="property">class </em><tt class="descclassname">twilix.vcard.</tt><tt class="descname">Address</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.vcard.Address" title="Permalink to this definition">¶</a></dt>
@@ -81,9 +86,9 @@ Define get and set Handlers.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">result iq with myvcard if it&#8217;s exist and destination is correct.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">result iq with myvcard if it&#8217;s exist and destination is correct.</td>
 </tr>
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body">ItemNotFoundException</td>
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body">ItemNotFoundException</td>
 </tr>
 </tbody>
 </table>
@@ -149,16 +154,27 @@ Used for representation telephone data.</p>
 <em class="property">class </em><tt class="descclassname">twilix.vcard.</tt><tt class="descname">VCard</tt><big>(</big><em>dispatcher</em>, <em>myvcard=None</em><big>)</big><a class="headerlink" href="#twilix.vcard.VCard" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class describes interaction dispatcher with personal info
 in myvcard.</p>
-<dl class="method">
-<dt id="twilix.vcard.VCard.get">
-<tt class="descname">get</tt><big>(</big><em>jid</em>, <em>from_=None</em><big>)</big><a class="headerlink" href="#twilix.vcard.VCard.get" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make get VCard query.
-Return deferred object with result of get VCard query.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">query.iq.deferred</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dispatcher</strong> &#8211; set dispatcher that service should use.</li>
+<li><strong>myvcard</strong> &#8211; set vcard which should be served as own (for services).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="twilix.vcard.VCard.get">
+<tt class="descname">get</tt><big>(</big><em>jid</em>, <em>from_=None</em><big>)</big><a class="headerlink" href="#twilix.vcard.VCard.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a vcard of another XMPP entity.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">query.iq.deferred with a VCardQuery instance as a result</td>
 </tr>
 </tbody>
 </table>
@@ -167,21 +183,31 @@ Return deferred object with result of get VCard query.</p>
 <dl class="method">
 <dt id="twilix.vcard.VCard.init">
 <tt class="descname">init</tt><big>(</big><em>disco=None</em>, <em>handlers=None</em><big>)</big><a class="headerlink" href="#twilix.vcard.VCard.init" title="Permalink to this definition">¶</a></dt>
-<dd><p>Register MyVCardQuery as handler. 
-Register handlers from arguments.
-Add feature to Disco if it&#8217;s required.</p>
+<dd><p>Register necessary handlers and add vcard-temp feature into own disco
+info.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>disco</strong> &#8211; Disco instance to add the feature to.</li>
+<li><strong>handlers</strong> &#8211; extra handlers to generate dynamic vcards.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="twilix.vcard.VCard.set">
 <tt class="descname">set</tt><big>(</big><em>vcard</em><big>)</big><a class="headerlink" href="#twilix.vcard.VCard.set" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make set VCard query.
-Return deferred object with result of set VCard query.</p>
+<dd><p>Set my own vcard (for clients).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">query.iq.deferred</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">query.iq.deferred</td>
 </tr>
 </tbody>
 </table>
@@ -218,7 +244,7 @@ Contains fields with nodes for personal info.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -247,12 +273,12 @@ Contains fields with nodes for personal info.</p>
         <li class="right" >
           <a href="utils.html" title="Twilix.Utils Documentation"
              >previous</a> |</li>
-        <li><a href="index.html">twilix v0.9 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Twilix 0.9 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2011, JRuDevels.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+        &copy; Copyright 2011, JRuDevels &amp; HiDevLab.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.
     </div>
   </body>
 </html>

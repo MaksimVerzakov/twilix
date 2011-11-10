@@ -1,4 +1,6 @@
-"""Module provides In-Band Registration mechanism."""
+"""Module provides In-Band Registration mechanism. (XEP-0077)
+
+Can be used to provide registration ability to your XMPP-enabled service."""
 
 from twilix.stanzas import Query, MyIq
 from twilix.disco import Feature
@@ -33,13 +35,14 @@ class MyRegisterQuery(RegisterQuery):
     parentClass = MyIq
 
 class Register(object):
-    """Class describes interaction dispatcher with register."""
+    """Class describes interaction dispatcher with register.
+    
+    :param dispatcher: dispatcher to use with the service."""
     def __init__(self, dispatcher):
-        """Set dispatcher."""
         self.dispatcher = dispatcher
 
     def init(self, handler, disco=None):
-        """Registers handlers and adds version feature in disco."""
+        """Registers handlers and adds the register feature in disco."""
         handler, host = handler
         self.dispatcher.registerHandler((handler, host))
         if disco is not None:

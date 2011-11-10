@@ -1,5 +1,19 @@
 """
 Contains description of main attribute properties and node properties.
+
+That properties are used to describe an XML-schema of stanzas and child
+elements easier. Then stanzas are validated by such schemas and transformed
+into useful Python-objects.
+
+Also, this classes make data transformation to internal Python types (e.g.
+MyJID or datetime).
+
+To do data validation and/or transformation fields should implement an clean
+and clean_set methods and return transformed value or raise ElementParseError
+if transformation impossible. The first one used for situations when data
+received from a real XML and the second one for situations when data is set
+with Python and needs to be converted to an XML compatible thing. Clean
+methods must raise ElementParseError if element has no suitable value.
 """
 import base64
 
@@ -31,7 +45,7 @@ class AttributeProp(object):
         return u'AttributeProp %s' % self.xmlattr
         
 class StringAttr(AttributeProp):
-    """String attribute."""
+    """Plain string attribute."""
     def clean(self, value):
         """
         Return value cast to unicode. 
@@ -52,7 +66,8 @@ class StringAttr(AttributeProp):
             return unicode(value)
 
 class JidAttr(StringAttr):
-    """Jabber id Attribute."""
+    """Jabber id Attribute. Automatically convert an attribute's value to the
+    MyJID instance"""
     def clean(self, value):
         """
         Call clean method of parent class to value.
@@ -62,13 +77,14 @@ class JidAttr(StringAttr):
         """
         value = super(JidAttr, self).clean(value)
         if value is not None or self.required:
+            # XXX: Must raise ElementParseError if JID can't be converted
             return internJID(value)
 
 class BooleanAttr(StringAttr):
     """Boolean attribute."""
     def clean(self, value):
         """
-        Call clean method of parent class.
+        Transform true/false values to the Python's bool.
         
         :returns:
             True if value is 'true'
@@ -127,7 +143,7 @@ class NodeProp(object):
         return 'NodeProp %s' % self.xmlnode
 
 class StringNode(NodeProp):
-    """Used for nodes contains string."""
+    """Used for nodes contain string."""
     def __init__(self, *args, **kwargs):
         """
         Initialize StringNode object.
@@ -170,9 +186,10 @@ class StringNode(NodeProp):
         return r
 
 class DateTimeNode(StringNode):
-    """Used for nodes containes date and time info."""
+    """Used for nodes contain date and time info."""
     def get_from_el(self, el):
         """Return date and time info from element in datetime format."""
+        # XXX: Move to clean
         el = super(DateTimeNode, self).get_from_el(el)
         el = super(DateTimeNode, self).clean(el)
         if el:
@@ -210,14 +227,15 @@ class DateTimeNode(StringNode):
         return super(DateTimeNode, self).clean_set(res)
 
 class FlagNode(NodeProp):
-    """Used for flag nodes."""
+    """Used for flag nodes, for example, <registered/> from the XEP-100"""
     def get_from_el(self, el):
         """
+
         :returns:
-           True if there's attribute in element with the same name as
-           xmlnode.
+            True if there's attribute in element with the same name as
+            xmlnode.
            
-           False otherwise.
+            False otherwise.
            
         """
         els = [e for e in el.children \
@@ -228,11 +246,12 @@ class FlagNode(NodeProp):
 
     def clean(self, value):
         """
+
         :returns:
-            True if value is exist.
-            
-            False otherwise.
-            
+             True if value is exist.
+             
+             False otherwise.
+             
         """
         if value:
             return True
@@ -241,10 +260,11 @@ class FlagNode(NodeProp):
 
     def clean_set(self, value):
         """
+
         :returns:
-            MyElement if value is exist.
+             MyElement if value is exist.
             
-            EmptyElement otherwise.
+             EmptyElement otherwise.
             
         """
         if value:
@@ -252,7 +272,7 @@ class FlagNode(NodeProp):
         return EmptyElement()
 
 class IntegerNode(StringNode):
-    """Used for nodes containes integer number."""
+    """Used for nodes contain integer number."""
     def clean(self, value):
         """
         Call clean method of parents class to value.
@@ -273,7 +293,7 @@ class IntegerNode(StringNode):
             return res
 
 class Base64Node(StringNode):
-    """Used for nodes containes base64 data."""
+    """Used for nodes contain base64 data."""
     def clean(self, value):
         """
         Return value in base64 format if it's possible.
@@ -298,7 +318,7 @@ class Base64Node(StringNode):
             return r
 
 class ElementNode(NodeProp):
-    """Used for nodes containes element."""
+    """Used for nodes contain another element."""
     def __init__(self, *args, **kwargs):
         if isinstance(args[0], (str, unicode)):     
             args = args[1:]
@@ -326,7 +346,7 @@ class ElementNode(NodeProp):
                     (self.cls.elementUri is None or \
                      getattr(c_el, 'uri', None) == self.cls.elementUri),
                    el.children)
-        # Too strictly... :(
+        # XXX: Too strictly... :(
         #if not self.listed and len(r) > 1:
         #    raise ElementParseError, 'node %s is not list' % \
         #           (self.cls.elementName or self.cls.elementUri,)

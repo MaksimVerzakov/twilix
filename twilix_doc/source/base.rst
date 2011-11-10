@@ -9,3 +9,22 @@ Twilix.Base Documentation
 
 .. automodule:: twilix.base
    :members:
+
+Twilix.Base.MyElement
+----------------------
+
+.. automodule:: twilix.base.myelement
+   :members:
+
+Twilix.Base.VElement
+---------------------
+
+.. automodule:: twilix.base.velement
+   :members:
+
+Twilix.Base.Exceptions
+-----------------------
+
+.. automodule:: twilix.base.exceptions
+   :members:
+

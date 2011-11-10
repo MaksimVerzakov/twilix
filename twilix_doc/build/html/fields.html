@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Twilix.Fields Documentation &mdash; twilix v0.9 documentation</title>
+    <title>Twilix.Fields Documentation &mdash; Twilix 0.9 documentation</title>
+    
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="twilix v0.9 documentation" href="index.html" />
+    <link rel="top" title="Twilix 0.9 documentation" href="index.html" />
     <link rel="next" title="Twilix.HTMLim Documentation" href="htmlim.html" />
     <link rel="prev" title="Twilix.Errors Documentation" href="errors.html" /> 
   </head>
@@ -42,7 +45,7 @@
         <li class="right" >
           <a href="errors.html" title="Twilix.Errors Documentation"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">twilix v0.9 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Twilix 0.9 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -54,6 +57,17 @@
   <div class="section" id="module-twilix.fields">
 <span id="twilix-fields-documentation"></span><h1>Twilix.Fields Documentation<a class="headerlink" href="#module-twilix.fields" title="Permalink to this headline">¶</a></h1>
 <p>Contains description of main attribute properties and node properties.</p>
+<p>That properties are used to describe an XML-schema of stanzas and child
+elements easier. Then stanzas are validated by such schemas and transformed
+into useful Python-objects.</p>
+<p>Also, this classes make data transformation to internal Python types (e.g.
+MyJID or datetime).</p>
+<p>To do data validation and/or transformation fields should implement an clean
+and clean_set methods and return transformed value or raise ElementParseError
+if transformation impossible. The first one used for situations when data
+received from a real XML and the second one for situations when data is set
+with Python and needs to be converted to an XML compatible thing. Clean
+methods must raise ElementParseError if element has no suitable value.</p>
 <dl class="class">
 <dt id="twilix.fields.AttributeProp">
 <em class="property">class </em><tt class="descclassname">twilix.fields.</tt><tt class="descname">AttributeProp</tt><big>(</big><em>xmlattr</em>, <em>required=True</em><big>)</big><a class="headerlink" href="#twilix.fields.AttributeProp" title="Permalink to this definition">¶</a></dt>
@@ -66,7 +80,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">xml attribute from element.<p>None if attribute isn&#8217;t exist.</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">xml attribute from element.<p>None if attribute isn&#8217;t exist.</p>
 </td>
 </tr>
 </tbody>
@@ -78,7 +92,7 @@
 <dl class="class">
 <dt id="twilix.fields.Base64Node">
 <em class="property">class </em><tt class="descclassname">twilix.fields.</tt><tt class="descname">Base64Node</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.fields.Base64Node" title="Permalink to this definition">¶</a></dt>
-<dd><p>Used for nodes containes base64 data.</p>
+<dd><p>Used for nodes contain base64 data.</p>
 <dl class="method">
 <dt id="twilix.fields.Base64Node.clean">
 <tt class="descname">clean</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#twilix.fields.Base64Node.clean" title="Permalink to this definition">¶</a></dt>
@@ -87,9 +101,9 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">value cast to base64.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">value cast to base64.</td>
 </tr>
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body">ElementParseError.</td>
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body">ElementParseError.</td>
 </tr>
 </tbody>
 </table>
@@ -110,12 +124,12 @@
 <dl class="method">
 <dt id="twilix.fields.BooleanAttr.clean">
 <tt class="descname">clean</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#twilix.fields.BooleanAttr.clean" title="Permalink to this definition">¶</a></dt>
-<dd><p>Call clean method of parent class.</p>
+<dd><p>Transform true/false values to the Python&#8217;s bool.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">True if value is &#8216;true&#8217;<p>False otherwise</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if value is &#8216;true&#8217;<p>False otherwise</p>
 </td>
 </tr>
 </tbody>
@@ -127,7 +141,7 @@
 <dl class="class">
 <dt id="twilix.fields.DateTimeNode">
 <em class="property">class </em><tt class="descclassname">twilix.fields.</tt><tt class="descname">DateTimeNode</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.fields.DateTimeNode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Used for nodes containes date and time info.</p>
+<dd><p>Used for nodes contain date and time info.</p>
 <dl class="method">
 <dt id="twilix.fields.DateTimeNode.clean">
 <tt class="descname">clean</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#twilix.fields.DateTimeNode.clean" title="Permalink to this definition">¶</a></dt>
@@ -143,7 +157,7 @@ offset.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">EmptyElement() if there&#8217;s no value.<p>MyElement contains unicode string with date, time and utc
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">EmptyElement() if there&#8217;s no value.<p>MyElement contains unicode string with date, time and utc
 offset.</p>
 </td>
 </tr>
@@ -162,7 +176,7 @@ offset.</p>
 <dl class="class">
 <dt id="twilix.fields.ElementNode">
 <em class="property">class </em><tt class="descclassname">twilix.fields.</tt><tt class="descname">ElementNode</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.fields.ElementNode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Used for nodes containes element.</p>
+<dd><p>Used for nodes contain another element.</p>
 <dl class="method">
 <dt id="twilix.fields.ElementNode.clean">
 <tt class="descname">clean</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#twilix.fields.ElementNode.clean" title="Permalink to this definition">¶</a></dt>
@@ -177,7 +191,7 @@ offset.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">tuple of elements if node is listed.<p>element otherwise.</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">tuple of elements if node is listed.<p>element otherwise.</p>
 </td>
 </tr>
 </tbody>
@@ -189,7 +203,7 @@ offset.</p>
 <dl class="class">
 <dt id="twilix.fields.FlagNode">
 <em class="property">class </em><tt class="descclassname">twilix.fields.</tt><tt class="descname">FlagNode</tt><big>(</big><em>xmlnode</em>, <em>required=True</em>, <em>listed=False</em>, <em>unique=False</em><big>)</big><a class="headerlink" href="#twilix.fields.FlagNode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Used for flag nodes.</p>
+<dd><p>Used for flag nodes, for example, &lt;registered/&gt; from the XEP-100</p>
 <dl class="method">
 <dt id="twilix.fields.FlagNode.clean">
 <tt class="descname">clean</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#twilix.fields.FlagNode.clean" title="Permalink to this definition">¶</a></dt>
@@ -197,7 +211,7 @@ offset.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">True if value is exist.<p>False otherwise.</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if value is exist.<p>False otherwise.</p>
 </td>
 </tr>
 </tbody>
@@ -211,7 +225,7 @@ offset.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">MyElement if value is exist.<p>EmptyElement otherwise.</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">MyElement if value is exist.<p>EmptyElement otherwise.</p>
 </td>
 </tr>
 </tbody>
@@ -225,7 +239,7 @@ offset.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">True if there&#8217;s attribute in element with the same name as
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if there&#8217;s attribute in element with the same name as
 xmlnode.<p>False otherwise.</p>
 </td>
 </tr>
@@ -238,7 +252,7 @@ xmlnode.<p>False otherwise.</p>
 <dl class="class">
 <dt id="twilix.fields.IntegerNode">
 <em class="property">class </em><tt class="descclassname">twilix.fields.</tt><tt class="descname">IntegerNode</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.fields.IntegerNode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Used for nodes containes integer number.</p>
+<dd><p>Used for nodes contain integer number.</p>
 <dl class="method">
 <dt id="twilix.fields.IntegerNode.clean">
 <tt class="descname">clean</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#twilix.fields.IntegerNode.clean" title="Permalink to this definition">¶</a></dt>
@@ -248,7 +262,7 @@ Return value cast to integer if it&#8217;s possible.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">value cast to integer.<p>None if there&#8217;s ValueError.</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">value cast to integer.<p>None if there&#8217;s ValueError.</p>
 </td>
 </tr>
 </tbody>
@@ -260,7 +274,8 @@ Return value cast to integer if it&#8217;s possible.</p>
 <dl class="class">
 <dt id="twilix.fields.JidAttr">
 <em class="property">class </em><tt class="descclassname">twilix.fields.</tt><tt class="descname">JidAttr</tt><big>(</big><em>xmlattr</em>, <em>required=True</em><big>)</big><a class="headerlink" href="#twilix.fields.JidAttr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Jabber id Attribute.</p>
+<dd><p>Jabber id Attribute. Automatically convert an attribute&#8217;s value to the
+MyJID instance</p>
 <dl class="method">
 <dt id="twilix.fields.JidAttr.clean">
 <tt class="descname">clean</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#twilix.fields.JidAttr.clean" title="Permalink to this definition">¶</a></dt>
@@ -269,7 +284,7 @@ Return value cast to integer if it&#8217;s possible.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">value cast to internJID if value isn&#8217;t None or required.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">value cast to internJID if value isn&#8217;t None or required.</td>
 </tr>
 </tbody>
 </table>
@@ -296,10 +311,10 @@ all nodes if xmlnod is None.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">list of relevant elements if node is listed.<p>element otherwise.</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list of relevant elements if node is listed.<p>element otherwise.</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body">ElementParseError</td>
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body">ElementParseError</td>
 </tr>
 </tbody>
 </table>
@@ -310,7 +325,7 @@ all nodes if xmlnod is None.</p>
 <dl class="class">
 <dt id="twilix.fields.StringAttr">
 <em class="property">class </em><tt class="descclassname">twilix.fields.</tt><tt class="descname">StringAttr</tt><big>(</big><em>xmlattr</em>, <em>required=True</em><big>)</big><a class="headerlink" href="#twilix.fields.StringAttr" title="Permalink to this definition">¶</a></dt>
-<dd><p>String attribute.</p>
+<dd><p>Plain string attribute.</p>
 <dl class="method">
 <dt id="twilix.fields.StringAttr.clean">
 <tt class="descname">clean</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#twilix.fields.StringAttr.clean" title="Permalink to this definition">¶</a></dt>
@@ -320,9 +335,9 @@ Raise ElementParseError if there&#8217;s no value but it&#8217;s required.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">value cast to unicode.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">value cast to unicode.</td>
 </tr>
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body">ElementParseError.</td>
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body">ElementParseError.</td>
 </tr>
 </tbody>
 </table>
@@ -339,7 +354,7 @@ Raise ElementParseError if there&#8217;s no value but it&#8217;s required.</p>
 <dl class="class">
 <dt id="twilix.fields.StringNode">
 <em class="property">class </em><tt class="descclassname">twilix.fields.</tt><tt class="descname">StringNode</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.fields.StringNode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Used for nodes contains string.</p>
+<dd><p>Used for nodes contain string.</p>
 <dl class="method">
 <dt id="twilix.fields.StringNode.clean">
 <tt class="descname">clean</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#twilix.fields.StringNode.clean" title="Permalink to this definition">¶</a></dt>
@@ -348,9 +363,9 @@ Raise ElementParseError if there&#8217;s no value but it&#8217;s required.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">value cast to unicode</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">value cast to unicode</td>
 </tr>
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body">ElementParseError if value is None but required.</td>
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body">ElementParseError if value is None but required.</td>
 </tr>
 </tbody>
 </table>
@@ -365,7 +380,7 @@ is empty.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">MyElement with value as content.<p>EmptyElement if value is empty.</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">MyElement with value as content.<p>EmptyElement if value is empty.</p>
 </td>
 </tr>
 </tbody>
@@ -396,7 +411,7 @@ is empty.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -425,12 +440,12 @@ is empty.</p>
         <li class="right" >
           <a href="errors.html" title="Twilix.Errors Documentation"
              >previous</a> |</li>
-        <li><a href="index.html">twilix v0.9 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Twilix 0.9 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2011, JRuDevels.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+        &copy; Copyright 2011, JRuDevels &amp; HiDevLab.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.
     </div>
   </body>
 </html>

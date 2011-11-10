@@ -1,14 +1,15 @@
 from twisted.words.xish.domish import Element
 
 class EmptyStanza(object):   
-    """Stanza without any attributes."""
+    """Dummy stanza to send when nothing to send."""
     pass
 
 class EmptyElement(object):
-    """Element without value."""
+    """Dummy Element."""
     pass
 
 class BreakStanza(object):   
+    """Stanza that breaks handling loop."""
     pass
 
 class MyElement(Element):
@@ -17,9 +18,9 @@ class MyElement(Element):
     Base class for all Elements.
     
     Attributes:
-       attributesProps - dictionary of attribute's name/value.
+       attributesProps - dictionary of attributes names/fields.
        
-       nodesProps - dictionary of node's name/value.
+       nodesProps - dictionary of node's names/fields.
     
     """
     
@@ -54,7 +55,7 @@ class MyElement(Element):
                 
         :returns: class instance with host and kwargs of element
         
-        :raises: WrongElement   
+        :raises: WrongElement
         
         """
         if isinstance(cls.elementUri, (tuple, list)):
@@ -332,6 +333,7 @@ class MyElement(Element):
 
     def getFirstChild(self, name=None):
         """Return first child element with name if exist."""
+        # XXX: Obsolete
         el = [e for e in self.children if not isinstance(e, (str, unicode)) \
               and e.name == name]
         if el:
@@ -339,6 +341,7 @@ class MyElement(Element):
 
     def getFirstChildContent(self, name=None):
         """Return content of first child element with name if exist."""
+        # XXX: Obsolete
         el = self.getFirstChild(name)
         if el is not None:
             return el.content

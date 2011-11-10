@@ -1,4 +1,8 @@
-"""Module implements jabber:iq:version feature."""
+"""Module implements jabber:iq:version feature. (XEP-0092)
+
+You can use this both to get versions of other entities and to
+represent your version to others.
+"""
 
 from twilix.stanzas import Query, MyIq, Iq
 from twilix.disco import Feature
@@ -10,11 +14,14 @@ class VersionQuery(Query):
     Base class for version queries. 
     
     Attributes:
-        client_name -- string node 'name'
+        client_name -- string node 'name' represents a general name of an
+        entity
         
-        client_version -- string node 'version'
+        client_version -- string node 'version' reprsent a version of an
+        entity
         
-        client_os -- string node 'os'
+        client_os -- string node 'os' represent an OS that used to run an
+        entity
         
     """
     elementUri = 'jabber:iq:version'
@@ -57,7 +64,16 @@ class MyVersionQuery(VersionQuery):
 
 class ClientVersion(object):
     """
-    Class for linking with host, dispatcher and query-handlers objects.
+    Version service class. Used to represent your own version to others and
+    to ask others versions.
+
+    :param dispatcher: dispatcher instance to be used with the service.
+
+    :param client_name: client name to be represented as yours.
+
+    :param client_version: client version to be represented as yours.
+
+    :param client_os: client OS to be represented as yours.
     """
     
     def __init__(self, dispatcher, client_name=None, client_version=None,
@@ -69,7 +85,11 @@ class ClientVersion(object):
         self.client_os = client_os
 
     def init(self, disco=None, handlers=None):
-        """Registers handlers and adds version feature in disco."""
+        """Registers handlers and adds version feature in disco.
+        Needs to be called if you want to represent your version to others.
+        
+        :param handlers: extra handlers to handle versions for JIDs that
+        are different from myjid."""
         self.dispatcher.registerHandler((MyVersionQuery, self))
         if handlers is None:
             handlers = ()
@@ -85,7 +105,7 @@ class ClientVersion(object):
         
         :param jid: reciever for get version query
         
-        :param addres: sender for get version query
+        :param from_: sender for get version query (if differs from myjid)
         
         :returns: 
             deferred object which waits for result stanza with version 

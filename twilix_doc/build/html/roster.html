@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Twilix.Roster Documentation &mdash; twilix v0.9 documentation</title>
+    <title>Twilix.Roster Documentation &mdash; Twilix 0.9 documentation</title>
+    
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="twilix v0.9 documentation" href="index.html" />
+    <link rel="top" title="Twilix 0.9 documentation" href="index.html" />
     <link rel="next" title="Twilix.Stanzas Documentation" href="stanzas.html" />
     <link rel="prev" title="Twilix.Register Documentation" href="register.html" /> 
   </head>
@@ -42,7 +45,7 @@
         <li class="right" >
           <a href="register.html" title="Twilix.Register Documentation"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">twilix v0.9 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Twilix 0.9 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -53,11 +56,40 @@
             
   <div class="section" id="module-twilix.roster">
 <span id="twilix-roster-documentation"></span><h1>Twilix.Roster Documentation<a class="headerlink" href="#module-twilix.roster" title="Permalink to this headline">¶</a></h1>
-<p>Module describes roster.</p>
+<p>Module describes client roster iteraction.</p>
+<p>Roster handles a contact list, allows to add or remove contacts.
+Also roster handles contacts statuses and sends signals where some event
+happens.</p>
 <dl class="class">
 <dt id="twilix.roster.Roster">
 <em class="property">class </em><tt class="descclassname">twilix.roster.</tt><tt class="descname">Roster</tt><big>(</big><em>dispatcher</em>, <em>mypresence=None</em><big>)</big><a class="headerlink" href="#twilix.roster.Roster" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class describes interaction dispatcher with roster.</p>
+<p>Signals described here:</p>
+<blockquote>
+<div><p>roster_got: fired when roster is ready to use.</p>
+<p>roster_item_added: fired when roster has a new item.</p>
+<p>roster_item_removed: fired when roster has a removed item.</p>
+<p>contact_available: fired when some contact is appeared online.</p>
+<p>contact_unavailable: fired when some contact goes offline.</p>
+<p>resource_available: the same as for contact_available but
+for separate resource not for whole contact.</p>
+<p>resource_unavailable: the same as for resource_available but when
+contact goes offline.</p>
+<p>resource_changed_status: fired when some resource changed it&#8217;s status
+information.</p>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dispatcher</strong> &#8211; dispatcher for send/receive stanzas</li>
+<li><strong>mypresence</strong> &#8211; set initial presence to mypresence.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="twilix.roster.Roster.addItem">
 <tt class="descname">addItem</tt><big>(</big><em>item</em><big>)</big><a class="headerlink" href="#twilix.roster.Roster.addItem" title="Permalink to this definition">¶</a></dt>
@@ -66,7 +98,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item</strong> &#8211; value of new item</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item</strong> &#8211; value of new item</td>
 </tr>
 </tbody>
 </table>
@@ -99,7 +131,7 @@ roster_got signal to dispatcher (from pydispatch module)</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>query</strong> &#8211; instance with roster items</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>query</strong> &#8211; instance with roster items</td>
 </tr>
 </tbody>
 </table>
@@ -108,9 +140,8 @@ roster_got signal to dispatcher (from pydispatch module)</p>
 <dl class="method">
 <dt id="twilix.roster.Roster.init">
 <tt class="descname">init</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.roster.Roster.init" title="Permalink to this definition">¶</a></dt>
-<dd><p>Registers handlers for roster stanzas.
-Links roster_got signal with instance method.
-Sends roster get query.</p>
+<dd><p>Register necessary handlers to handle roster queries, send a query
+to receive a roster.</p>
 </dd></dl>
 
 <dl class="method">
@@ -121,7 +152,7 @@ Sends roster get query.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item</strong> &#8211; value of removed item</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item</strong> &#8211; value of removed item</td>
 </tr>
 </tbody>
 </table>
@@ -135,7 +166,7 @@ Sends roster get query.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>presence</strong> &#8211; new value</li>
 <li><strong>send</strong> &#8211; boolean, true for send new presence</li>
 </ul>
@@ -166,46 +197,6 @@ Sends roster get query.</p>
 <p class="last">groups &#8211; string attribute &#8216;group&#8217;</p>
 </dd>
 </dl>
-<dl class="method">
-<dt id="twilix.roster.RosterItem.addGroup">
-<tt class="descname">addGroup</tt><big>(</big><em>group_name</em><big>)</big><a class="headerlink" href="#twilix.roster.RosterItem.addGroup" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds new group in roster&#8217;s list of groups</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>group_name</strong> &#8211; name of new group.</td>
-</tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">True if group was added<p>None if same group already exist.</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="twilix.roster.RosterItem.nick">
-<tt class="descname">nick</tt><a class="headerlink" href="#twilix.roster.RosterItem.nick" title="Permalink to this definition">¶</a></dt>
-<dd><p>Property for nickname attribute</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="twilix.roster.RosterItem.removeGroup">
-<tt class="descname">removeGroup</tt><big>(</big><em>group_name</em><big>)</big><a class="headerlink" href="#twilix.roster.RosterItem.removeGroup" title="Permalink to this definition">¶</a></dt>
-<dd><p>Deletes group from roster&#8217;s list of groups</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>group_name</strong> &#8211; name of deleted group.</td>
-</tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">True if group was deleted.<p>None if group not exist.</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="class">
@@ -266,12 +257,9 @@ Send info about unavailability.</p>
 <dt id="twilix.roster.RosterQuery">
 <em class="property">class </em><tt class="descclassname">twilix.roster.</tt><tt class="descname">RosterQuery</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.roster.RosterQuery" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class for xml roster queries. Inheritor of Query.</p>
-<dl class="docutils">
-<dt>Class attributes:</dt>
-<dd><p class="first">elementUri &#8211; identificator/filter for xml nodes</p>
-<p class="last">items &#8211; list of RosterItem instances</p>
-</dd>
-</dl>
+<p>Class attributes:</p>
+<blockquote>
+<div>items &#8211; list of RosterItem instances (i.e. list of contacts)</div></blockquote>
 <dl class="method">
 <dt id="twilix.roster.RosterQuery.getHandler">
 <tt class="descname">getHandler</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.roster.RosterQuery.getHandler" title="Permalink to this definition">¶</a></dt>
@@ -281,7 +269,7 @@ Not acceptable. Raise error stanza.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body">NotAcceptableException</td>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body">NotAcceptableException</td>
 </tr>
 </tbody>
 </table>
@@ -290,8 +278,7 @@ Not acceptable. Raise error stanza.</p>
 <dl class="method">
 <dt id="twilix.roster.RosterQuery.setHandler">
 <tt class="descname">setHandler</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.roster.RosterQuery.setHandler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method for handle set-type roster queries.
-Calls updateRoster method from host class.</p>
+<dd><p>Update roster when server pushes some changes.</p>
 </dd></dl>
 
 </dd></dl>
@@ -318,7 +305,7 @@ Calls updateRoster method from host class.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -347,12 +334,12 @@ Calls updateRoster method from host class.</p>
         <li class="right" >
           <a href="register.html" title="Twilix.Register Documentation"
              >previous</a> |</li>
-        <li><a href="index.html">twilix v0.9 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Twilix 0.9 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2011, JRuDevels.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+        &copy; Copyright 2011, JRuDevels &amp; HiDevLab.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.
     </div>
   </body>
 </html>

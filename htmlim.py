@@ -2,7 +2,7 @@
 Realize elements of XHTML-IM protocol. Provides the ability to send 
 messages with simple html markup.
 """
-from twilix.base import VElement
+from twilix.base.velement import VElement
 from twilix import fields
 
 class HtmlHead(VElement):

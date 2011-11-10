@@ -1,6 +1,9 @@
 """
 Module discribes stanza-class and basic types of used stanzas. 
 There are Message, Presence, Iq classes inherit from Stanza.
+
+Stanzas can be used for incoming stanzas validation and parsing and to
+construct your own XML-stanza to be sent into an xmlstream.
 """
 from twisted.internet.defer import Deferred
 from twisted.words.xish.domish import Element
@@ -15,6 +18,8 @@ class Stanza(VElement):
     """
     Extends VElement class from twilix.base.
     Contains fields corresponding to the protocol.
+
+    Base class for all base XMPP Stanzas (iq, message, presence).
     
     Attributes:
         to -- jid attribue 'to'
@@ -44,7 +49,7 @@ class Stanza(VElement):
     def __init__(self, *args, **kwargs):
         """
         Makes a superclass intialization and set 
-        attributes for deferred-style stanzas.        
+        attributes for deferred-style stanzas.
         """
         super(Stanza, self).__init__(*args, **kwargs)
         self.result_class = kwargs.get('result_class', None)
@@ -132,7 +137,7 @@ class Iq(Stanza):
 
     def clean_id(self, value):
         """
-        Set correct value for invalid id.
+        Set correct value if id was not found.
         Used for validation of id.    
         """
         if value is None:
@@ -146,7 +151,7 @@ class Iq(Stanza):
                   uri=self.uri)
 
 class MyValidator(object):
-    """Class for filter stanzas by 'to' value."""
+    """Class for filter stanzas that was sent to myjid."""
     def clean_to(self, v):
         """
         Method raises exception if receiver jid is not host jid.
@@ -159,7 +164,7 @@ class MyValidator(object):
         return v
 
 class MyIq(Iq, MyValidator):
-    """Class-inheritor from Iq and MyValidator."""
+    """Class to filter IQs that was sent to myjid."""
     pass
 
 class Message(Stanza):

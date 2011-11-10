@@ -4,7 +4,7 @@ from myelement import MyElement
 def get_declared_fields(bases, attrs):
     """
     Getter for metaclass.
-    Make lists of tuples with field name and value of attributes 
+    Make lists of tuples with field name and field class of attributes 
     and nodes.
     
     :param bases: list of parents.
@@ -42,7 +42,13 @@ class DeclarativeFieldsMetaClass(type):
 class VElement(MyElement):
     """
     Base class for stanzas and other items.
-    Uses DeclarativeFieldsMetaClass as metaclass.    
+    Uses DeclarativeFieldsMetaClass as metaclass to parse fields declarations
+    and to collect them to the attributesProp and nodesProps dictionaries.
+
+    VElement validated based on elementName which is an XML tag name,
+    elementUri which is an XML namespace (could be a string or a iterable of
+    strings which means that any of that namespaces are valid for this element)
+    and based on it's attributes and nodes that declared by using fields.
     """
     elementName = None
     elementUri = None
@@ -51,7 +57,12 @@ class VElement(MyElement):
     __metaclass__ = DeclarativeFieldsMetaClass
 
     def __init__(self, **kwargs):
-        """Initialize VElement object."""
+        """Initialize VElement object. You can set any value for any element
+        attribute here.
+        
+        For example::
+            iq = Iq(type_='set', from_='me')
+        """
         uri = kwargs.get('uri', None)
         name = kwargs.get('el_name', self.elementName)
         if uri is None and isinstance(self.elementUri, (str, unicode)):
@@ -103,6 +114,7 @@ class VElement(MyElement):
         Returns el if it's instance of class and create element from el
         of required type.
         """
+        # XXX: obsolete
         if isinstance(el, cls):
             return el
         return cls.createFromElement(el)

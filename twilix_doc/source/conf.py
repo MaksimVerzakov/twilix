@@ -16,10 +16,7 @@ import sys, os
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
-sys.path.append("/home/maxim/projects/twilix/")
-sys.path.append("/home/maxim/projects/")
-sys.path.append("/home/maxim/projects/twilix")
+sys.path.insert(0, os.path.abspath('../../..'))
 
 # -- General configuration -----------------------------------------------------
 
@@ -43,8 +40,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'twilix'
-copyright = u'2011, JRuDevels'
+project = u'Twilix'
+copyright = u'2011, JRuDevels & HiDevLab'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

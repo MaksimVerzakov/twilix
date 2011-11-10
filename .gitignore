@@ -1,2 +1,4 @@
 *.pyc
 _trial*
+.*
+_static

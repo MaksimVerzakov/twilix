@@ -7,6 +7,7 @@ DESCRIPTION
 
 AUTHORS
     JRuDevels
+    HiDevLab
 
 LICENSE
     LGPL v3

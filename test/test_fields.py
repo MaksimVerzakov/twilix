@@ -1,6 +1,6 @@
 import unittest
 
-import twilix import fields
+from twilix import fields
 
 class TestAttributeProp(unittest.TestCase):
     

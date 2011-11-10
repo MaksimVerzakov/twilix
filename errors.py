@@ -1,4 +1,22 @@
-"""Describe all expected classes of errors."""
+"""Describe all expected classes of errors.
+
+This module is a wrapper for an XMPP error stanzas to Python's exceptions and
+vice-versa.
+
+When you want to answer with an error in your handler you can just raise an
+exception like this: ::
+
+    raise NotAllowedError, "Use another condition"
+
+When you want to check if some request returns an error you can just catch
+an exception like any other Python exception::
+
+    try:
+        version = yield self.version.getVersion('example.net')
+    except FeatureNotImplementedError:
+        sys.stderr.write('example.net does not support version request')
+
+"""
 import string
 import sys
 
@@ -60,7 +78,7 @@ module = sys.modules[__name__]
 def condition_to_name(condition):
     """
     Bring condition to CapWords style.
-    Used to define standart exception from rfc 3920.
+    Used to define standart exception from the RFC-3920.
     
     :returns: condition in CapWords style.
     """
@@ -164,7 +182,7 @@ class Error(VElement):
     def clean_type_(self, value):
         """
         Cut off errors with wrong type.
-        Used for valdaion.
+        Used for validaion.
         
         :returns: value if it has correct type.
         
@@ -178,7 +196,7 @@ class Error(VElement):
 class AppError(Error):
     """
     Extends class Error.
-    Contains field corresponding to the rfc 3920.
+    Contains field corresponding to the RFC-3920.
     
     Attributes:
         app_text -- string node 'text'

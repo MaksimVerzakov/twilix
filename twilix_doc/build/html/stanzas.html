@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Twilix.Stanzas Documentation &mdash; twilix v0.9 documentation</title>
+    <title>Twilix.Stanzas Documentation &mdash; Twilix 0.9 documentation</title>
+    
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="twilix v0.9 documentation" href="index.html" />
+    <link rel="top" title="Twilix 0.9 documentation" href="index.html" />
     <link rel="next" title="Twilix.Utils Documentation" href="utils.html" />
     <link rel="prev" title="Twilix.Roster Documentation" href="roster.html" /> 
   </head>
@@ -42,7 +45,7 @@
         <li class="right" >
           <a href="roster.html" title="Twilix.Roster Documentation"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">twilix v0.9 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Twilix 0.9 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -55,6 +58,8 @@
 <span id="twilix-stanzas-documentation"></span><h1>Twilix.Stanzas Documentation<a class="headerlink" href="#module-twilix.stanzas" title="Permalink to this headline">¶</a></h1>
 <p>Module discribes stanza-class and basic types of used stanzas. 
 There are Message, Presence, Iq classes inherit from Stanza.</p>
+<p>Stanzas can be used for incoming stanzas validation and parsing and to
+construct your own XML-stanza to be sent into an xmlstream.</p>
 <dl class="class">
 <dt id="twilix.stanzas.ErrorStanza">
 <em class="property">class </em><tt class="descclassname">twilix.stanzas.</tt><tt class="descname">ErrorStanza</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.stanzas.ErrorStanza" title="Permalink to this definition">¶</a></dt>
@@ -73,7 +78,7 @@ Contains fields corresponding to the protocol.</p>
 <dl class="method">
 <dt id="twilix.stanzas.Iq.clean_id">
 <tt class="descname">clean_id</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#twilix.stanzas.Iq.clean_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set correct value for invalid id.
+<dd><p>Set correct value if id was not found.
 Used for validation of id.</p>
 </dd></dl>
 
@@ -87,7 +92,7 @@ Raises exception for invalid stanzas.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body">ElementParseError</td>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body">ElementParseError</td>
 </tr>
 </tbody>
 </table>
@@ -127,13 +132,13 @@ Sets some correct type for invalid stanzas.</p>
 <dl class="class">
 <dt id="twilix.stanzas.MyIq">
 <em class="property">class </em><tt class="descclassname">twilix.stanzas.</tt><tt class="descname">MyIq</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.stanzas.MyIq" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class-inheritor from Iq and MyValidator.</p>
+<dd><p>Class to filter IQs that was sent to myjid.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="twilix.stanzas.MyValidator">
 <em class="property">class </em><tt class="descclassname">twilix.stanzas.</tt><tt class="descname">MyValidator</tt><a class="headerlink" href="#twilix.stanzas.MyValidator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class for filter stanzas by &#8216;to&#8217; value.</p>
+<dd><p>Class for filter stanzas that was sent to myjid.</p>
 <dl class="method">
 <dt id="twilix.stanzas.MyValidator.clean_to">
 <tt class="descname">clean_to</tt><big>(</big><em>v</em><big>)</big><a class="headerlink" href="#twilix.stanzas.MyValidator.clean_to" title="Permalink to this definition">¶</a></dt>
@@ -142,7 +147,7 @@ Sets some correct type for invalid stanzas.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body">WrongElement</td>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body">WrongElement</td>
 </tr>
 </tbody>
 </table>
@@ -197,17 +202,17 @@ raises an exception if created failed</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>el</strong> &#8211; is a source for creating</li>
 <li><strong>host</strong> &#8211; host for new element (default None)</li>
 <li><strong>dont_defer</strong> &#8211; boolean flag for deferred elements</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body"><p class="first">WrongElement</p>
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body"><p class="first">WrongElement</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">new element creating from source</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">new element creating from source</p>
 </td>
 </tr>
 </tbody>
@@ -233,6 +238,7 @@ raises an exception if created failed</p>
 <em class="property">class </em><tt class="descclassname">twilix.stanzas.</tt><tt class="descname">Stanza</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.stanzas.Stanza" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extends VElement class from twilix.base.
 Contains fields corresponding to the protocol.</p>
+<p>Base class for all base XMPP Stanzas (iq, message, presence).</p>
 <dl class="docutils">
 <dt>Attributes:</dt>
 <dd><p class="first">to &#8211; jid attribue &#8216;to&#8217;</p>
@@ -258,9 +264,9 @@ Used to make Error Stanza as reply on any Stanza.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>content</strong> &#8211; Error element.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>content</strong> &#8211; Error element.</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">Error Stanza with Error element.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Error Stanza with Error element.</td>
 </tr>
 </tbody>
 </table>
@@ -290,7 +296,7 @@ Used to make Error Stanza as reply on any Stanza.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -319,12 +325,12 @@ Used to make Error Stanza as reply on any Stanza.</p>
         <li class="right" >
           <a href="roster.html" title="Twilix.Roster Documentation"
              >previous</a> |</li>
-        <li><a href="index.html">twilix v0.9 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Twilix 0.9 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2011, JRuDevels.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+        &copy; Copyright 2011, JRuDevels &amp; HiDevLab.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.
     </div>
   </body>
 </html>

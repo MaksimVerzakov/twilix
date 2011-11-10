@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Twilix.Base Documentation &mdash; twilix v0.9 documentation</title>
+    <title>Twilix.Base Documentation &mdash; Twilix 0.9 documentation</title>
+    
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="twilix v0.9 documentation" href="index.html" />
+    <link rel="top" title="Twilix 0.9 documentation" href="index.html" />
     <link rel="next" title="Twilix.Disco Documentation" href="disco.html" />
     <link rel="prev" title="Welcome to twilix’s documentation!" href="index.html" /> 
   </head>
@@ -42,7 +45,7 @@
         <li class="right" >
           <a href="index.html" title="Welcome to twilix’s documentation!"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">twilix v0.9 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Twilix 0.9 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -53,142 +56,135 @@
             
   <div class="section" id="module-twilix.base">
 <span id="twilix-base-documentation"></span><h1>Twilix.Base Documentation<a class="headerlink" href="#module-twilix.base" title="Permalink to this headline">¶</a></h1>
-<p>Module contains base classes for all stanzas and other elements.</p>
+<div class="section" id="module-twilix.base.myelement">
+<span id="twilix-base-myelement"></span><h2>Twilix.Base.MyElement<a class="headerlink" href="#module-twilix.base.myelement" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="twilix.base.DeclarativeFieldsMetaClass">
-<em class="property">class </em><tt class="descclassname">twilix.base.</tt><tt class="descname">DeclarativeFieldsMetaClass</tt><a class="headerlink" href="#twilix.base.DeclarativeFieldsMetaClass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Metaclass for VElement.
-Set get_declared_fields as getter for fields &#8216;attributesProps&#8217; and
-&#8216;nodesProps&#8217;.</p>
-</dd></dl>
-
-<dl class="exception">
-<dt id="twilix.base.ElementParseError">
-<em class="property">exception </em><tt class="descclassname">twilix.base.</tt><tt class="descname">ElementParseError</tt><a class="headerlink" href="#twilix.base.ElementParseError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Raises when attribute is required and value is None.</p>
+<dt id="twilix.base.myelement.BreakStanza">
+<em class="property">class </em><tt class="descclassname">twilix.base.myelement.</tt><tt class="descname">BreakStanza</tt><a class="headerlink" href="#twilix.base.myelement.BreakStanza" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stanza that breaks handling loop.</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="twilix.base.EmptyElement">
-<em class="property">class </em><tt class="descclassname">twilix.base.</tt><tt class="descname">EmptyElement</tt><a class="headerlink" href="#twilix.base.EmptyElement" title="Permalink to this definition">¶</a></dt>
-<dd><p>Element without value.</p>
+<dt id="twilix.base.myelement.EmptyElement">
+<em class="property">class </em><tt class="descclassname">twilix.base.myelement.</tt><tt class="descname">EmptyElement</tt><a class="headerlink" href="#twilix.base.myelement.EmptyElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dummy Element.</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="twilix.base.EmptyStanza">
-<em class="property">class </em><tt class="descclassname">twilix.base.</tt><tt class="descname">EmptyStanza</tt><a class="headerlink" href="#twilix.base.EmptyStanza" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stanza without any attributes.</p>
+<dt id="twilix.base.myelement.EmptyStanza">
+<em class="property">class </em><tt class="descclassname">twilix.base.myelement.</tt><tt class="descname">EmptyStanza</tt><a class="headerlink" href="#twilix.base.myelement.EmptyStanza" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dummy stanza to send when nothing to send.</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="twilix.base.MyElement">
-<em class="property">class </em><tt class="descclassname">twilix.base.</tt><tt class="descname">MyElement</tt><big>(</big><em>qname</em>, <em>defaultUri=None</em>, <em>attribs=None</em>, <em>localPrefixes=None</em><big>)</big><a class="headerlink" href="#twilix.base.MyElement" title="Permalink to this definition">¶</a></dt>
+<dt id="twilix.base.myelement.MyElement">
+<em class="property">class </em><tt class="descclassname">twilix.base.myelement.</tt><tt class="descname">MyElement</tt><big>(</big><em>qname</em>, <em>defaultUri=None</em>, <em>attribs=None</em>, <em>localPrefixes=None</em><big>)</big><a class="headerlink" href="#twilix.base.myelement.MyElement" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extend class Element from twisted.words.xish.domish.
 Base class for all Elements.</p>
 <dl class="docutils">
 <dt>Attributes:</dt>
-<dd><p class="first">attributesProps - dictionary of attribute&#8217;s name/value.</p>
-<p class="last">nodesProps - dictionary of node&#8217;s name/value.</p>
+<dd><p class="first">attributesProps - dictionary of attributes names/fields.</p>
+<p class="last">nodesProps - dictionary of node&#8217;s names/fields.</p>
 </dd>
 </dl>
 <dl class="method">
-<dt id="twilix.base.MyElement.addElement">
-<tt class="descname">addElement</tt><big>(</big><em>name</em>, <em>defaultUri=None</em>, <em>content=None</em><big>)</big><a class="headerlink" href="#twilix.base.MyElement.addElement" title="Permalink to this definition">¶</a></dt>
+<dt id="twilix.base.myelement.MyElement.addElement">
+<tt class="descname">addElement</tt><big>(</big><em>name</em>, <em>defaultUri=None</em>, <em>content=None</em><big>)</big><a class="headerlink" href="#twilix.base.myelement.MyElement.addElement" title="Permalink to this definition">¶</a></dt>
 <dd><p>Append element to childrens. 
 Return element with specified name, Uri and content.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="twilix.base.MyElement.cleanAttribute">
-<tt class="descname">cleanAttribute</tt><big>(</big><em>attrib</em><big>)</big><a class="headerlink" href="#twilix.base.MyElement.cleanAttribute" title="Permalink to this definition">¶</a></dt>
+<dt id="twilix.base.myelement.MyElement.cleanAttribute">
+<tt class="descname">cleanAttribute</tt><big>(</big><em>attrib</em><big>)</big><a class="headerlink" href="#twilix.base.myelement.MyElement.cleanAttribute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete attribute if it&#8217;s exist.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="twilix.base.MyElement.content">
-<tt class="descname">content</tt><a class="headerlink" href="#twilix.base.MyElement.content" title="Permalink to this definition">¶</a></dt>
+<dt id="twilix.base.myelement.MyElement.content">
+<tt class="descname">content</tt><a class="headerlink" href="#twilix.base.myelement.MyElement.content" title="Permalink to this definition">¶</a></dt>
 <dd><p>Getter for property descriptor.
 Return content.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">unicode content</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">unicode content</td>
 </tr>
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body">ValueError</td>
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body">ValueError</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="twilix.base.MyElement.createFromElement">
-<em class="property">classmethod </em><tt class="descname">createFromElement</tt><big>(</big><em>el</em>, <em>host=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.base.MyElement.createFromElement" title="Permalink to this definition">¶</a></dt>
+<dt id="twilix.base.myelement.MyElement.createFromElement">
+<em class="property">classmethod </em><tt class="descname">createFromElement</tt><big>(</big><em>el</em>, <em>host=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.base.myelement.MyElement.createFromElement" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make class instance of element if it&#8217;s suits to class.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">class instance with host and kwargs of element</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">class instance with host and kwargs of element</td>
 </tr>
-<tr class="field"><th class="field-name">Raises :</th><td class="field-body">WrongElement</td>
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body">WrongElement</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
-<dt id="twilix.base.MyElement.getFirstChild">
-<tt class="descname">getFirstChild</tt><big>(</big><em>name=None</em><big>)</big><a class="headerlink" href="#twilix.base.MyElement.getFirstChild" title="Permalink to this definition">¶</a></dt>
+<dt id="twilix.base.myelement.MyElement.getFirstChild">
+<tt class="descname">getFirstChild</tt><big>(</big><em>name=None</em><big>)</big><a class="headerlink" href="#twilix.base.myelement.MyElement.getFirstChild" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return first child element with name if exist.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="twilix.base.MyElement.getFirstChildContent">
-<tt class="descname">getFirstChildContent</tt><big>(</big><em>name=None</em><big>)</big><a class="headerlink" href="#twilix.base.MyElement.getFirstChildContent" title="Permalink to this definition">¶</a></dt>
+<dt id="twilix.base.myelement.MyElement.getFirstChildContent">
+<tt class="descname">getFirstChildContent</tt><big>(</big><em>name=None</em><big>)</big><a class="headerlink" href="#twilix.base.myelement.MyElement.getFirstChildContent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return content of first child element with name if exist.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="twilix.base.MyElement.link">
-<tt class="descname">link</tt><big>(</big><em>el</em>, <em>unique=True</em><big>)</big><a class="headerlink" href="#twilix.base.MyElement.link" title="Permalink to this definition">¶</a></dt>
+<dt id="twilix.base.myelement.MyElement.link">
+<tt class="descname">link</tt><big>(</big><em>el</em>, <em>unique=True</em><big>)</big><a class="headerlink" href="#twilix.base.myelement.MyElement.link" title="Permalink to this definition">¶</a></dt>
 <dd><p>Replace child element with the same name and uri as element
 if uniqueness is required or just add element.</p>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="twilix.base.MyElement.makeFromElement">
-<em class="property">classmethod </em><tt class="descname">makeFromElement</tt><big>(</big><em>el</em><big>)</big><a class="headerlink" href="#twilix.base.MyElement.makeFromElement" title="Permalink to this definition">¶</a></dt>
+<dt id="twilix.base.myelement.MyElement.makeFromElement">
+<em class="property">classmethod </em><tt class="descname">makeFromElement</tt><big>(</big><em>el</em><big>)</big><a class="headerlink" href="#twilix.base.myelement.MyElement.makeFromElement" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make new element according to class that calls
 this method from element el.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>el</strong> (<em>Element</em>) &#8211; element to copy</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>el</strong> (<em>Element</em>) &#8211; element to copy</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">myel &#8211; copy of element el</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">myel &#8211; copy of element el</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
-<dt id="twilix.base.MyElement.removeChilds">
-<tt class="descname">removeChilds</tt><big>(</big><em>name=None</em>, <em>uri=None</em>, <em>element=None</em><big>)</big><a class="headerlink" href="#twilix.base.MyElement.removeChilds" title="Permalink to this definition">¶</a></dt>
+<dt id="twilix.base.myelement.MyElement.removeChilds">
+<tt class="descname">removeChilds</tt><big>(</big><em>name=None</em>, <em>uri=None</em>, <em>element=None</em><big>)</big><a class="headerlink" href="#twilix.base.myelement.MyElement.removeChilds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove all content and child elements appropriate 
 to name-uri pair.</p>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="twilix.base.MyElement.topClass">
-<em class="property">classmethod </em><tt class="descname">topClass</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.base.MyElement.topClass" title="Permalink to this definition">¶</a></dt>
+<dt id="twilix.base.myelement.MyElement.topClass">
+<em class="property">classmethod </em><tt class="descname">topClass</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.base.myelement.MyElement.topClass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return top class in class hierarchy.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">cls if class have not parent class<p>top class of parent class otherwise</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">cls if class have not parent class<p>top class of parent class otherwise</p>
 </td>
 </tr>
 </tbody>
@@ -196,14 +192,14 @@ to name-uri pair.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="twilix.base.MyElement.topElement">
-<tt class="descname">topElement</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.base.MyElement.topElement" title="Permalink to this definition">¶</a></dt>
+<dt id="twilix.base.myelement.MyElement.topElement">
+<tt class="descname">topElement</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.base.myelement.MyElement.topElement" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return top element in elements hierarchy.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">self if instance have not parent elements<p>top element of parent element otherwise</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">self if instance have not parent elements<p>top element of parent element otherwise</p>
 </td>
 </tr>
 </tbody>
@@ -211,49 +207,77 @@ to name-uri pair.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="twilix.base.MyElement.validate">
-<tt class="descname">validate</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.base.MyElement.validate" title="Permalink to this definition">¶</a></dt>
+<dt id="twilix.base.myelement.MyElement.validate">
+<tt class="descname">validate</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.base.myelement.MyElement.validate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate all attributes.</p>
 </dd></dl>
 
 </dd></dl>
 
+</div>
+<div class="section" id="module-twilix.base.velement">
+<span id="twilix-base-velement"></span><h2>Twilix.Base.VElement<a class="headerlink" href="#module-twilix.base.velement" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="twilix.base.VElement">
-<em class="property">class </em><tt class="descclassname">twilix.base.</tt><tt class="descname">VElement</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.base.VElement" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base class for stanzas and other items.
-Uses DeclarativeFieldsMetaClass as metaclass.</p>
+<dt id="twilix.base.velement.DeclarativeFieldsMetaClass">
+<em class="property">class </em><tt class="descclassname">twilix.base.velement.</tt><tt class="descname">DeclarativeFieldsMetaClass</tt><a class="headerlink" href="#twilix.base.velement.DeclarativeFieldsMetaClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Metaclass for VElement.
+Set get_declared_fields as getter for fields &#8216;attributesProps&#8217; and
+&#8216;nodesProps&#8217;.</p>
 </dd></dl>
 
-<dl class="exception">
-<dt id="twilix.base.WrongElement">
-<em class="property">exception </em><tt class="descclassname">twilix.base.</tt><tt class="descname">WrongElement</tt><a class="headerlink" href="#twilix.base.WrongElement" title="Permalink to this definition">¶</a></dt>
-<dd><p>Raises when there is invalid element.</p>
+<dl class="class">
+<dt id="twilix.base.velement.VElement">
+<em class="property">class </em><tt class="descclassname">twilix.base.velement.</tt><tt class="descname">VElement</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.base.velement.VElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for stanzas and other items.
+Uses DeclarativeFieldsMetaClass as metaclass to parse fields declarations
+and to collect them to the attributesProp and nodesProps dictionaries.</p>
+<p>VElement validated based on elementName which is an XML tag name,
+elementUri which is an XML namespace (could be a string or a iterable of
+strings which means that any of that namespaces are valid for this element)
+and based on it&#8217;s attributes and nodes that declared by using fields.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="twilix.base.get_declared_fields">
-<tt class="descclassname">twilix.base.</tt><tt class="descname">get_declared_fields</tt><big>(</big><em>bases</em>, <em>attrs</em><big>)</big><a class="headerlink" href="#twilix.base.get_declared_fields" title="Permalink to this definition">¶</a></dt>
+<dt id="twilix.base.velement.get_declared_fields">
+<tt class="descclassname">twilix.base.velement.</tt><tt class="descname">get_declared_fields</tt><big>(</big><em>bases</em>, <em>attrs</em><big>)</big><a class="headerlink" href="#twilix.base.velement.get_declared_fields" title="Permalink to this definition">¶</a></dt>
 <dd><p>Getter for metaclass.
-Make lists of tuples with field name and value of attributes 
+Make lists of tuples with field name and field class of attributes 
 and nodes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>bases</strong> &#8211; list of parents.</li>
 <li><strong>attrs</strong> &#8211; list of attributes.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">dictionaries of field_name/value pair for attributes and nodes.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">dictionaries of field_name/value pair for attributes and nodes.</p>
 </td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
+</div>
+<div class="section" id="module-twilix.base.exceptions">
+<span id="twilix-base-exceptions"></span><h2>Twilix.Base.Exceptions<a class="headerlink" href="#module-twilix.base.exceptions" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="twilix.base.exceptions.ElementParseError">
+<em class="property">exception </em><tt class="descclassname">twilix.base.exceptions.</tt><tt class="descname">ElementParseError</tt><a class="headerlink" href="#twilix.base.exceptions.ElementParseError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raises when some error was aquired while stanza pasring, e.g. attribute
+or node is required but not given. An error stanza with the bad-request
+condition will be returned if such exception will be raised.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="twilix.base.exceptions.WrongElement">
+<em class="property">exception </em><tt class="descclassname">twilix.base.exceptions.</tt><tt class="descname">WrongElement</tt><a class="headerlink" href="#twilix.base.exceptions.WrongElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raises when an element declaration can&#8217;t be compared with the given one.</p>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -262,6 +286,16 @@ and nodes.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Twilix.Base Documentation</a><ul>
+<li><a class="reference internal" href="#module-twilix.base.myelement">Twilix.Base.MyElement</a></li>
+<li><a class="reference internal" href="#module-twilix.base.velement">Twilix.Base.VElement</a></li>
+<li><a class="reference internal" href="#module-twilix.base.exceptions">Twilix.Base.Exceptions</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="index.html"
                         title="previous chapter">Welcome to twilix&#8217;s documentation!</a></p>
@@ -276,7 +310,7 @@ and nodes.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -305,12 +339,12 @@ and nodes.</p>
         <li class="right" >
           <a href="index.html" title="Welcome to twilix’s documentation!"
              >previous</a> |</li>
-        <li><a href="index.html">twilix v0.9 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Twilix 0.9 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2011, JRuDevels.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+        &copy; Copyright 2011, JRuDevels &amp; HiDevLab.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.
     </div>
   </body>
 </html>

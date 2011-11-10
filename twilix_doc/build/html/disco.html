@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Twilix.Disco Documentation &mdash; twilix v0.9 documentation</title>
+    <title>Twilix.Disco Documentation &mdash; Twilix 0.9 documentation</title>
+    
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="twilix v0.9 documentation" href="index.html" />
+    <link rel="top" title="Twilix 0.9 documentation" href="index.html" />
     <link rel="next" title="Twilix.Dispatcher Documentation" href="dispatcher.html" />
     <link rel="prev" title="Twilix.Base Documentation" href="base.html" /> 
   </head>
@@ -42,7 +45,7 @@
         <li class="right" >
           <a href="base.html" title="Twilix.Base Documentation"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">twilix v0.9 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Twilix 0.9 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -53,7 +56,9 @@
             
   <div class="section" id="module-twilix.disco">
 <span id="twilix-disco-documentation"></span><h1>Twilix.Disco Documentation<a class="headerlink" href="#module-twilix.disco" title="Permalink to this headline">¶</a></h1>
-<p>Contains classes that realize service discovery.</p>
+<p>Contains classes that implement service discovery. (XEP-0030)</p>
+<p>You can use it to get disco items or info from another jabber entities and to
+represent your own items and feature to others.</p>
 <dl class="class">
 <dt id="twilix.disco.CapsElement">
 <em class="property">class </em><tt class="descclassname">twilix.disco.</tt><tt class="descname">CapsElement</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.disco.CapsElement" title="Permalink to this definition">¶</a></dt>
@@ -62,9 +67,9 @@ Describe node for entity capabilities with fields that corresponds
 to the protocol.</p>
 <dl class="docutils">
 <dt>Attributes:</dt>
-<dd><p class="first">hash_ - string attribute</p>
-<p>node &#8211; string attribute</p>
-<p class="last">ver &#8211; string attribute</p>
+<dd><p class="first">hash_ - string attribute contains features hash type</p>
+<p>node &#8211; string attribute contains caps node</p>
+<p class="last">ver &#8211; string attribute contains features hash</p>
 </dd>
 </dl>
 </dd></dl>
@@ -73,23 +78,47 @@ to the protocol.</p>
 <dt id="twilix.disco.Disco">
 <em class="property">class </em><tt class="descclassname">twilix.disco.</tt><tt class="descname">Disco</tt><big>(</big><em>dispatcher</em><big>)</big><a class="headerlink" href="#twilix.disco.Disco" title="Permalink to this definition">¶</a></dt>
 <dd><p>Describe interaction dispatcher with service discovery.</p>
+<p>You can set your info or items using attributes static_info and
+static_items which are a dictionaries keys of which are nodes and
+values are instances of DiscoInfoQuery or DiscoItemsQuery appropriately</p>
+<p>For the root node you should use attributes root_info and root_items in
+the same way.</p>
+<p>To implement some dynamic nodes you should use handler param for the
+init method where you can pass your own Disco handlers which will
+generate any answers in runtime based on your criterias.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dispatcher</strong> &#8211; dispatcher instance to use with the service.</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="twilix.disco.Disco.getCapsHash">
 <tt class="descname">getCapsHash</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.disco.Disco.getCapsHash" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return hash of identities and features in base64 format. 
-Used to understand what capabilities client has.</p>
+<dd><p>Calculate and return hash of identities and features in base64 format 
+based on own identities and features.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="twilix.disco.Disco.getInfo">
 <tt class="descname">getInfo</tt><big>(</big><em>jid</em>, <em>node=None</em>, <em>from_=None</em><big>)</big><a class="headerlink" href="#twilix.disco.Disco.getInfo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Send get iq with DiscoInfoQuery as child to dispatcher.
-Return deferred object with the result.</p>
+<dd><p>Get disco info from another entity.
+Return deferred object with the result of type DiscoInfoQuery.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">query.iq.deferred - deferrer object with result or error.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>jid</strong> &#8211; JID of the entity to get items from.</li>
+<li><strong>node</strong> &#8211; node name to get items from.</li>
+<li><strong>from</strong> &#8211; set some specific from address. Uses myjid if none given.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">query.iq.deferred - deferrer object with result or error.</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -98,13 +127,21 @@ Return deferred object with the result.</p>
 <dl class="method">
 <dt id="twilix.disco.Disco.getItems">
 <tt class="descname">getItems</tt><big>(</big><em>jid</em>, <em>node=None</em>, <em>from_=None</em><big>)</big><a class="headerlink" href="#twilix.disco.Disco.getItems" title="Permalink to this definition">¶</a></dt>
-<dd><p>Send get iq with DiscoItemsQuery as child to dispatcher.
-Return deferred object with the result.</p>
+<dd><p>Get disco items from another entity.
+Return deferred object with the result of type DiscoItemsQuery.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">query.iq.deferred - deferrer object with result or error.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>jid</strong> &#8211; JID of the entity to get items from.</li>
+<li><strong>node</strong> &#8211; node name to get items from.</li>
+<li><strong>from</strong> &#8211; set some specific from address. Uses myjid if none given.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">query.iq.deferred - deferrer object with result or error.</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -113,10 +150,17 @@ Return deferred object with the result.</p>
 <dl class="method">
 <dt id="twilix.disco.Disco.init">
 <tt class="descname">init</tt><big>(</big><em>handlers=None</em><big>)</big><a class="headerlink" href="#twilix.disco.Disco.init" title="Permalink to this definition">¶</a></dt>
-<dd><p>Register VDiscoInfoQuery, VDiscoItemsQuery, 
-NotFoundDiscoInfoQuery, NotFoundDiscoItemsQuery as handlers.
-Register other handlers if argument handlers isn&#8217;t None.
-Add features to self.root_info.</p>
+<dd><p>Initialize the service (Register all necessary handlers and add service
+discovery features as own. When called, the entity will be able to
+answer disco queries.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>handlers</strong> &#8211; any extra disco handlers to handle dynamic disco nodes</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -137,7 +181,7 @@ to the protocol.</p>
 <dl class="docutils">
 <dt>Attributes:</dt>
 <dd><p class="first">jid &#8211; jid attribute</p>
-<p>iname &#8211; string attribute</p>
+<p>iname &#8211; string attribute contains human readable name</p>
 <p class="last">node &#8211; string attribute</p>
 </dd>
 </dl>
@@ -163,7 +207,7 @@ Describes node for feature with field that corresponds to the
 protocol.</p>
 <dl class="docutils">
 <dt>Attributes:</dt>
-<dd>var &#8211; string attribute</dd>
+<dd>var &#8211; string attribute with a feature namespace</dd>
 </dl>
 </dd></dl>
 
@@ -177,9 +221,10 @@ protocol.</p>
 <dt>Attributes:</dt>
 <dd><p class="first">category &#8211; string attribute</p>
 <p>type_ &#8211; string attribute</p>
-<p class="last">iname &#8211; string attribute</p>
+<p class="last">iname &#8211; string attribute contains human readable name</p>
 </dd>
 </dl>
+<p>See: <a class="reference external" href="http://xmpp.org/registrar/disco-categories.html">http://xmpp.org/registrar/disco-categories.html</a></p>
 </dd></dl>
 
 <dl class="class">
@@ -243,7 +288,7 @@ Describe get handler for disco items query.</p>
 <dl class="method">
 <dt id="twilix.disco.VDiscoItemsQuery.getHandler">
 <tt class="descname">getHandler</tt><big>(</big><big>)</big><a class="headerlink" href="#twilix.disco.VDiscoItemsQuery.getHandler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return result iq when dispatcher gets get Disco Items query.</p>
+<dd><p>Return result iq when dispatcher gets Disco Items query.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -276,7 +321,7 @@ Describe get handler for disco items query.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -305,12 +350,12 @@ Describe get handler for disco items query.</p>
         <li class="right" >
           <a href="base.html" title="Twilix.Base Documentation"
              >previous</a> |</li>
-        <li><a href="index.html">twilix v0.9 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Twilix 0.9 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2011, JRuDevels.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+        &copy; Copyright 2011, JRuDevels &amp; HiDevLab.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.
     </div>
   </body>
 </html>

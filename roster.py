@@ -1,10 +1,14 @@
 """
-Module describes roster.
+Module describes client roster iteraction.
+
+Roster handles a contact list, allows to add or remove contacts.
+Also roster handles contacts statuses and sends signals where some event
+happens.
 """
 from pydispatch import dispatcher
 
 from twilix.stanzas import Iq, Query, Presence
-from twilix.base import VElement
+from twilix.base.velement import VElement
 
 from twilix import fields, errors
 
@@ -55,9 +59,8 @@ class RosterQuery(Query):
     Class for xml roster queries. Inheritor of Query.
     
     Class attributes:
-        elementUri -- identificator/filter for xml nodes
-        
-        items -- list of RosterItem instances
+
+        items -- list of RosterItem instances (i.e. list of contacts)
     
     """
     elementUri = 'jabber:iq:roster'
@@ -70,9 +73,7 @@ class RosterQuery(Query):
 
     def setHandler(self):
         """
-        Method for handle set-type roster queries.
-        Calls updateRoster method from host class.
-        
+        Update roster when server pushes some changes. 
         """
         self.iq.from_ = None
         self.host.updateRoster(self)
@@ -83,11 +84,11 @@ class RosterQuery(Query):
         Method for handle get-type roster queries.
         Not acceptable. Raise error stanza.
         
-        :raises: NotAcceptableException      
+        :raises: NotAcceptableException
         
         """
         self.iq.from_ = None
-        raise errors.NotAcceptableException()        
+        raise errors.NotAcceptableException()
 
 class RosterPresence(Presence):
     """
@@ -159,7 +160,33 @@ class RosterPresence(Presence):
 
 class Roster(object): #List of RosterItem
     # Signals
-    """Class describes interaction dispatcher with roster."""
+    """Class describes interaction dispatcher with roster.
+    
+    Signals described here:
+        
+        roster_got: fired when roster is ready to use.
+
+        roster_item_added: fired when roster has a new item.
+
+        roster_item_removed: fired when roster has a removed item.
+
+        contact_available: fired when some contact is appeared online.
+
+        contact_unavailable: fired when some contact goes offline.
+
+        resource_available: the same as for contact_available but
+        for separate resource not for whole contact.
+
+        resource_unavailable: the same as for resource_available but when
+        contact goes offline.
+
+        resource_changed_status: fired when some resource changed it's status
+        information.
+
+    :param dispatcher: dispatcher for send/receive stanzas
+
+    :param mypresence: set initial presence to mypresence.
+    """
     roster_got = object()
     roster_item_added = object()
     roster_item_removed = object()
@@ -177,9 +204,6 @@ class Roster(object): #List of RosterItem
     def __init__(self, dispatcher, mypresence=None):
         """
         Sets some instance attributes
-        
-        :param dispatcher: dispatcher for send/receive stanzas
-        
         """
         self.dispatcher = dispatcher
         self.items = []
@@ -187,9 +211,8 @@ class Roster(object): #List of RosterItem
 
     def init(self):
         """
-        Registers handlers for roster stanzas.
-        Links roster_got signal with instance method.
-        Sends roster get query.
+        Register necessary handlers to handle roster queries, send a query
+        to receive a roster.
         """
         self.dispatcher.registerHandler((RosterQuery, self))
         self.dispatcher.registerHandler((RosterPresence, self))
@@ -202,6 +225,9 @@ class Roster(object): #List of RosterItem
         self.dispatcher.send(iq)
     
     def _send_initial_presence(self, sender):
+        """
+        Send initial presence.
+        """
         assert self is sender
         if self.mypresence is not None:
             self.updatePresence(self.mypresence)

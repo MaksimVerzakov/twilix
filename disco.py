@@ -1,8 +1,11 @@
-"""Contains classes that realize service discovery."""
+"""Contains classes that implement service discovery. (XEP-0030)
+
+You can use it to get disco items or info from another jabber entities and to
+represent your own items and feature to others."""
 import hashlib
 import base64
 
-from twilix.base import VElement
+from twilix.base.velement import VElement
 from twilix.stanzas import Query, Iq, MyIq
 from twilix.jid import internJID
 from twilix import fields, errors
@@ -14,11 +17,11 @@ class CapsElement(VElement): #XXX: invate automatize caps calculation
     to the protocol.
     
     Attributes:
-        hash\_ - string attribute
+        hash\_ - string attribute contains features hash type
         
-        node -- string attribute
+        node -- string attribute contains caps node
         
-        ver -- string attribute
+        ver -- string attribute contains features hash
        
     """
     elementName = 'c'
@@ -39,7 +42,9 @@ class Identity(VElement):
         
         type\_ -- string attribute
         
-        iname -- string attribute
+        iname -- string attribute contains human readable name
+
+    See: http://xmpp.org/registrar/disco-categories.html
             
     """
     elementName = 'identity'
@@ -55,7 +60,7 @@ class Feature(VElement):
     protocol.
     
     Attributes:
-        var -- string attribute
+        var -- string attribute with a feature namespace
                  
     """
     elementName = 'feature'
@@ -106,7 +111,7 @@ class DiscoItem(VElement):
     Attributes:
         jid -- jid attribute
         
-        iname -- string attribute
+        iname -- string attribute contains human readable name
         
         node -- string attribute
                  
@@ -142,7 +147,7 @@ class VDiscoItemsQuery(DiscoItemsQuery):
     parentClass = MyIq
     def getHandler(self):
         """
-        Return result iq when dispatcher gets get Disco Items query.
+        Return result iq when dispatcher gets Disco Items query.
         """
         node = self.node or ''
         items_query = None
@@ -177,11 +182,26 @@ class NotFoundDiscoInfoQuery(NotFoundQuery, DiscoInfoQuery):
     pass
 
 class Disco(object):
-    """Describe interaction dispatcher with service discovery."""
+    """Describe interaction dispatcher with service discovery.
+
+       You can set your info or items using attributes static_info and
+       static_items which are a dictionaries keys of which are nodes and
+       values are instances of DiscoInfoQuery or DiscoItemsQuery appropriately
+
+       For the root node you should use attributes root_info and root_items in
+       the same way.
+
+       To implement some dynamic nodes you should use handler param for the
+       init method where you can pass your own Disco handlers which will
+       generate any answers in runtime based on your criterias.
+
+       :param dispatcher: dispatcher instance to use with the service."""
+
     def __init__(self, dispatcher):
         """
         Initialize class. 
         Set dispatcher and base fields.
+
         """
         self.dispatcher = dispatcher
 
@@ -192,10 +212,11 @@ class Disco(object):
 
     def init(self, handlers=None):
         """
-        Register VDiscoInfoQuery, VDiscoItemsQuery, 
-        NotFoundDiscoInfoQuery, NotFoundDiscoItemsQuery as handlers.
-        Register other handlers if argument handlers isn't None.
-        Add features to self.root_info.
+        Initialize the service (Register all necessary handlers and add service
+        discovery features as own. When called, the entity will be able to
+        answer disco queries.
+
+        :param handlers: any extra disco handlers to handle dynamic disco nodes
         """
         if handlers is None:
             handlers = ()
@@ -214,8 +235,14 @@ class Disco(object):
 
     def getItems(self, jid, node=None, from_=None):
         """
-        Send get iq with DiscoItemsQuery as child to dispatcher.
-        Return deferred object with the result.
+        Get disco items from another entity.
+        Return deferred object with the result of type DiscoItemsQuery.
+
+        :param jid: JID of the entity to get items from.
+
+        :param node: node name to get items from.
+
+        :param from_: set some specific from address. Uses myjid if none given.
         
         :returns:
             query.iq.deferred - deferrer object with result or error.
@@ -231,8 +258,14 @@ class Disco(object):
 
     def getInfo(self, jid, node=None, from_=None):
         """
-        Send get iq with DiscoInfoQuery as child to dispatcher.
-        Return deferred object with the result.
+        Get disco info from another entity.
+        Return deferred object with the result of type DiscoInfoQuery.
+
+        :param jid: JID of the entity to get items from.
+
+        :param node: node name to get items from.
+
+        :param from_: set some specific from address. Uses myjid if none given.
         
         :returns:
             query.iq.deferred - deferrer object with result or error.
@@ -248,8 +281,8 @@ class Disco(object):
 
     def getCapsHash(self):
         """
-        Return hash of identities and features in base64 format. 
-        Used to understand what capabilities client has.
+        Calculate and return hash of identities and features in base64 format 
+        based on own identities and features.
         """
         s = u''
         info = self.root_info

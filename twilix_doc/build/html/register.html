@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Twilix.Register Documentation &mdash; twilix v0.9 documentation</title>
+    <title>Twilix.Register Documentation &mdash; Twilix 0.9 documentation</title>
+    
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
@@ -22,7 +25,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="twilix v0.9 documentation" href="index.html" />
+    <link rel="top" title="Twilix 0.9 documentation" href="index.html" />
     <link rel="next" title="Twilix.Roster Documentation" href="roster.html" />
     <link rel="prev" title="Twilix.MUC" href="muc.html" /> 
   </head>
@@ -42,7 +45,7 @@
         <li class="right" >
           <a href="muc.html" title="Twilix.MUC"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">twilix v0.9 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Twilix 0.9 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -53,7 +56,8 @@
             
   <div class="section" id="module-twilix.register">
 <span id="twilix-register-documentation"></span><h1>Twilix.Register Documentation<a class="headerlink" href="#module-twilix.register" title="Permalink to this headline">¶</a></h1>
-<p>Module provides In-Band Registration mechanism.</p>
+<p>Module provides In-Band Registration mechanism. (XEP-0077)</p>
+<p>Can be used to provide registration ability to your XMPP-enabled service.</p>
 <dl class="class">
 <dt id="twilix.register.MyRegisterQuery">
 <em class="property">class </em><tt class="descclassname">twilix.register.</tt><tt class="descname">MyRegisterQuery</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#twilix.register.MyRegisterQuery" title="Permalink to this definition">¶</a></dt>
@@ -72,10 +76,18 @@ validating class.</p>
 <dt id="twilix.register.Register">
 <em class="property">class </em><tt class="descclassname">twilix.register.</tt><tt class="descname">Register</tt><big>(</big><em>dispatcher</em><big>)</big><a class="headerlink" href="#twilix.register.Register" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class describes interaction dispatcher with register.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dispatcher</strong> &#8211; dispatcher to use with the service.</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="twilix.register.Register.init">
 <tt class="descname">init</tt><big>(</big><em>handler</em>, <em>disco=None</em><big>)</big><a class="headerlink" href="#twilix.register.Register.init" title="Permalink to this definition">¶</a></dt>
-<dd><p>Registers handlers and adds version feature in disco.</p>
+<dd><p>Registers handlers and adds the register feature in disco.</p>
 </dd></dl>
 
 </dd></dl>
@@ -116,7 +128,7 @@ Contains special fields described in XEP-0077 for register query.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -145,12 +157,12 @@ Contains special fields described in XEP-0077 for register query.</p>
         <li class="right" >
           <a href="muc.html" title="Twilix.MUC"
              >previous</a> |</li>
-        <li><a href="index.html">twilix v0.9 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Twilix 0.9 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2011, JRuDevels.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+        &copy; Copyright 2011, JRuDevels &amp; HiDevLab.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.
     </div>
   </body>
 </html>

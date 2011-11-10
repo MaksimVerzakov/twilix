@@ -1,13 +1,15 @@
 """
-Module implements vcard-temp feature.
+Module implements vcard-temp feature. (XEP-0054)
+
+Can be used to serve own vcard (for services), set own vcard (for clients) and
+view vcards of other entities.
 """
-# XEP-0054
 import copy
 
 from twilix.stanzas import Query, Iq
 from twilix import fields
 from twilix.disco import Feature
-from twilix.base import VElement
+from twilix.base.velement import VElement
 from twilix import errors
 
 class Name(VElement):
@@ -141,6 +143,10 @@ class VCard(object):
     """
     Class describes interaction dispatcher with personal info
     in myvcard.
+
+    :param dispatcher: set dispatcher that service should use.
+
+    :param myvcard: set vcard which should be served as own (for services).
     """
     def __init__(self, dispatcher, myvcard=None):
         """Initialize dispatcher, myvcard and list of handlers."""
@@ -150,9 +156,13 @@ class VCard(object):
 
     def init(self, disco=None, handlers=None):
         """
-        Register MyVCardQuery as handler. 
-        Register handlers from arguments.
-        Add feature to Disco if it's required.
+        Register necessary handlers and add vcard-temp feature into own disco
+        info.
+
+        :param disco: Disco instance to add the feature to.
+        
+        :param handlers: extra handlers to generate dynamic vcards.
+
         """
         if handlers is None:
             handlers = ()
@@ -167,11 +177,10 @@ class VCard(object):
 
     def get(self, jid, from_=None):
         """
-        Make get VCard query.
-        Return deferred object with result of get VCard query.
+        Get a vcard of another XMPP entity.
         
         :returns:
-            query.iq.deferred         
+            query.iq.deferred with a VCardQuery instance as a result
         """
         if from_ is None:
             from_ = self.dispatcher.myjid
@@ -182,8 +191,7 @@ class VCard(object):
 
     def set(self, vcard):
         """
-        Make set VCard query.
-        Return deferred object with result of set VCard query.
+        Set my own vcard (for clients).
         
         :returns:
             query.iq.deferred

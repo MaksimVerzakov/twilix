@@ -1,6 +1,12 @@
 """
 Module describes the Dispatcher : class which controlling any data exchange.
 This class realize direct handling of input and output stanzas.
+
+Dispatcher tries to determine if incoming stanza corresponding to the one of
+registered handlers. If stanza was parsed successfully, dispatcher will try
+to handle it with appropriate handler (based on stanza type) or send error
+back if stanza was corrupted or handler for was not found. You may also use
+an anyHandler which used for any stanza type.
 """
 
 from twisted.internet.defer import inlineCallbacks, returnValue
@@ -35,13 +41,16 @@ class Dispatcher(object):
         
         unregisterHandler -- dels some handler
         
-        dispatch -- inlineCallbacks decorated method for handling of input stanzas
+        dispatch -- inlineCallbacks decorated method for handling of
+        input stanzas
         
         send -- method realize sending of any stanzas
     
     """
     def __init__(self, xs, myjid):
-        """Initializating by values of xmlstream and JID"""
+        """Initializating by values of xmlstream and JID: listen to stanzas of
+        any type and hadle it with the dispatch method, set a value to the
+        myjid attribute."""
         self.xmlstream = xs
         self.xmlstream.addObserver('/message', self.dispatch)
         self.xmlstream.addObserver('/presence', self.dispatch)
@@ -68,13 +77,13 @@ class Dispatcher(object):
         return self._hooks.get(hook_name, ())
 
     def registerHandler(self, handler):
-        """Registers new pair of any stanza handler class and his host"""
+        """Registers new pair of any stanza handler class and it's host"""
         if not handler in self._handlers:
             self._handlers.append(handler)
             return True
 
     def unregisterHandler(self, handler):
-        """Unregisters pair of any stanza handler class and his host"""
+        """Unregisters pair of any stanza handler class and it's host"""
         if handler in self._handlers:
             self._handlers.remove(handler)
             return True
@@ -82,7 +91,7 @@ class Dispatcher(object):
     @inlineCallbacks
     def dispatch(self, el):
         """
-        This function realize direct input data handling.
+        This function realize incoming data handling.
         
         There is a handling :
         
@@ -167,7 +176,7 @@ class Dispatcher(object):
 
     def send(self, els):
         """
-        This function realize direct output data handling.
+        This function realize outgoing data handling.
         
         There is a handling :
         
