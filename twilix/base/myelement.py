@@ -1,5 +1,7 @@
 from twisted.words.xish.domish import Element
 
+from twilix.base.exceptions import ElementParseError, WrongElement
+
 class EmptyStanza(object):   
     """Dummy stanza to send when nothing to send."""
     pass
