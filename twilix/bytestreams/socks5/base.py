@@ -1,3 +1,6 @@
+import time
+import hashlib
+
 from twisted.internet import protocol, reactor, defer, error
 
 from twilix.disco import Feature
@@ -136,16 +139,16 @@ class Socks5Stream(protocol.Factory):
             del self.sessions[sid]
 
     @defer.inlineCallbacks
-    def requestStream(self, jid, sid, callback, meta=None, from_=None):
+    def requestStream(self, jid, callback, sid=None, meta=None, from_=None):
         """
         Request bytestream session from another entity.
 
         :param jid: JID of entity we want connect to.
 
-        :param sid: identificator for a bytestream session.
-
         :param callback: callback which will be called when data will
         be available to consume.
+
+        :param sid: session id to use with stream. Generate one if None given.
 
         :param meta: metadata for this session. (Will be passed in a callback)
 
@@ -154,6 +157,9 @@ class Socks5Stream(protocol.Factory):
         if from_ is None:
             from_ = self.dispatcher.myjid
         # XXX: Populate streamhosts
+        if sid is None:
+            sid = hashlib.md5(unicode(time.time())).hexdigest()
+
         streamhosts = (
             stanzas.StreamHost(rhost='127.0.0.1',
                                jid=from_,
@@ -169,4 +175,4 @@ class Socks5Stream(protocol.Factory):
         except:
             self.unregisterSession(sid=sid)
             raise
- 
+        defer.returnValue(sid)
