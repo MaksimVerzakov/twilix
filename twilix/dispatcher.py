@@ -14,6 +14,7 @@ from twilix.stanzas import Iq, Message, Presence, Stanza
 from twilix.jid import internJID
 from twilix.base.myelement import MyElement, EmptyStanza, BreakStanza
 from twilix.base.exceptions import WrongElement, ElementParseError
+from twilix.errors import ExceptionWithContent
 from twilix import errors
 
 class Dispatcher(object):
@@ -116,6 +117,7 @@ class Dispatcher(object):
             if result_class is not None and el.type_ == 'result':
                 try:
                     el = result_class.createFromElement(el, None)
+                # XXX: catch any exception here
                 except (WrongElement, ElementParseError), e:
                     deferred.errback(e)
                 else:
@@ -150,7 +152,8 @@ class Dispatcher(object):
                         result = yield func()
                     except Exception as e:
                         if isinstance(e, ExceptionWithContent):
-                            self.send(el.makeError(e.content))
+                            results.append(el.makeError(e.content))
+                            break
                         else:
                             pass #TODO: InternalServerError
                     else:
