@@ -14,7 +14,7 @@ from twilix.stanzas import Iq, Message, Presence, Stanza
 from twilix.jid import internJID
 from twilix.base.myelement import MyElement, EmptyStanza, BreakStanza
 from twilix.base.exceptions import WrongElement, ElementParseError
-from twilix.errors import ExceptionWithContent
+from twilix.errors import ExceptionWithContent, InternalServerErrorException
 from twilix import errors
 
 class Dispatcher(object):
@@ -151,11 +151,11 @@ class Dispatcher(object):
                     try:
                         result = yield func()
                     except Exception as e:
-                        if isinstance(e, ExceptionWithContent):
-                            results.append(el.makeError(e.content))
-                            break
-                        else:
-                            pass #TODO: InternalServerError
+                        if not isinstance(e, ExceptionWithContent):
+                            e = InternalServerErrorException()
+                            # TODO: Add traceback if debug
+                        results.append(el.makeError(e.content))
+                        break
                     else:
                         if isinstance(result, (list, tuple)):
                             results.extend(result)
