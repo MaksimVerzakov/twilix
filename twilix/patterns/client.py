@@ -61,9 +61,11 @@ class TwilixClient(object):
         self.xmlstream = xs
 
     def onAuthenticated(self, xs):
+        self.myjid = internJID(unicode(xs.authenticator.jid))
         self.dispatcher = Dispatcher(xs, self.myjid)
         self.init()
         self.deferred.callback(self)
+        self.deferred = None
 
     def onDisconnected(self, failure):
         pass
@@ -73,5 +75,7 @@ class TwilixClient(object):
         needed services and handlers."""
 
     def onInitFailed(self, failure):
-        self.deferred.errback(failure)
+        if self.deferred:
+            self.deferred.errback(failure)
+            self.deferred = None
 
