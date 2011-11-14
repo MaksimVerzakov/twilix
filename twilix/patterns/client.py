@@ -7,6 +7,21 @@ from twisted.words.protocols.jabber import xmlstream
 from twilix.dispatcher import Dispatcher
 from twilix.jid import internJID
 
+class InjectFactory(object):
+    def clientConnectionLost(self, connector, reason):
+        self._fail(connector, reason)
+
+    def clientConnectionFailed(self, connector, reason):
+        self._fail(connector, reason)
+
+    def _fail(self, connector, reason):
+        XmlStreamFactory.clientConnectionFailed(self, connector, reason)
+        if not self._callID:
+            self.client.onInitFailed(reason)
+
+class MyXmlStreamFactory(InjectFactory, XmlStreamFactory):
+    pass
+
 class XMPPClientConnector(SRVConnector):
     def __init__(self, reactor, domain, factory, port=5222):
         self.port = port
@@ -16,25 +31,34 @@ class TwilixClient(object):
     def __init__(self, myjid):
         self.myjid = internJID(myjid)
 
+    def generic_connect(self, factory, connector):
+        self.f = factory
+        self.f.bootstraps = (
+            (xmlstream.STREAM_CONNECTED_EVENT, self.onConnected),
+            (xmlstream.STREAM_END_EVENT, self.onDisconnected),
+            (xmlstream.STREAM_AUTHD_EVENT, self.onAuthenticated),
+            (xmlstream.INIT_FAILED_EVENT, self.onInitFailed),
+        )
+        self.f.client = self
+        self.connector = connector
+        self.connector.connect()
+        self.xmlstream = None
+
+        self.deferred = defer.Deferred()
+        return self.deferred
+
     def connect(self, secret, host=None, port=None):
         a = twisted_client.XMPPAuthenticator(self.myjid, secret)
-        self.f = XmlStreamFactory(a)
-        self.f.addBootstrap(xmlstream.STREAM_CONNECTED_EVENT, self.onConnected)
-        self.f.addBootstrap(xmlstream.STREAM_END_EVENT, self.onDisconnected)
-        self.f.addBootstrap(xmlstream.STREAM_AUTHD_EVENT, self.onAuthenticated)
-        self.f.addBootstrap(xmlstream.INIT_FAILED_EVENT, self.onInitFailed)
+        factory = MyXmlStreamFactory(a)
+        factory.maxRetries = 2
 
         if port is None:
             port = 5222
         if host is None:
             host = self.myjid.host
-        self.connector = XMPPClientConnector(reactor, host, self.f, port)
-        self.connector.connect()
+        connector = XMPPClientConnector(reactor, host, factory, port)
 
-        self.xmlstream = None
-
-        self.deferred = defer.Deferred()
-        return self.deferred
+        return self.generic_connect(factory, connector)
 
     def onConnected(self, xs):
         self.xmlstream = xs
@@ -44,7 +68,7 @@ class TwilixClient(object):
         self.init()
         self.deferred.callback(self)
 
-    def onDisconnected(self, _):
+    def onDisconnected(self, failure):
         pass
 
     def init(self):
