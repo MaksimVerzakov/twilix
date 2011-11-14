@@ -23,8 +23,7 @@ class MyXmlStreamFactory(InjectFactory, XmlStreamFactory):
     pass
 
 class XMPPClientConnector(SRVConnector):
-    def __init__(self, reactor, domain, factory, port=5222):
-        self.port = port
+    def __init__(self, reactor, domain, factory):
         SRVConnector.__init__(self, reactor, 'xmpp-client', domain, factory)
 
 class TwilixClient(object):
@@ -47,16 +46,14 @@ class TwilixClient(object):
         self.deferred = defer.Deferred()
         return self.deferred
 
-    def connect(self, secret, host=None, port=None):
+    def connect(self, secret, host=None):
         a = twisted_client.XMPPAuthenticator(self.myjid, secret)
         factory = MyXmlStreamFactory(a)
         factory.maxRetries = 2
 
-        if port is None:
-            port = 5222
         if host is None:
             host = self.myjid.host
-        connector = XMPPClientConnector(reactor, host, factory, port)
+        connector = XMPPClientConnector(reactor, host, factory)
 
         return self.generic_connect(factory, connector)
 
