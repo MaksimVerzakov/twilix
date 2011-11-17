@@ -1,5 +1,6 @@
 import time
 import hashlib
+import random
 
 from twisted.internet import protocol, reactor, defer, error
 
@@ -7,6 +8,7 @@ from twilix.disco import Feature
 from twilix.stanzas import Iq
 from twilix import errors
 
+from twilix.bytestreams import genSID
 from twilix.bytestreams.socks5 import SOCKS5_NS
 from twilix.bytestreams.socks5 import stanzas
 from twilix.bytestreams.socks5.proxy65 import XEP65Proxy
@@ -79,7 +81,7 @@ class Socks5Stream(protocol.Factory):
     def buildProtocol(self, addr):
         return XEP65Proxy(self)
 
-    def init(self, disco=None):
+    def init(self, disco=None, ifaces=None):
         """
         Initialize the service: register all necessary handlers and add a
         feature to service discovery.
@@ -89,13 +91,25 @@ class Socks5Stream(protocol.Factory):
             self.disco.root_info.addFeatures(Feature(var=SOCKS5_NS))
         
         self.dispatcher.registerHandler((InitiationQuery, self))
+        self.streamhosts = []
+        self.ifaces = []
         # XXX: add possibility to define ports/interfaces
-        import random
-        self.port = random.randint(1024, 65535)
-        try:
-            reactor.listenTCP(self.port, self)
-        except error.CannotListenError:
-            pass
+        if ifaces is None:
+            ifaces = (('127.0.0.1', random.randint(1024, 65535)),)
+        
+        for iface in ifaces:
+            try:
+                reactor.listenTCP(iface[1], self) #, interface=iface[0])
+            except error.CannotListenError:
+                pass
+            else:
+                self.ifaces.append(iface)
+
+    def getTransport(self, sid):
+        session = self.sessions[sid]
+        c = self.connections[session['hash']]['connection']
+        if c:
+            return c.transport
 
     def dataReceived(self, addr, buf):
         connection = self.connections[addr]
@@ -105,8 +119,14 @@ class Socks5Stream(protocol.Factory):
             self.unregisterSession(addr=addr)
 
     def dataSend(self, sid, buf):
-        session = self.sessions[sid]
-        self.connections[session['hash']]['connection'].transport.write(buf)
+        t = self.getTransport(sid)
+        if t:
+            t.write(buf)
+            return True
+
+    def isActive(self, sid):
+        session = self.connections[self.sessions[sid]['hash']]
+        return session['connection']
 
     def registerSession(self, sid, initiator, target, callback, meta=None):
         """
@@ -156,15 +176,14 @@ class Socks5Stream(protocol.Factory):
         """
         if from_ is None:
             from_ = self.dispatcher.myjid
-        # XXX: Populate streamhosts
         if sid is None:
-            sid = hashlib.md5(unicode(time.time())).hexdigest()
+            sid = genSID()
 
-        streamhosts = (
-            stanzas.StreamHost(rhost='127.0.0.1',
+        streamhosts = [
+            stanzas.StreamHost(rhost=iface[0],
                                jid=from_,
-                               port=self.port),
-        )
+                               port=iface[1]) for iface in self.ifaces
+        ]
         query = stanzas.StreamHostQuery(sid=sid,
                                 streamhosts=streamhosts,
                                 parent=Iq(type_='set', to=jid, from_=from_))

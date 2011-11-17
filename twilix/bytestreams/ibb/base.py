@@ -4,6 +4,7 @@ import time
 
 from twisted.internet import defer, reactor
 
+from twilix.bytestreams import genSID
 from twilix.bytestreams.ibb import IBB_NS
 from twilix.bytestreams.ibb.stanzas import OpenQuery, CloseQuery as CQ,\
                                             DataQuery as DQ
@@ -83,7 +84,12 @@ class IbbStream(object):
             self.unregisterSession(sid=sid)
 
     def dataSend(self, sid, buf):
-        self.sessions[sid]['buf'] += buf
+        if self.sessions[sid]['active']:
+            self.sessions[sid]['buf'] += buf
+            return True
+
+    def isActive(self, sid):
+        return self.sessions[sid]['active']
 
     @defer.inlineCallbacks
     def _dataSend(self, sid):
@@ -130,7 +136,7 @@ class IbbStream(object):
 
     def registerSession(self, sid, initiator, target, callback, meta=None,
                         block_size=None, stanza_type='iq',
-                        wait_for_result_when_send=False):
+                        wait_for_result_when_send=True):
         """
         Register bytestream session to wait for incoming connection.
         """
@@ -185,7 +191,7 @@ class IbbStream(object):
     @defer.inlineCallbacks
     def requestStream(self, jid, callback, sid=None, meta=None, from_=None,
                       block_size=4096, stanza_type='iq',
-                      wait_for_result_when_send=False):
+                      wait_for_result_when_send=True):
         """
         Request bytestream session from another entity.
 
@@ -207,7 +213,7 @@ class IbbStream(object):
             from_ = self.dispatcher.myjid
 
         if sid is None:
-            sid = hashlib.sha1(str(time.time())).hexdigest()
+            sid = genSID()
         s = self.registerSession(sid, from_, jid, callback, meta=meta,
                              block_size=block_size, stanza_type=stanza_type,
                          wait_for_result_when_send=wait_for_result_when_send)
