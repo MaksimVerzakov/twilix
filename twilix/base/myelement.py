@@ -356,4 +356,6 @@ class MyElement(Element):
         if unique:
             self.removeChilds(el.name, el.uri)
         self.addChild(el)
+        self.result_class = getattr(el, 'result_class')
+        self.error_class = getattr(el, 'error_class')
 
