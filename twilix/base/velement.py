@@ -19,11 +19,17 @@ def get_declared_fields(bases, attrs):
                     attrs.items() if isinstance(obj, fields.AttributeProp)]
     node_fields = [(field_name, attrs.pop(field_name)) for field_name, obj in \
                     attrs.items() if isinstance(obj, fields.NodeProp)]
+
+    for field_name, _ in attr_fields + node_fields:
+        if hasattr(VElement, field_name):
+            raise ValueError, "Can not construct element with the %s \
+property since it is a predefined keyword" % (field_name,)
+
     for base in bases[::-1]:
         if hasattr(base, 'attributesProps'):
-            attr_fields = base.attributesProps.items() + attr_fields #XXX: extend?
+            attr_fields = base.attributesProps.items() + attr_fields
         if hasattr(base, 'nodesProps'):
-            node_fields = base.nodesProps.items() + node_fields   #XXX: extend?
+            node_fields = base.nodesProps.items() + node_fields
     return dict(attr_fields), dict(node_fields)
 
 class DeclarativeFieldsMetaClass(type):
@@ -35,6 +41,7 @@ class DeclarativeFieldsMetaClass(type):
     def __new__(cls, name, bases, attrs):
         attrs['attributesProps'], attrs['nodesProps'] = \
               get_declared_fields(bases, attrs)
+
         new_class = super(DeclarativeFieldsMetaClass, cls).__new__(cls, name,
                                                                 bases, attrs)
         return new_class
@@ -53,6 +60,15 @@ class VElement(MyElement):
     elementName = None
     elementUri = None
     elementPrefixes = {}
+
+    host = None
+    parent = None
+    localPrefixes = None
+    uri = None
+    name = None
+    children = None
+    attributes = None
+    defaultUri = None
 
     __metaclass__ = DeclarativeFieldsMetaClass
 

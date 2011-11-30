@@ -44,7 +44,7 @@ class Organization(VElement):
     """
     elementName = 'ORG'
 
-    name = fields.StringNode('ORGNAME', required=False)
+    name_ = fields.StringNode('ORGNAME', required=False)
     unit = fields.StringNode('ORGUNIT', required=False)
 
 class Telephone(VElement):
