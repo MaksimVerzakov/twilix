@@ -296,7 +296,7 @@ class MyElement(Element):
         Return element with specified name, Uri and content.
         """
         result = None
-        if isinstance(name, type(())):    #XXX: tuple?
+        if isinstance(name, tuple):
             if defaultUri is None:
                 defaultUri = name[0]
             self.children.append(MyElement(name, defaultUri))
@@ -333,29 +333,16 @@ class MyElement(Element):
                 children.append(el)
         self.children = children
 
-    def getFirstChild(self, name=None):
-        """Return first child element with name if exist."""
-        # XXX: Obsolete
-        el = [e for e in self.children if not isinstance(e, (str, unicode)) \
-              and e.name == name]
-        if el:
-            return el[0]
-
-    def getFirstChildContent(self, name=None):
-        """Return content of first child element with name if exist."""
-        # XXX: Obsolete
-        el = self.getFirstChild(name)
-        if el is not None:
-            return el.content
-
-    def link(self, el, unique=True):
+    def link(self, el):
         """
-        Replace child element with the same name and uri as element
-        if uniqueness is required or just add element.
+        Link query to stanza.
         """
-        if unique:
-            self.removeChilds(el.name, el.uri)
+        self.removeChilds(el.name, el.uri)
         self.addChild(el)
-        self.result_class = getattr(el, 'result_class')
-        self.error_class = getattr(el, 'error_class')
+        result_class = getattr(el, 'result_class')
+        if result_class is not None:
+            self.result_class = result_class
+        error_class = getattr(el, 'error_class')
+        if error_class is not None:
+            self.error_class = error_class
 

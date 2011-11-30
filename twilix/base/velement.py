@@ -72,8 +72,7 @@ class VElement(MyElement):
         self.host = kwargs.get('host', None)
         self.parent = kwargs.get('parent', None)
         if self.parent is not None:
-            self.parent = self.parentClass.createFromElement(self.parent)
-            self.parent.addChild(self)
+            self.parent.link(self)
         for attr in self.attributesProps:
             value = kwargs.get(attr, None)
             setattr(self, attr, value)
@@ -106,16 +105,4 @@ class VElement(MyElement):
         :returns: denial results of function __eq__
         """
         return not self.__eq__(other)
-
-    @classmethod
-    def ___validate(cls, el):
-        """
-        Class method.
-        Returns el if it's instance of class and create element from el
-        of required type.
-        """
-        # XXX: obsolete
-        if isinstance(el, cls):
-            return el
-        return cls.createFromElement(el)
 

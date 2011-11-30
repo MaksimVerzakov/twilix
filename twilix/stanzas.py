@@ -52,8 +52,10 @@ class Stanza(VElement):
         attributes for deferred-style stanzas.
         """
         super(Stanza, self).__init__(*args, **kwargs)
-        self.result_class = kwargs.get('result_class', None)
-        self.error_class = kwargs.get('error_class', ErrorStanza)
+        if 'result_class' in kwargs:
+            self.result_class = kwargs['result_class']
+        if 'error_class' in kwargs:
+            self.error_class = kwargs['error_class']
 
     def __unicode__(self):
         """Overrrides unicode converter."""
@@ -256,11 +258,6 @@ class Query(VElement):
 
     node = fields.StringAttr('node', required=False)
 
-    def __init__(self, *args, **kwargs):
-        """Calls the superclass constructor and sets default value for _iq"""
-        self._iq = None
-        super(Query, self).__init__(*args, **kwargs)
-
     @classmethod
     def createFromElement(cls, el, host=None, dont_defer=False):
         """
@@ -293,7 +290,5 @@ class Query(VElement):
     @property
     def iq(self):
         """Return valid iq when it's requested."""
-        if self._iq is None:
-            self._iq = self.topElement()
-        return self._iq
+        return self.topElement()
 
