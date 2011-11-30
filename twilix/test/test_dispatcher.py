@@ -61,9 +61,11 @@ class TestDispatcher(unittest.TestCase):
         self.dispatcher.send(iq)
         
     def test_send(self):
+        # XXX: implement
         pass
     
     def test_dispatch(self):
+        # XXX: implement
         pass
         
         
