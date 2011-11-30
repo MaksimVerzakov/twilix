@@ -51,7 +51,7 @@ class MyElement(Element):
         return myel
 
     @classmethod
-    def createFromElement(cls, el, host=None, **kwargs):
+    def createFromElement(cls, el, **kwargs):
         """
         Make class instance of element if it's suits to class.
                 
@@ -60,6 +60,17 @@ class MyElement(Element):
         :raises: WrongElement
         
         """
+        parentClass = getattr(cls, 'parentClass', None)
+        if parentClass:
+            p = parentClass.createFromElement(el, **kwargs)
+            r = cls._createFromElement(p.firstChildElement(), **kwargs)
+            p.link(r)
+        else:
+            r = cls._createFromElement(el, **kwargs)
+        return r
+
+    @classmethod
+    def _createFromElement(cls, el, host=None, **kwargs):
         if isinstance(cls.elementUri, (tuple, list)):
             if el.uri not in cls.elementUri:
                 raise WrongElement
@@ -197,7 +208,6 @@ class MyElement(Element):
         :raises: ElementParseError
         
         """
-        #import pdb; pdb.set_trace()
         if not setter:
             value = attr.clean(value)
         if setter and hasattr(attr, 'clean_set'):

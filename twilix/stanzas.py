@@ -258,35 +258,6 @@ class Query(VElement):
 
     node = fields.StringAttr('node', required=False)
 
-    @classmethod
-    def createFromElement(cls, el, host=None, dont_defer=False):
-        """
-        Creates new Query element from some element or 
-        raises an exception if created failed
-        
-        :param el: is a source for creating
-        
-        :param host: host for new element (default None)
-        
-        :param dont_defer: boolean flag for deferred elements
-        
-        :raises: WrongElement
-        
-        :returns: new element creating from source
-        
-        """
-        parent = cls.parentClass.createFromElement(el, host=host,
-                                                   dont_defer=dont_defer)
-        el = parent.firstChildElement()
-        if el is None:
-            raise WrongElement
-        if el.uri != cls.elementUri or el.name != cls.elementName:
-            raise WrongElement
-        query = super(Query, cls).createFromElement(el, host=host)
-        query.parent = parent
-        query.children = el.children
-        return query
-
     @property
     def iq(self):
         """Return valid iq when it's requested."""

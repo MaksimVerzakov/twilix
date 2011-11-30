@@ -1,5 +1,9 @@
 import unittest
+
 from twilix.dispatcher import Dispatcher
+from twilix.stanzas import Iq
+from twilix import fields
+from twilix.base.exceptions import WrongElement, ElementParseError
 
 class xmlEmul(object):
     def send(self, data):
@@ -45,6 +49,16 @@ class TestDispatcher(unittest.TestCase):
         self.dispatcher.registerHook('hook_name', 'hook3')
         l = ['hook1', 'hook2', 'hook3']
         self.assertEqual(self.dispatcher.getHooks('hook_name'), l)
+
+    def test_sendInvalid(self):
+        class MyIq(Iq):
+            req = fields.StringAttr('required')
+
+        iq = MyIq(type_='set')
+        self.assertRaises(ElementParseError, self.dispatcher.send, iq)
+
+        iq.req = 'dummy'
+        self.dispatcher.send(iq)
         
     def test_send(self):
         pass

@@ -75,10 +75,12 @@ class VElement(MyElement):
             self.parent.link(self)
         for attr in self.attributesProps:
             value = kwargs.get(attr, None)
-            setattr(self, attr, value)
+            if value:
+                setattr(self, attr, value)
         for attr in self.nodesProps:
             value = kwargs.get(attr, None)
-            setattr(self, attr, value)
+            if value:
+                setattr(self, attr, value)
 
     def __eq__(self, other):
         """
