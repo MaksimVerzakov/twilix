@@ -116,7 +116,7 @@ class Dispatcher(object):
             deferred, result_class, error_class = self._callbacks[id]
             if result_class is not None and el.type_ == 'result':
                 try:
-                    el = result_class.createFromElement(el, None)
+                    el = result_class.createFromElement(el, host=None)
                 # XXX: catch any exception here
                 except (WrongElement, ElementParseError), e:
                     deferred.errback(e)
@@ -127,7 +127,7 @@ class Dispatcher(object):
             elif el.type_ == 'error':
                 exception = None
                 try:
-                    err = error_class.createFromElement(el, None)
+                    err = error_class.createFromElement(el, host=None)
                 except (WrongElement, ElementParseError), e:
                     exception = e
                 if exception is None:
@@ -138,7 +138,8 @@ class Dispatcher(object):
             bad_request = False
             for handler, host in self._handlers:
                 try:
-                    d = handler.createFromElement(el, host, dont_defer=True)
+                    d = handler.createFromElement(el, host=host,
+                                                  dont_defer=True)
                     d.validate()
                 except WrongElement:
                     continue
@@ -201,7 +202,7 @@ class Dispatcher(object):
             hooks = self.getHooks('send')
             for hook, host in hooks:
                 try:
-                    d = hook.createFromElement(el, host)
+                    d = hook.createFromElement(el, host=host)
                     d.validate()
                 except WrongElement:
                     continue

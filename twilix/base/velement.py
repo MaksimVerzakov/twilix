@@ -69,6 +69,8 @@ class VElement(MyElement):
     children = None
     attributes = None
     defaultUri = None
+    result_class = None
+    error_class = None
 
     __metaclass__ = DeclarativeFieldsMetaClass
 
