@@ -24,9 +24,10 @@ from twilix.utils import parse_timestamp
 
 class AttributeProp(object):
     """Base class for all attribute properties."""
-    def __init__(self, xmlattr, required=True):
+    def __init__(self, xmlattr, required=True, default=None):
         self.required = required
         self.xmlattr = xmlattr
+        self.default = None
 
     def get_from_el(self, el):
         """
@@ -43,9 +44,8 @@ class AttributeProp(object):
     def __unicode__(self):
         """Overrides __unicode__ method of object."""
         return u'AttributeProp %s' % self.xmlattr
-        
-class StringAttr(AttributeProp):
-    """Plain string attribute."""
+
+class StringType(object):
     def clean(self, value):
         """
         Return value cast to unicode. 
@@ -59,13 +59,16 @@ class StringAttr(AttributeProp):
             return unicode(value)
         elif self.required:
             raise ElementParseError, u'%s is required' % self
+        
+class StringAttr(StringType, AttributeProp):
+    """Plain string attribute."""
 
     def clean_set(self, value):
         """Return value cast to unicode."""
         if value is not None:
             return unicode(value)
 
-class JidAttr(StringAttr):
+class JidType(StringType):
     """Jabber id Attribute. Automatically convert an attribute's value to the
     MyJID instance"""
     def clean(self, value):
@@ -75,12 +78,15 @@ class JidAttr(StringAttr):
         :returns:
             value cast to internJID if value isn't None or required.
         """
-        value = super(JidAttr, self).clean(value)
+        value = super(JidType, self).clean(value)
         if value is not None or self.required:
             # XXX: Must raise ElementParseError if JID can't be converted
             return internJID(value)
 
-class BooleanAttr(StringAttr):
+class JidAttr(JidType, StringAttr):
+    pass
+
+class BooleanType(StringType):
     """Boolean attribute."""
     def clean(self, value):
         """
@@ -92,7 +98,7 @@ class BooleanAttr(StringAttr):
             False otherwise
             
         """
-        value = super(BooleanAttr, self).clean(value)
+        value = super(BooleanType, self).clean(value)
         if value == 'true': value = True
         else: value = False
         return value
@@ -102,13 +108,18 @@ class BooleanAttr(StringAttr):
             return u'true'
         return u'false'
 
+class BooleanAttr(BooleanType, StringAttr):
+    pass
+
 class NodeProp(object):
     """Base class for all node properties."""
-    def __init__(self, xmlnode, required=True, listed=False, unique=False):
+    def __init__(self, xmlnode, required=True, listed=False, unique=False,
+                       default=None):
         self.xmlnode = xmlnode
         self.required = required
         self.listed = listed
         self.unique = unique
+        self.default = default
 
     def get_from_el(self, el):
         """
@@ -253,10 +264,7 @@ class FlagNode(NodeProp):
              False otherwise.
              
         """
-        if value:
-            return True
-        else:
-            return False
+        return bool(value)
 
     def clean_set(self, value):
         """
@@ -361,3 +369,8 @@ class ElementNode(NodeProp):
             return                                 #XXX: EmptyElement()?
         return self.cls.createFromElement(value)
 
+class BooleanNode(BooleanType, StringNode):
+    pass
+
+class JidNode(JidType, StringNode):
+    pass
