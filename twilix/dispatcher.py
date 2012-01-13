@@ -198,7 +198,7 @@ class Dispatcher(object):
         for el in els:
             if isinstance(el, (EmptyStanza, BreakStanza)):
                 continue
-            el.validate()
+            el.topElement().validate()
             hooks = self.getHooks('send')
             for hook, host in hooks:
                 try:
