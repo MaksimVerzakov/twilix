@@ -107,13 +107,14 @@ class MyElement(Element):
 
     def validate(self):
         """Validate all attributes."""
-        parent = getattr(self, 'parent', None)
-        if parent is not None:
-            parent.validate()
         for name, attr in self.__class__.attributesProps.items():
-            getattr(self, name, None)
+            value = getattr(self, name, None)
+            if not value and attr.required:
+                raise ElementParseError, u'attr %s is required' % attr
         for name, attr in self.__class__.nodesProps.items():
-            getattr(self, name, None)
+            value = getattr(self, name, None)
+            if not value and attr.required:
+                raise ElementParseError, u'attr %s is required' % attr
 
     def __getattr__(self, name):  #XXX: refactor?
         """Overrides __getattr__ method.
@@ -158,36 +159,44 @@ class MyElement(Element):
                         if isinstance(content, MyElement):
                             self.addChild(content)
                         else:
-                            n = MyElement((None, xmlnode))
-                            node.addChild(unicode(content))
+                            n = MyElement((None, node.xmlnode))
+                            n.addChild(unicode(content))
                             self.addChild(n)
                     return r
                 return adder
-            elif need_remover and listed:   #XXX: node.listed?
+            elif need_remover and node.listed:
                 def remover(value):
                     if not isinstance(value, (tuple, list)):
                         values = [value,]
                     else:
                         values = list(value)
-                    old_values = list(getattr(self, attr, ()))
+                    old_values = list(getattr(self, name, ()))
                     r = False
                     for value in values:
                         while value in old_values:
                             old_values.remove(value)
                             r = True
-                    setattr(self, attr, old_values)
+                    setattr(self, name, old_values)
                     return r
                 return remover
 
             elif (need_adder or need_remover):
                 return
             if node.listed:
-                return [self._validate(name, node, v) \
-                        for v in node.get_from_el(self)]
+                listed_name = '%s_listed' % name
+                return self._fvalidate(listed_name,
+                        [self._validate(name, node, v) \
+                        for v in node.get_from_el(self)])
             else:
                 return self._validate(name, node, node.get_from_el(self))
         elif not name.startswith('clean_'):
             return super(MyElement, self).__getattr__(name)
+
+    def _fvalidate(self, name, value):
+        nvalidator = getattr(self, 'clean_%s' % name, None)
+        if nvalidator is not None:
+            value = nvalidator(value)
+        return value
 
     def _validate(self, name, attr, value, setter=False):
         """
@@ -213,12 +222,7 @@ class MyElement(Element):
         if setter and hasattr(attr, 'clean_set'):
             value = attr.clean_set(value)
         if not setter:
-            nvalidator = getattr(self, 'clean_%s' % name, None)
-            if nvalidator is not None:
-                value = nvalidator(value)
-        if value is None:
-            if attr.required:
-                raise ElementParseError, u'attr %s is required' % attr
+            value = self._fvalidate(name, value)
         return value
 
     def __setattr__(self, name, value):
@@ -235,11 +239,15 @@ class MyElement(Element):
         if attr:
             value = self._validate(name, attr, value, setter=True)
             self.cleanAttribute(attr.xmlattr)
+            if value is None and attr.default is not None:
+                value = attr.default
             if value is not None:
                 self.attributes[attr.xmlattr] = unicode(value)
         elif node:
-            if value is None and node.required:
+            if value is None and node.required and node.default is None:
                 raise ElementParseError, 'required node %s is not specified' % name
+            elif value is None:
+                value = node.default
             self.removeChilds(name=node.xmlnode)
             if not node.listed or value is None:
                 values = (value,)

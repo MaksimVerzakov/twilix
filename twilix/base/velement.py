@@ -95,9 +95,9 @@ class VElement(MyElement):
             value = kwargs.get(attr, None)
             if value:
                 setattr(self, attr, value)
-        for attr in self.nodesProps:
+        for attr, node in self.nodesProps.items():
             value = kwargs.get(attr, None)
-            if value:
+            if value or node.default is not None:
                 setattr(self, attr, value)
 
     def __eq__(self, other):

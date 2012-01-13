@@ -140,7 +140,7 @@ class Dispatcher(object):
                 try:
                     d = handler.createFromElement(el, host=host,
                                                   dont_defer=True)
-                    d.validate()
+                    d.topElement().validate()
                 except WrongElement:
                     continue
                 except ElementParseError:
