@@ -13,7 +13,8 @@ from twilix.test import dispatcherEmul, iqEmul, hostEmul
 class TestVCardQuery(unittest.TestCase):
     
     def setUp(self):
-        self.MyVCardQuery = MyVCardQuery(parent=Iq(type_='result', to='somejid'))
+        self.MyVCardQuery = MyVCardQuery(parent=Iq(type_='result', 
+                                         to='somejid'))
         disp = dispatcherEmul('somejid')
         self.vc = VCardQuery(name='John')
         host = hostEmul(myvcard=self.vc, dispatcher=disp)
@@ -24,10 +25,12 @@ class TestVCardQuery(unittest.TestCase):
         res = self.MyVCardQuery.getHandler()
         self.assertTrue(self.vc in res.children)
         self.MyVCardQuery.host.myvcard = None
-        self.assertRaises(errors.ItemNotFoundException, self.MyVCardQuery.getHandler)
+        self.assertRaises(errors.ItemNotFoundException, 
+                          self.MyVCardQuery.getHandler)
         
     def test_setHandler(self):
-        self.assertRaises(errors.ForbiddenException, self.MyVCardQuery.setHandler)
+        self.assertRaises(errors.ForbiddenException, 
+                          self.MyVCardQuery.setHandler)
 
 
 class TestVCard(unittest.TestCase):

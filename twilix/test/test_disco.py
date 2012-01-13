@@ -14,7 +14,7 @@ class TestVDiscoItemsQuery(unittest.TestCase):
     def setUp(self):
         self.query = disco.VDiscoItemsQuery(parent=Iq(type_='set'))
         self.query.host = hostEmul(static_items={'':disco.DiscoItemsQuery()},
-                                   static_info={'':disco.DiscoInfoQuery()})
+                                static_info={'':disco.DiscoInfoQuery()})
     
     def test_getHandler(self):
         res = self.query.getHandler()
@@ -39,7 +39,7 @@ class TestVDiscoInfoQuery(unittest.TestCase):
     def setUp(self):
         self.query = disco.VDiscoInfoQuery(parent=Iq(type_='set'))
         self.query.host = hostEmul(static_items={'':disco.DiscoItemsQuery()},
-                                   static_info={'':disco.DiscoInfoQuery()})
+                                static_info={'':disco.DiscoInfoQuery()})
     
     def test_getHandler(self):
         res = self.query.getHandler()
@@ -56,6 +56,7 @@ class TestDisco(unittest.TestCase):
     
     def setUp(self):
         self.disco = disco.Disco(dispatcherEmul('myjid'))
+        self.to = 'somejid'
     
     def test_init(self):
         hand=[(dispatcherEmul('jid'), '2'),]
@@ -68,21 +69,19 @@ class TestDisco(unittest.TestCase):
         self.assertEqual(self.disco.dispatcher._handlers, test_list)        
     
     def test_getItems(self):
-        to = 'somejid'
-        result = self.disco.getItems(to)
+        result = self.disco.getItems(self.to)
         self.assertTrue(isinstance(result, Deferred))
         result = self.disco.dispatcher.data[0]
         self.assertEqual(result.type_, 'get')
-        self.assertEqual(result.to, JID(to))
+        self.assertEqual(result.to, JID(self.to))
         self.assertEqual(result.from_, JID('myjid'))
         self.assertTrue(isinstance(result, Iq))
         
     def test_getInfo(self):
-        to = 'somejid'
-        result = self.disco.getInfo(to)
+        result = self.disco.getInfo(self.to)
         self.assertTrue(isinstance(result, Deferred))
         result = self.disco.dispatcher.data[0]
         self.assertEqual(result.type_, 'get')
-        self.assertEqual(result.to, JID(to))
+        self.assertEqual(result.to, JID(self.to))
         self.assertEqual(result.from_, JID('myjid'))
         self.assertTrue(isinstance(result, Iq))

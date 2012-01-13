@@ -19,7 +19,8 @@ class TestConditionNode(unittest.TestCase):
 class TestUndefinedConditionException(unittest.TestCase):
     
     def test_init(self):
-        i = errors.UndefinedConditionException('>:4 8 15 16 23 42', type='modify')
+        i = errors.UndefinedConditionException('>:4 8 15 16 23 42', 
+                                               type='modify')
 
 
 class TestError(unittest.TestCase):
@@ -33,7 +34,8 @@ class TestError(unittest.TestCase):
     def test_clean_type_(self):
         error = errors.Error(type_='get', to='jid', from_='some_jid',
                              condition='any')
-        self.assertRaises(ElementParseError, error.clean_type_, 'something')
+        self.assertRaises(ElementParseError, error.clean_type_, 
+                          'something')
         values = ('cancel', 'continue', 'modify', 'auth', 'wait')
         for value in values:
             self.assertEqual(error.clean_type_(value), value)
@@ -47,5 +49,6 @@ class ErrCondition(object):
 class TestExceptionByCondition(unittest.TestCase):
     
     def test_exception_by_condition(self):
-        err = errors.exception_by_condition(ErrCondition('forbidden', 'content'))
+        err = errors.exception_by_condition(ErrCondition('forbidden', 
+                                                         'content'))
         self.assertTrue(isinstance(err, errors.ForbiddenException))
