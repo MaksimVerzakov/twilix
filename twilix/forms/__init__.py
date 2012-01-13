@@ -71,6 +71,8 @@ class Form(VElement):
             field.prepare_to_submit()
             setattr(sform, name, field)
         sform.type_ = 'submit'
+        sform.title = None
+        sform.instructions = None
         return sform
 
     def make_cancel_form(self):
