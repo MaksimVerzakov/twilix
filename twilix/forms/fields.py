@@ -14,7 +14,7 @@ class Field(VElement):
     fieldType = None # To be redefined in derived classes
     
     type_ = fields.StringAttr('type')
-    label = fields.StringAttr('label')
+    label = fields.StringAttr('label', required=False)
     var = fields.StringAttr('var')
 
     required = fields.FlagNode('required', default=False)

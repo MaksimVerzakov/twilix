@@ -9,7 +9,7 @@ class ValidationError(Exception):
     pass
 
 class FormField(f.NodeProp):
-    def __init__(self, var, field_type, label, default=None, initial=None,
+    def __init__(self, var, field_type, label=None, default=None, initial=None,
                  required=False, *args, **kwargs):
         self.var = var
         self.field_type = field_type
