@@ -14,6 +14,8 @@ from twilix.bytestreams.socks5 import stanzas
 from twilix.bytestreams.socks5.proxy65 import XEP65Proxy
 from twilix.bytestreams.socks5.socks5 import SOCKSv5Client, STATE_READY
 
+# TODO: activate third party proxy
+
 def hashSID(sid, initiator, target):
     import sha
     s = (u"%s%s%s" % (sid, initiator, target)).encode('utf-8')
@@ -52,6 +54,7 @@ class InitiationQuery(stanzas.StreamHostQuery):
     def setHandler(self):
         if self.sid not in self.host.sessions:
             raise errors.NotAcceptableException
+        # TODO: check in parallel
         for streamhost in self.streamhosts:
             try:
                 addr = hashSID(self.sid, self.iq.from_, self.iq.to)
@@ -60,10 +63,11 @@ class InitiationQuery(stanzas.StreamHostQuery):
             except:
                 pass
             else:
-                used = stanzas.StreamHostUsedQuery(sid=self.sid,
-                                           streamhost_used=streamhost.jid)
+                used = stanzas.StreamHostUsed(jid=streamhost.jid)
+                used_query = stanzas.StreamHostUsedQuery(sid=self.sid,
+                                                         streamhost_used=used)
                 iq = self.iq.makeResult()
-                iq.link(used)
+                iq.link(used_query)
                 defer.returnValue(iq)
         raise errors.ItemNotFoundException
 
@@ -71,6 +75,7 @@ class Socks5Stream(protocol.Factory):
     """ Describe a socks5 (XEP-0060) stream service which allow you
         to pass binary data to another entity even if entity is behind
         firewall or NAT. """
+    NS = SOCKS5_NS
 
     def __init__(self, dispatcher):
         self.dispatcher = dispatcher
@@ -88,7 +93,7 @@ class Socks5Stream(protocol.Factory):
         """
 
         if disco is not None:
-            self.disco.root_info.addFeatures(Feature(var=SOCKS5_NS))
+            disco.root_info.addFeatures(Feature(var=SOCKS5_NS))
         
         self.dispatcher.registerHandler((InitiationQuery, self))
         self.streamhosts = []
@@ -112,8 +117,10 @@ class Socks5Stream(protocol.Factory):
             return c.transport
 
     def dataReceived(self, addr, buf):
-        connection = self.connections[addr]
-
+        connection = self.connections.get(addr)
+        if not connection:
+            return
+        
         connection['callback'](buf, self.sessions[connection['sid']]['meta'])
         if buf is None:
             self.unregisterSession(addr=addr)
@@ -132,6 +139,7 @@ class Socks5Stream(protocol.Factory):
         """
         Register bytestream session to wait for incoming connection.
         """
+        d = defer.Deferred(canceller=lambda _: self.unregisterSession(sid=sid))
         meta = {
             'meta': meta,
             'hash': hashSID(sid, initiator, target),
@@ -139,23 +147,26 @@ class Socks5Stream(protocol.Factory):
         self.sessions[sid] = meta
         self.connections[meta['hash']] = {'sid': sid,
                                           'connection': None,
-                                          'callback': callback}
+                                          'callback': callback,
+                                          'established_deferred': d}
+        return d
 
     def unregisterConnection(self, sid=None, addr=None):
         if sid is not None:
-            addr = self.sessions[sid]['hash']
-        if self.connections.has_key(addr):
+            addr = self.sessions.get(sid, {}).get('hash')
+        if addr is not None and self.connections.has_key(addr):
             sid = self.connections[addr]['sid']
             connection = self.connections[addr]['connection']
-            connection.stopProducing()
+            connection.transport.loseConnection()
             del self.connections[addr]
             return sid
 
     def unregisterSession(self, sid=None, addr=None):
-        if sid is not None:
-            sid = self.unregisterConnection(addr)
-        if self.sessions.has_key(sid):
+        if sid is None:
+            sid = self.unregisterConnection(addr=addr)
+        elif self.sessions.has_key(sid):
             self.unregisterConnection(sid=sid)
+        if sid is not None:
             del self.sessions[sid]
 
     @defer.inlineCallbacks
@@ -188,10 +199,11 @@ class Socks5Stream(protocol.Factory):
                                 streamhosts=streamhosts,
                                 parent=Iq(type_='set', to=jid, from_=from_))
 
-        self.registerSession(sid, from_, jid, callback, meta=meta)
+        d = self.registerSession(sid, from_, jid, callback, meta=meta)
         try:
             yield self.dispatcher.send(query.iq)
         except:
             self.unregisterSession(sid=sid)
             raise
+        yield d
         defer.returnValue(sid)

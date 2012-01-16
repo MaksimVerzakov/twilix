@@ -76,6 +76,7 @@ class XEP65Proxy(socks5.SOCKSv5):
         self.pauseProducing()
         self.connectCompleted(addr, 0)
         self.host.connections[addr]['connection'] = self
+        self.host.connections[addr]['established_deferred'].callback(None)
 
     def connectionLost(self, reason):
         self.host.unregisterSession(addr=self.addr)
