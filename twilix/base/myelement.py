@@ -87,9 +87,13 @@ class MyElement(Element):
         if cls.elementName is not None and el.name != cls.elementName:
             raise WrongElement
         for name, attr in cls.attributesProps.items():
-            kwargs[name] = el.attributes.get(attr.xmlattr, None)
+            kwargs[name] = attr.to_python(el.attributes.get(attr.xmlattr, None))
         for name, attr in cls.nodesProps.items():
-            kwargs[name] = attr.get_from_el(el)
+            els = attr.get_from_el(el)
+            if not isinstance(els, tuple):
+                kwargs[name] = attr.to_python(els)
+            else:
+                kwargs[name] = [attr.to_python(e) for e in els]
         r = cls(host=host, **kwargs)
         r.children = el.children
         return r
@@ -230,8 +234,9 @@ class MyElement(Element):
         :raises: ElementParseError
         
         """
-        value = attr.to_python(value)
-        if setter and hasattr(attr, 'clean_set'):
+        if not setter:
+            value = attr.to_python(value)
+        elif setter and hasattr(attr, 'clean_set'):
             value = attr.clean_set(value)
         if validate:
             value = attr.clean(value)
