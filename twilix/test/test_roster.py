@@ -12,8 +12,11 @@ from twilix.base.velement import VElement
 from twilix.errors import NotAcceptableException
 from twilix.test import iqEmul, hostEmul, dispatcherEmul
 
+
 class itemEmul(VElement):
-    def __init__(self, jid, groups=None, subscription='', presences = {}, **kwargs):
+    
+    def __init__(self, jid, groups=None, subscription='', \
+                 presences = {}, **kwargs):
         self.presences = presences
         self.groups = groups
         self.subscription = subscription
@@ -35,10 +38,6 @@ class hostEmulator(hostEmul):
     subscribed = object()
     unsubscribe = object()
     unsubscribed = object()
-    
-    items = [itemEmul('fast@wok'), 
-             itemEmul('little@nation', presences={'q':'w', 'r':'t'}), 
-             itemEmul('gordon@freeman', presences={'1':'2', '3':'4'})]
     
     def updateRoster(self, smth):
         self.update = True
@@ -68,17 +67,20 @@ class TestRosterItem(unittest.TestCase):
     
     def test_unicode(self):
         self.assertEqual(unicode(self.ros), 
-                         "<RosterItem JID(u'jid') name, subscription None>")
+                     "<RosterItem JID(u'jid') name, subscription None>")
                          
     def test_repr(self):
         self.assertEqual(repr(self.ros), 
-                         "<RosterItem JID(u'jid') name, subscription None>")
+                     "<RosterItem JID(u'jid') name, subscription None>")
     
    
 class TestRosterQuery(unittest.TestCase):
     def test_setHandler(self):
         rq = roster.RosterQuery(parent=Iq(type_='get', id='id0'))
-        rq.host = hostEmulator()        
+        items = [itemEmul('fast@wok'), 
+               itemEmul('little@nation', presences={'q':'w', 'r':'t'}), 
+               itemEmul('gordon@freeman', presences={'1':'2', '3':'4'})]
+        rq.host = hostEmulator(items=items)        
         self.assertEqual(rq.setHandler(), Iq(type_='result', id='id0'))
     
     def test_getHandler(self):
@@ -88,7 +90,8 @@ class TestRosterQuery(unittest.TestCase):
 class TestRoster(unittest.TestCase):
     
     def setUp(self):
-        self.rost = roster.Roster(dispatcherEmul('jid'), mypresence='pr')        
+        self.rost = roster.Roster(dispatcherEmul('jid'), 
+                                  mypresence='pr')        
             
     def test_init(self):
         test_list = [(roster.RosterQuery, self.rost),
@@ -103,7 +106,8 @@ class TestRoster(unittest.TestCase):
         func = self.rost._send_initial_presence
         self.assertRaises(AssertionError, func, 'any')
         func(self.rost)
-        self.assertEqual(self.rost.dispatcher.data[0], self.rost.mypresence)
+        self.assertEqual(self.rost.dispatcher.data[0], 
+                         self.rost.mypresence)
     
     def test_updatePresence(self):
         self.rost.updatePresence('presence')
@@ -165,9 +169,14 @@ class TestRoster(unittest.TestCase):
         self.assertEqual(res, items[1:2])
         
 class TestRosterPresence(unittest.TestCase):
+    
     def setUp(self):
         dispatcher.connect(self.got_signal, signal=dispatcher.Any)
-        self.rp = roster.RosterPresence(host=hostEmulator())
+        items = [itemEmul('fast@wok'), 
+               itemEmul('little@nation', presences={'q':'w', 'r':'t'}), 
+               itemEmul('gordon@freeman', presences={'1':'2', '3':'4'})]
+        host = hostEmulator(items=items)
+        self.rp = roster.RosterPresence(host=host)      
         self.signal = []
         self.sender = []
         self.presence = []
@@ -212,14 +221,16 @@ class TestRosterPresence(unittest.TestCase):
         
         self.rp.from_=MyJID('fast@wok/home')
         self.rp.availableHandler()
-        self.assertEqual(self.signal[-1], self.rp.host.resource_changed_status)
+        self.assertEqual(self.signal[-1], 
+                         self.rp.host.resource_changed_status)
         self.assertEqual(self.sender[-1], self.rp.host)
         self.assertEqual(self.presence[-1], self.rp)
         
         n = len(self.signal)
         self.rp.from_=MyJID('gordon@freeman/anywhere')
         self.rp.availableHandler()
-        self.assertEqual(self.signal[-1], self.rp.host.resource_available)
+        self.assertEqual(self.signal[-1], 
+                         self.rp.host.resource_available)
         self.assertEqual(self.sender[-1], self.rp.host)
         self.assertEqual(self.presence[-1], self.rp)
         self.assertNotEqual(n, len(self.signal))
@@ -230,10 +241,11 @@ class TestRosterPresence(unittest.TestCase):
         self.assertEqual(n, len(self.signal))
     
     def test_unavailableHandler(self):
-        self.rp.from_=MyJID('little@nation/q')
+        self.rp.from_=MyJID('little@nation/q') 
         self.rp.unavailableHandler()
         self.assertEqual(self.rp.host.items[1].presences, {'r':'t'})
-        self.assertEqual(self.signal[-1], self.rp.host.resource_unavailable)
+        self.assertEqual(self.signal[-1], 
+                         self.rp.host.resource_unavailable)
         self.assertEqual(self.sender[-1], self.rp.host)
         self.assertEqual(self.presence[-1], self.rp)
         
@@ -248,5 +260,28 @@ class TestRosterPresence(unittest.TestCase):
         
         n = len(self.signal)
         self.rp.from_=MyJID('who@lets.the/dogsout')
-        self.rp.availableHandler()          
+        self.rp.unavailableHandler()          
+        self.assertEqual(n, len(self.signal))
+    
+    def test_errorHandler(self):
+        self.rp.from_=MyJID('little@nation/q')
+        self.rp.errorHandler()
+        self.assertEqual(self.rp.host.items[1].presences, {'r':'t'})
+        self.assertEqual(self.signal[-1], 
+                         self.rp.host.resource_unavailable)
+        self.assertEqual(self.sender[-1], self.rp.host)
+        self.assertEqual(self.presence[-1], self.rp)
+        
+        self.rp.from_=MyJID('little@nation/r')
+        self.rp.errorHandler()
+        self.assertEqual(self.rp.host.items[1].presences, {})
+        self.assertEqual(self.signal[-2:], 
+                         [self.rp.host.contact_unavailable,
+                          self.rp.host.resource_unavailable])
+        self.assertEqual(self.sender[-2:], [self.rp.host, self.rp.host])
+        self.assertEqual(self.presence[-2:], [self.rp, self.rp])
+        
+        n = len(self.signal)
+        self.rp.from_=MyJID('who@lets.the/dogsout')
+        self.rp.errorHandler()          
         self.assertEqual(n, len(self.signal))

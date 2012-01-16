@@ -45,7 +45,8 @@ class TestIq(unittest.TestCase):
         self.iq = stanzas.Iq(type_='get', to=self.to, from_=self.from_)
     
     def test_clean_type_(self):
-        self.assertRaises(ElementParseError, self.iq.clean_type_, 'something')
+        self.assertRaises(ElementParseError, self.iq.clean_type_, 
+                          'something')
         values = ['set', 'get', 'result', 'error']
         for value in values:
             self.assertEqual(self.iq.clean_type_(value), value)
@@ -64,6 +65,7 @@ class TestIq(unittest.TestCase):
         
         
 class TestMyValidator(unittest.TestCase):
+    
     def test_clean_to(self):
         Validator = stanzas.MyValidator()
         disp = dispatcherEmul('myjid')
@@ -83,21 +85,21 @@ class TestMessage(unittest.TestCase):
 
 class TestPresence(unittest.TestCase):
     
+    def setUp(self):
+        self.values = ('subscribe', 'subscribed', 'unsubscribe',
+                       'unsubscribed', 'available', 'unavailable',
+                       'probe', 'error')
+    
     def test_clean_type_(self):
         prs = stanzas.Presence(to='jid', from_='some-jid')
         self.assertEqual(prs.clean_type_('something'), None)
-        values = ('subscribe', 'subscribed', 'unsubscribe',
-                  'unsubscribed', 'available', 'unavailable',
-                  'probe', 'error')
-        for value in values:
+        for value in self.values:
             self.assertEqual(prs.clean_type_(value), value)
     
     def test_type_(self):
-        values = ('subscribe', 'subscribed', 'unsubscribe',
-                  'unsubscribed', 'available', 'unavailable',
-                  'probe', 'error')
-        for value in values:
-            prs = stanzas.Presence(to='jid', from_='some-jid', type_=value)
+        for value in self.values:
+            prs = stanzas.Presence(to='jid', from_='some-jid', 
+                                   type_=value)
             self.assertEqual(prs.type_, value)
         prs = stanzas.Presence(to='jid', from_='some-jid')
         self.assertEqual(prs.type_, 'available')

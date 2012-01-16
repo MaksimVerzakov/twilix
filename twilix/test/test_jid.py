@@ -21,12 +21,16 @@ class TestMyJID(unittest.TestCase):
         self.assertEqual(self.bare_jid.is_bare, True)
 
     def test_bare(self):
-        self.assertEqual(self.jid.bare(), JID(tuple=(self.name, self.host, None)))
-        self.assertEqual(self.bare_jid.bare(), JID(tuple=(self.name, self.host, None)))
+        self.assertEqual(self.jid.bare(), 
+                         JID(tuple=(self.name, self.host, None)))
+        self.assertEqual(self.bare_jid.bare(), 
+                         JID(tuple=(self.name, self.host, None)))
     
     def test_unicode(self):
-        self.assertEqual(self.jid.__unicode__(), u'%s@%s/%s' % (self.name, self.host, self.res))
-        self.assertEqual(self.bare_jid.__unicode__(), u'%s@%s' % (self.name, self.host))
+        self.assertEqual(self.jid.__unicode__(), 
+                         u'%s@%s/%s' % (self.name, self.host, self.res))
+        self.assertEqual(self.bare_jid.__unicode__(), 
+                         u'%s@%s' % (self.name, self.host))
     
 class TestInternJID(unittest.TestCase):
     
