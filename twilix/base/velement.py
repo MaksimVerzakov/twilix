@@ -71,6 +71,7 @@ class VElement(MyElement):
     defaultUri = None
     result_class = None
     error_class = None
+    dispatcher = None
 
     __metaclass__ = DeclarativeFieldsMetaClass
 
@@ -89,6 +90,7 @@ class VElement(MyElement):
                                        localPrefixes=self.elementPrefixes)
         self.host = kwargs.get('host', None)
         self.parent = kwargs.get('parent', None)
+        self.dispatcher = kwargs.get('dispatcher', None)
         if self.parent is not None:
             self.parent.link(self)
         for attr in self.attributesProps:

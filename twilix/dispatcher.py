@@ -127,7 +127,8 @@ class Dispatcher(object):
             elif el.type_ == 'error':
                 exception = None
                 try:
-                    err = error_class.createFromElement(el, host=None)
+                    err = error_class.createFromElement(el, host=None,
+                                                        dispatcher=self)
                 except (WrongElement, ElementParseError), e:
                     exception = e
                 if exception is None:
@@ -139,7 +140,8 @@ class Dispatcher(object):
             for handler, host in self._handlers:
                 try:
                     d = handler.createFromElement(el, host=host,
-                                                  dont_defer=True)
+                                                  dont_defer=True,
+                                                  dispatcher=self)
                     d.topElement().validate()
                 except WrongElement:
                     continue

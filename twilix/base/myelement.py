@@ -56,6 +56,13 @@ class MyElement(Element):
         return myel
 
     @classmethod
+    def redefineProperty(cls, name, value):
+        class new(cls):
+            pass
+        setattr(new, name, value)
+        return new
+
+    @classmethod
     def createFromElement(cls, el, **kwargs):
         """
         Make class instance of element if it's suits to class.
@@ -377,10 +384,9 @@ class MyElement(Element):
         self.removeChilds(el.name, el.uri)
         self.addChild(el)
         self._links.append(el)
-        result_class = getattr(el, 'result_class')
-        if result_class is not None:
-            self.result_class = result_class
-        error_class = getattr(el, 'error_class')
-        if error_class is not None:
-            self.error_class = error_class
+        transits = ('result_class', 'error_class', 'dispatcher')
+        for transit in transits:
+            t = getattr(el, transit, None)
+            if t is not None:
+                setattr(self, transit, t)
 

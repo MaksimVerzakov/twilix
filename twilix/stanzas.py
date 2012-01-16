@@ -162,7 +162,7 @@ class MyValidator(object):
         :raises: WrongElement
         
         """
-        if self.host and self.host.dispatcher.myjid != v:
+        if self.dispatcher.myjid != v:
             raise WrongElement
         return v
 
