@@ -6,7 +6,7 @@ from twilix import fields
 class Option(VElement):
     elementName = 'option'
 
-    label = fields.StringAttr('label')
+    label = fields.StringAttr('label', required=False)
     value = fields.StringNode('value')
 
 class Field(VElement):
@@ -17,11 +17,12 @@ class Field(VElement):
     label = fields.StringAttr('label', required=False)
     var = fields.StringAttr('var')
 
-    required = fields.FlagNode('required', default=False)
-    values = fields.StringNode('value', listed=True)
+    required = fields.FlagNode('required', default=False, required=False)
+    values = fields.StringNode('value', listed=True, required=False)
     options = fields.ElementNode(Option, listed=True, required=False)
 
     def __init__(self, value=None, *args, **kwargs):
+        self.kwargs = kwargs
         super(Field, self).__init__(*args, **kwargs)
         self.type_ = self.fieldType
         self.value = value
@@ -39,6 +40,12 @@ class Field(VElement):
             return value
         raise WrongElement
 
+    def fclean(self, values):
+        if self.kwargs.get('required') and not values:
+            raise ElementParseError, "Form field %s %s is required" % \
+                    (self.var, self.type_)
+        return values
+
     @property
     def value(self):
         return self.values
@@ -50,9 +57,6 @@ class Field(VElement):
     @value.deleter
     def value(self, value):
         self.values = ()
-
-    def __nonzero__(self):
-        return bool(self.value)
 
 class MultilineField(Field):
     @property
@@ -99,7 +103,8 @@ class JidMultiField(Field):
 
     values = fields.JidNode('value', listed=True)
 
-    def clean_values_listed(self, values):
+    def fclean(self, values):
+        values = super(JidMultiField, self).fclean(values)
         d = {}
         for x in values:
             d[x] = 1
@@ -116,15 +121,22 @@ class TextSingleField(SingleField):
 
 class List(object):
 
-    def clean_values_listed(self, values):
+    def fclean(self, values):
+        super(List, self).fclean(values)
+        if not self.options:
+            return values
         allowed_values = [o.value for o in self.options]
         wrong_items = [v for v in values if v not in allowed_values]
         if wrong_items:
-            raise NotAcceptableException # Message here?
+            raise NotAcceptableException(
+                "%s is not in options list" % (wrong_items,))
         return values
 
 class ListSingleField(List, SingleField):
     fieldType = 'list-single'
+
+    def fclean(self, value):
+        return super(ListSingleField, self).fclean((value,))
 
 class ListMultiField(List, Field):
     fieldType = 'list-multi'
