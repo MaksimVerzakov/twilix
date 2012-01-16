@@ -70,6 +70,7 @@ class TestMyValidator(unittest.TestCase):
         Validator = stanzas.MyValidator()
         disp = dispatcherEmul('myjid')
         Validator.host = hostEmul(dispatcher=disp)
+        Validator.dispatcher = disp
         self.assertEqual(Validator.clean_to(JID('myjid')), disp.myjid)
         self.assertRaises(WrongElement, Validator.clean_to, 'some-jid')
 
