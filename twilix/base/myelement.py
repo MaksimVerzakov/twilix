@@ -201,7 +201,7 @@ class MyElement(Element):
                         for v in node.get_from_el(self)])
             else:
                 return self._validate(name, node, node.get_from_el(self),
-                                      validate)
+                                      validate=validate)
         elif not name.startswith('clean_'):
             return super(MyElement, self).__getattr__(name)
 
