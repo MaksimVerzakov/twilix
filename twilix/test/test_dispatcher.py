@@ -50,16 +50,6 @@ class TestDispatcher(unittest.TestCase):
         l = ['hook1', 'hook2', 'hook3']
         self.assertEqual(self.dispatcher.getHooks('hook_name'), l)
 
-    def test_sendInvalid(self):
-        class MyIq(Iq):
-            req = fields.StringAttr('required')
-
-        iq = MyIq(type_='set')
-        self.assertRaises(ElementParseError, self.dispatcher.send, iq)
-
-        iq.req = 'dummy'
-        self.dispatcher.send(iq)
-        
     def test_send(self):
         # XXX: implement
         pass

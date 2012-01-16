@@ -52,29 +52,21 @@ class TestStringAttr(unittest.TestCase):
         
 class TestJidType(unittest.TestCase):
     
-    def test_clean(self):
+    def test_topython(self):
         jid = 'highway@hell'
         jt = JidType()
-        jt.required = False
-        self.assertEqual(internJID(jid), jt.clean(jid))
-        self.assertEqual(None, jt.clean(None))
-        jt.required = True
-        self.assertRaises(ElementParseError, jt.clean, None)
+        self.assertEqual(internJID(jid), jt.to_python(jid))
+        self.assertEqual(None, jt.to_python(None))
 
 class TestBooleanType(unittest.TestCase):
     
     def setUp(self):
         self.bt = BooleanType()        
     
-    def test_clean(self):
-        self.bt.required = False
-        self.assertTrue(self.bt.clean('true'))
-        self.assertFalse(self.bt.clean(None))
-        self.assertFalse(self.bt.clean('any'))
-        self.bt.required = True
-        self.assertTrue(self.bt.clean('true'))        
-        self.assertFalse(self.bt.clean('any'))
-        self.assertRaises(ElementParseError, self.bt.clean, None)
+    def test_topython(self):
+        self.assertTrue(self.bt.to_python('true'))
+        self.assertFalse(self.bt.to_python(None))
+        self.assertFalse(self.bt.to_python('any'))
     
     def test_clean_set(self):
         self.assertEqual('true', self.bt.clean_set('any'))
