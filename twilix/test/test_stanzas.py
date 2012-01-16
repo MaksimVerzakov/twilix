@@ -16,7 +16,7 @@ class TestStanza(unittest.TestCase):
         self.stanza = stanzas.Stanza(to=self.to, from_=self.from_)
     
     def testMakeError(self):
-        res = self.stanza.makeError('error')
+        res = self.stanza.makeError(None)
         self.assertEqual(res.type_, 'error')
         self.assertEqual(res.to, self.from_)
         self.assertEqual(res.from_, self.to)
@@ -69,12 +69,12 @@ class TestMyValidator(unittest.TestCase):
         disp = dispatcherEmul('myjid')
         Validator.host = hostEmul(dispatcher=disp)
         self.assertEqual(Validator.clean_to(JID('myjid')), disp.myjid)
-        self.assertRaises(WrongElement, Validator.clean_to, 'some_jid')
+        self.assertRaises(WrongElement, Validator.clean_to, 'some-jid')
 
 class TestMessage(unittest.TestCase):
     
     def test_clean_type_(self):
-        msg = stanzas.Message(to='jid', from_='some_jid')
+        msg = stanzas.Message(to='jid', from_='some-jid')
         self.assertEqual(msg.clean_type_('something'), 'normal')
         values = ('normal', 'chat', 'groupchat', 'headline', 'error')
         for value in values:
@@ -84,7 +84,7 @@ class TestMessage(unittest.TestCase):
 class TestPresence(unittest.TestCase):
     
     def test_clean_type_(self):
-        prs = stanzas.Presence(to='jid', from_='some_jid')
+        prs = stanzas.Presence(to='jid', from_='some-jid')
         self.assertEqual(prs.clean_type_('something'), None)
         values = ('subscribe', 'subscribed', 'unsubscribe',
                   'unsubscribed', 'available', 'unavailable',
@@ -97,9 +97,9 @@ class TestPresence(unittest.TestCase):
                   'unsubscribed', 'available', 'unavailable',
                   'probe', 'error')
         for value in values:
-            prs = stanzas.Presence(to='jid', from_='some_jid', type_=value)
+            prs = stanzas.Presence(to='jid', from_='some-jid', type_=value)
             self.assertEqual(prs.type_, value)
-        prs = stanzas.Presence(to='jid', from_='some_jid')
+        prs = stanzas.Presence(to='jid', from_='some-jid')
         self.assertEqual(prs.type_, 'available')
        
         

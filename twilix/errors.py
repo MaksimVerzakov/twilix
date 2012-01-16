@@ -149,6 +149,8 @@ class ConditionNode(fields.ElementNode):
     """
     def clean(self, value):
         return value
+    def to_python(self, value):
+        return value
     def clean_set(self, value):
         return MyElement((self.cls.elementUri, value))
 

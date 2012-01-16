@@ -143,8 +143,10 @@ class Dispatcher(object):
                     d.topElement().validate()
                 except WrongElement:
                     continue
-                except ElementParseError:
+                except ElementParseError, e:
                     bad_request = True
+                    raise
+                    # TODO: pass an exception message?
                     continue
                 func = getattr(d, '%sHandler' % d.topElement().type_, None) or \
                        getattr(d, 'anyHandler', None)
@@ -154,6 +156,7 @@ class Dispatcher(object):
                     except Exception as e:
                         if not isinstance(e, ExceptionWithContent):
                             e = InternalServerErrorException()
+                            raise
                             # TODO: Add traceback if debug
                         results.append(el.makeError(e.content))
                         break
@@ -198,12 +201,13 @@ class Dispatcher(object):
         for el in els:
             if isinstance(el, (EmptyStanza, BreakStanza)):
                 continue
-            el.topElement().validate()
+            top_el = el.topElement()
+            #top_el.validate()
             hooks = self.getHooks('send')
             for hook, host in hooks:
                 try:
                     d = hook.createFromElement(el, host=host)
-                    d.validate()
+                    d.topElement().validate()
                 except WrongElement:
                     continue
 
@@ -216,5 +220,5 @@ class Dispatcher(object):
                     return
             if el.type_ in ('set', 'get') and el.deferred is not None:
                 self._callbacks[el.id] = (el.deferred, el.result_class, el.error_class)
-            self.xmlstream.send(el)
+            self.xmlstream.send(top_el)
         return deferred

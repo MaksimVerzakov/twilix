@@ -4,7 +4,8 @@ from twilix.base.exceptions import ElementParseError, WrongElement
 
 class EmptyStanza(object):   
     """Dummy stanza to send when nothing to send."""
-    pass
+    def __nonzero__(self):
+        return False
 
 class EmptyElement(object):
     """Dummy Element."""
@@ -28,6 +29,10 @@ class MyElement(Element):
     
     attributesProps = {}
     nodesProps = {}
+
+    def __init__(self, *args, **kwargs):
+        super(MyElement, self).__init__(*args, **kwargs)
+        self._links = []
     
     @classmethod
     def makeFromElement(cls, el):
@@ -108,15 +113,21 @@ class MyElement(Element):
     def validate(self):
         """Validate all attributes."""
         for name, attr in self.__class__.attributesProps.items():
-            value = getattr(self, name, None)
-            if not value and attr.required:
-                raise ElementParseError, u'attr %s is required' % attr
+            value = self.__getattr__(name, validate=True)
         for name, attr in self.__class__.nodesProps.items():
-            value = getattr(self, name, None)
-            if not value and attr.required:
-                raise ElementParseError, u'attr %s is required' % attr
+            value = self.__getattr__(name, validate=True)
+            validate = getattr(value, 'validate', None)
+            if validate is not None:
+                validate()
+        for link in self._links:
+            validate = getattr(link, 'validate', None)
+            if validate is not None:
+                validate()
+        element_clean = getattr(self, 'clean', None)
+        if element_clean:
+            element_clean()
 
-    def __getattr__(self, name):  #XXX: refactor?
+    def __getattr__(self, name, validate=False):  #XXX: refactor?
         """Overrides __getattr__ method.
         
         Return valid attribute or not listed node if it's exist.
@@ -140,7 +151,8 @@ class MyElement(Element):
         attr = self.attributesProps.get(name, None)
         node = self.nodesProps.get(name, None)
         if attr and not need_adder:
-            return self._validate(name, attr, attr.get_from_el(self))
+            return self._validate(name, attr, attr.get_from_el(self), 
+                                    validate=validate)
         elif node:
             if need_adder and node.listed:
                 def adder(value):
@@ -185,10 +197,11 @@ class MyElement(Element):
             if node.listed:
                 listed_name = '%s_listed' % name
                 return self._fvalidate(listed_name,
-                        [self._validate(name, node, v) \
+                        [self._validate(name, node, v, validate=validate) \
                         for v in node.get_from_el(self)])
             else:
-                return self._validate(name, node, node.get_from_el(self))
+                return self._validate(name, node, node.get_from_el(self),
+                                      validate)
         elif not name.startswith('clean_'):
             return super(MyElement, self).__getattr__(name)
 
@@ -198,7 +211,7 @@ class MyElement(Element):
             value = nvalidator(value)
         return value
 
-    def _validate(self, name, attr, value, setter=False):
+    def _validate(self, name, attr, value, setter=False, validate=False):
         """
         Call cleaning function to attributes value according to the
         name and setter. 
@@ -217,10 +230,11 @@ class MyElement(Element):
         :raises: ElementParseError
         
         """
-        if not setter:
-            value = attr.clean(value)
+        value = attr.to_python(value)
         if setter and hasattr(attr, 'clean_set'):
             value = attr.clean_set(value)
+        if validate:
+            value = attr.clean(value)
         if not setter:
             value = self._fvalidate(name, value)
         return value
@@ -256,7 +270,7 @@ class MyElement(Element):
             for value in values:
                 content = self._validate(name, node, value, setter=True)
                 if isinstance(content, MyElement):
-                    self.addChild(content)
+                    self.link(content)
                 elif isinstance(content, EmptyElement) or content is None:
                     pass
                 else:
@@ -357,6 +371,7 @@ class MyElement(Element):
         """
         self.removeChilds(el.name, el.uri)
         self.addChild(el)
+        self._links.append(el)
         result_class = getattr(el, 'result_class')
         if result_class is not None:
             self.result_class = result_class

@@ -46,49 +46,99 @@ class AttributeProp(object):
         return u'AttributeProp %s' % self.xmlattr
 
 class StringType(object):
-    def clean(self, value):
-        """
-        Return value cast to unicode. 
-        Raise ElementParseError if there's no value but it's required.
-        
-        :returns: value cast to unicode.
-        
-        :raises: ElementParseError.
-        """
+    def to_python(self, value):
         if value is not None:
             return unicode(value)
-        elif self.required:
+
+    def clean(self, value):
+        if not value and self.required:
             raise ElementParseError, u'%s is required' % self
+        return value
+
+    def clean_set(self, value):
+        if value is not None:
+            return unicode(value)
+
+class IntegerType(StringType):
+    """Used for nodes contain integer number."""
+    def to_python(self, value):
+        """
+        Return value cast to integer if it's possible.
+        
+        :returns:
+            value cast to integer.
+            
+            None if there's ValueError.
+            
+        """
+        value = super(IntegerType, self).to_python(value)
+        if value is not None:
+            try:
+                res = int(value)
+            except ValueError:
+                res = None
+            return res
+
+class DateTimeType(StringType):
+    """Used for nodes contain date and time info."""
+
+    def to_python(self, value):
+        value = super(DateTimeType, self).to_python(value)
+        if value:
+            value = parse_timestamp(value)
+        return value
+
+    def clean_set(self, value):
+        """
+        Return element contains unicode string with date, time and utc
+        offset.
+        
+        :returns:
+            EmptyElement() if there's no value.
+            
+            MyElement contains unicode string with date, time and utc
+            offset.
+            
+        """
+        if not value:
+            return EmptyElement()
+        res = value.strftime("%Y-%m-%dT%H:%M:%S")
+        minutes = 0
+        if value.utcoffset():
+            minutes = value.utcoffset().seconds / 60
+        if minutes == 0:
+            res += 'Z'
+        else:
+            hours = minutes / 60
+            minutes = minutes - hours * 60
+            if hours > 0: res += "+"
+            res += "%s:%s" % (hours, minutes)
+        return super(DateTimeType, self).clean_set(res)
+
+class IntegerAttr(IntegerType, AttributeProp):
+    """Integer attribute."""
         
 class StringAttr(StringType, AttributeProp):
     """Plain string attribute."""
 
-    def clean_set(self, value):
-        """Return value cast to unicode."""
-        if value is not None:
-            return unicode(value)
+class DateTimeAttr(DateTimeType, AttributeProp):
+    """Datetime attribute."""
 
 class JidType(StringType):
-    """Jabber id Attribute. Automatically convert an attribute's value to the
+    """Jabber id Type. Automatically convert a value to the
     MyJID instance"""
-    def clean(self, value):
-        """
-        Call clean method of parent class to value.
-        
-        :returns:
-            value cast to internJID if value isn't None or required.
-        """
-        value = super(JidType, self).clean(value)
-        if value is not None or self.required:
+    def to_python(self, value):
+        value = super(JidType, self).to_python(value)
+        if value is not None:
             # XXX: Must raise ElementParseError if JID can't be converted
             return internJID(value)
 
-class JidAttr(JidType, StringAttr):
+class JidAttr(JidType, AttributeProp):
     pass
 
 class BooleanType(StringType):
     """Boolean attribute."""
-    def clean(self, value):
+    def to_python(self, value):
         """
         Transform true/false values to the Python's bool.
         
@@ -98,7 +148,7 @@ class BooleanType(StringType):
             False otherwise
             
         """
-        value = super(BooleanType, self).clean(value)
+        value = super(BooleanType, self).to_python(value)
         if value == 'true': value = True
         else: value = False
         return value
@@ -145,15 +195,17 @@ class NodeProp(object):
         if r:
             return r[0]
 
+    def to_python(self, value):
+        return value
+
     def clean(self, value):
-        """Return value."""
         return value
 
     def __unicode__(self):
         """Overrides __unicode__ method of object."""
         return 'NodeProp %s' % self.xmlnode
 
-class StringNode(NodeProp):
+class StringNode(StringType, NodeProp):
     """Used for nodes contain string."""
     def __init__(self, *args, **kwargs):
         """
@@ -165,19 +217,6 @@ class StringNode(NodeProp):
         except KeyError:
             self.uri = None
         super(StringNode, self).__init__(*args, **kwargs)
-
-    def clean(self, value):
-        """
-        Return value cast to unicode.
-        
-        :returns: value cast to unicode
-        
-        :raises: ElementParseError if value is None but required.
-        """
-        if value is not None:
-            return unicode(value)
-        elif self.required:
-            raise ElementParseError, u"%s is required" % self
 
     def clean_set(self, value):
         """
@@ -192,50 +231,13 @@ class StringNode(NodeProp):
         """
         if value is None:
             return EmptyElement()
+        value = super(StringNode, self).clean_set(value)
         r = MyElement((self.uri, self.xmlnode))
         r.content = unicode(value)
         return r
 
-class DateTimeNode(StringNode):
-    """Used for nodes contain date and time info."""
-    def get_from_el(self, el):
-        """Return date and time info from element in datetime format."""
-        # XXX: Move to clean
-        el = super(DateTimeNode, self).get_from_el(el)
-        el = super(DateTimeNode, self).clean(el)
-        if el:
-            return parse_timestamp(el)
-
-    def clean(self, value):
-        """Overrides clean method of StringNode."""
-        return value
-
-    def clean_set(self, value):
-        """
-        Return element contains unicode string with date, time and utc
-        offset.
-        
-        :returns:
-            EmptyElement() if there's no value.
-            
-            MyElement contains unicode string with date, time and utc
-            offset.
-            
-        """
-        if not value:
-            return EmptyElement()
-        res = value.strftime("%Y-%m-%dT%H:%M:%S")
-        minutes = 0
-        if value.utcoffset():
-            minutes = value.utcoffset().seconds / 60
-        if minutes == 0:
-            res += 'Z'
-        else:
-            hours = minutes / 60
-            minutes = minutes - hours * 60
-            if hours > 0: res += "+"
-            res += "%s:%s" % (hours, minutes)
-        return super(DateTimeNode, self).clean_set(res)
+class DateTimeNode(DateTimeType, StringNode):
+    pass
 
 class FlagNode(NodeProp):
     """Used for flag nodes, for example, <registered/> from the XEP-100"""
@@ -255,7 +257,7 @@ class FlagNode(NodeProp):
             return True
         return False
 
-    def clean(self, value):
+    def to_python(self, value):
         """
 
         :returns:
@@ -279,30 +281,9 @@ class FlagNode(NodeProp):
             return MyElement((None, self.xmlnode))
         return EmptyElement()
 
-class IntegerNode(StringNode):
-    """Used for nodes contain integer number."""
-    def clean(self, value):
-        """
-        Call clean method of parents class to value.
-        Return value cast to integer if it's possible.
-        
-        :returns:
-            value cast to integer.
-            
-            None if there's ValueError.
-            
-        """
-        value = super(IntegerNode, self).clean(value)
-        if value is not None:
-            try:
-                res = int(value)
-            except ValueError:
-                res = None
-            return res
-
 class Base64Node(StringNode):
     """Used for nodes contain base64 data."""
-    def clean(self, value):
+    def to_python(self, value):
         """
         Return value in base64 format if it's possible.
         
@@ -311,7 +292,7 @@ class Base64Node(StringNode):
         :raises: ElementParseError.
         
         """
-        value = super(Base64Node, self).clean(value)
+        value = super(Base64Node, self).to_python(value)
         try:
             value = base64.b64decode(value)
         except TypeError:
@@ -322,7 +303,7 @@ class Base64Node(StringNode):
         """Return MyElement with value cast to base64 as content."""
         if value is not None:
             r = MyElement((None, self.xmlnode))
-            r.content = base64.b64encode(unicode(value))
+            r.content = base64.b64encode(value)
             return r
 
 class ElementNode(NodeProp):
@@ -363,7 +344,7 @@ class ElementNode(NodeProp):
         if r:
             return r[0]
 
-    def clean(self, value):
+    def to_python(self, value):
         """Return element according to class with value."""
         if value is None:
             return                                 #XXX: EmptyElement()?
@@ -373,4 +354,7 @@ class BooleanNode(BooleanType, StringNode):
     pass
 
 class JidNode(JidType, StringNode):
+    pass
+
+class IntegerNode(IntegerType, NodeProp):
     pass
