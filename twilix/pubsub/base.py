@@ -1,6 +1,6 @@
 from twilix import fields
 from twilix.stanzas import Query, Message
-from twilix.base import VElement
+from twilix.base.velement import VElement
 
 class CreateNodeElement(VElement):
     elementName = 'create'
