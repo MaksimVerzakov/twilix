@@ -282,7 +282,7 @@ class MyElement(Element):
             for value in values:
                 content = self._validate(name, node, value, setter=True)
                 if isinstance(content, MyElement):
-                    self.link(content)
+                    self.link(content, dont_clean=True)
                 elif isinstance(content, EmptyElement) or content is None:
                     pass
                 else:
@@ -377,11 +377,12 @@ class MyElement(Element):
                 children.append(el)
         self.children = children
 
-    def link(self, el):
+    def link(self, el, dont_clean=False):
         """
         Link query to stanza.
         """
-        self.removeChilds(el.name, el.uri)
+        if not dont_clean:
+            self.removeChilds(el.name, el.uri)
         self.addChild(el)
         self._links.append(el)
         transits = ('result_class', 'error_class', 'dispatcher')
