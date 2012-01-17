@@ -96,7 +96,7 @@ class ExceptionWithType(Exception):
     Extends class Exception. Define type and reason fields.
     Base class for special exceptions.
     """
-    def __init__(self, type=None, reason=None, *args, **kwargs):
+    def __init__(self, reason=None, type=None, *args, **kwargs):
         self.reason = reason
         self.type = type
         if self.type == None:
