@@ -147,7 +147,6 @@ class Dispatcher(object):
                     continue
                 except ElementParseError, e:
                     bad_request = True
-                    raise
                     # TODO: pass an exception message?
                     continue
                 func = getattr(d, '%sHandler' % d.topElement().type_, None) or \
