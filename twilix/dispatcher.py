@@ -155,7 +155,7 @@ class Dispatcher(object):
                 if func is not None:
                     try:
                         result = yield func()
-                    except Exception as e:
+                    except Exception, e:
                         if not isinstance(e, ExceptionWithContent):
                             e = InternalServerErrorException()
                             raise

@@ -46,41 +46,31 @@ class Field(VElement):
                     (self.var, self.type_)
         return values
 
-    @property
-    def value(self):
+    def _get_value(self):
         return self.values
-
-    @value.setter
-    def value(self, value):
+    def _set_value(self, value):
         self.values = value
-
-    @value.deleter
-    def value(self, value):
+    def _del_value(self, value):
         self.values = ()
+    value = property(_get_value, _set_value, _del_value)
 
 class MultilineField(Field):
-    @property
-    def value(self):
+    def _get_value(self):
         return u'\n'.join(self.values)
-
-    @value.setter
-    def value(self, value):
+    def _set_value(self, value):
         self.values = value.splitlines()
+    value = property(_get_value, _set_value)
 
 class SingleField(Field):
-    @property
-    def value(self):
+    def _get_value(self):
         if self.values:
             return self.values[0]
         return None
-
-    @value.setter
-    def value(self, value):
+    def _set_value(self, value):
         self.values = (value,)
-
-    @value.deleter
-    def value(self):
+    def _del_value(self):
         self.values = ()
+    value = property(_get_value, _set_value, _del_value)
 
 class BooleanField(SingleField):
     fieldType = 'boolean'
