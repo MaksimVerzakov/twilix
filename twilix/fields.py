@@ -72,12 +72,20 @@ class IntegerType(StringType):
             
         """
         value = super(IntegerType, self).to_python(value)
-        if value is not None:
-            try:
-                res = int(value)
-            except ValueError:
-                res = None
-            return res
+        try:
+            res = int(value)
+        except (ValueError, TypeError):
+            res = None
+        return res
+
+class FloatType(StringType):
+    def to_python(self, value):
+        value = super(FloatType, self).to_python(value)
+        try:
+            res = float(value)
+        except (ValueError, TypeError):
+            res = None
+        return res
 
 class DateTimeType(StringType):
     """Used for nodes contain date and time info."""
@@ -117,6 +125,9 @@ class DateTimeType(StringType):
 
 class IntegerAttr(IntegerType, AttributeProp):
     """Integer attribute."""
+
+class FloatAttr(IntegerType, AttributeProp):
+    """Float number attribute."""
         
 class StringAttr(StringType, AttributeProp):
     """Plain string attribute."""
@@ -357,4 +368,7 @@ class JidNode(JidType, StringNode):
     pass
 
 class IntegerNode(IntegerType, NodeProp):
+    pass
+
+class FloatNode(FloatType, NodeProp):
     pass
