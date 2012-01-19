@@ -69,6 +69,9 @@ class InitiationQuery(stanzas.StreamHostQuery):
                 iq = self.iq.makeResult()
                 iq.link(used_query)
                 defer.returnValue(iq)
+       
+        self.host.sessions[self.sid]['meta']['deferred'].\
+            errback(errors.ItemNotFoundException)
         raise errors.ItemNotFoundException
 
 class Socks5Stream(protocol.Factory):
@@ -157,7 +160,8 @@ class Socks5Stream(protocol.Factory):
         if addr is not None and self.connections.has_key(addr):
             sid = self.connections[addr]['sid']
             connection = self.connections[addr]['connection']
-            connection.transport.loseConnection()
+            if connection:
+                connection.transport.loseConnection()
             del self.connections[addr]
             return sid
 
@@ -199,6 +203,9 @@ class Socks5Stream(protocol.Factory):
                                 streamhosts=streamhosts,
                                 parent=Iq(type_='set', to=jid, from_=from_))
 
+        # XXX: timeout here
+        # TODO: connect to other proxies
+        # TODO: populate proxies list and streamhosts
         d = self.registerSession(sid, from_, jid, callback, meta=meta)
         try:
             yield self.dispatcher.send(query.iq)

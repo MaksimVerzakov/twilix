@@ -1,4 +1,4 @@
-from twisted.internet import defer
+from twisted.internet import defer, reactor
 
 from twilix.base.velement import VElement
 from twilix import fields
@@ -119,10 +119,11 @@ class SI(object):
         yield stream.requestStream(to, lambda _buf, _meta:None, sid)
         defer.returnValue((stream, sid))
 
-    def receive(self, method, sid, initiator, meta):
+    def receive(self, method, sid, initiator, meta, timeout=60):
         stream = self.streams[method]
         stream.registerSession(sid, initiator, self.dispatcher.myjid,
                                self.stream_cb, meta)
+        meta['timeout'] = TimeOut(timeout, stream, sid)
 
     def stream_cb(self, buf, meta):
         count_size = meta.has_key('size')
@@ -130,11 +131,33 @@ class SI(object):
             if meta.has_key('buf'):
                 meta['buf'].write(buf)
             if count_size:
+                meta['timeout'].reset()
                 meta['bytes_read'] += len(buf)
                 if meta['size'] <= meta['bytes_read']:
+                    meta['timeout'].cancel()
                     meta['deferred'].callback(meta)
             if meta.has_key('receive_cb'):
                 meta['receive_cb'](buf, meta)
         elif count_size and meta['bytes_read'] != meta['size']:
             meta['deferred'].errback(ConnectionAborted)
+            meta['timeout'].cancel()
+        elif not meta['deferred'].called:
+            meta['deferred'].callback(meta)
 
+class TimeOut(object):
+    def __init__(self, timeout, stream, sid):
+        self.timeout = timeout
+        self.stream = stream
+        self.sid = sid
+        self.__timeout_call = None
+    def fire(self):
+        self.stream.unregisterSession(sid=self.sid)
+    def reset(self):
+        if self.__timeout_call is None:
+            self.set()
+        else:
+            self.__timeout_call.reset(self.timeout)
+    def set(self):
+        self.__timeout_call = reactor.callLater(self.timeout, self.fire)
+    def cancel(self):
+        self.__timeout_call.cancel()
