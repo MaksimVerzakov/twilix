@@ -1,3 +1,4 @@
+import sha
 import time
 import hashlib
 import random
@@ -15,10 +16,7 @@ from twilix.bytestreams.socks5 import stanzas
 from twilix.bytestreams.socks5.proxy65 import XEP65Proxy
 from twilix.bytestreams.socks5.socks5 import SOCKSv5Client, STATE_READY
 
-# TODO: activate third party proxy
-
 def hashSID(sid, initiator, target):
-    import sha
     s = (u"%s%s%s" % (sid, initiator, target)).encode('utf-8')
     return sha.new(s).hexdigest()
 
@@ -311,7 +309,6 @@ class Socks5Stream(protocol.Factory):
                                 streamhosts=streamhosts,
                                 parent=Iq(type_='set', to=jid, from_=from_))
 
-        # XXX: timeout here
         d = self.registerSession(sid, from_, jid, callback, meta=meta)
         try:
             result = yield self.dispatcher.send(query)
