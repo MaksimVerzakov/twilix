@@ -50,29 +50,74 @@ class InitiationQuery(stanzas.StreamHostQuery):
         reactor.connectTCP(rhost, port, f)
         return d
 
-    @defer.inlineCallbacks
     def setHandler(self):
         if self.sid not in self.host.sessions:
             raise errors.NotAcceptableException
-        # TODO: check in parallel
-        for streamhost in self.streamhosts:
-            try:
+        deferreds = []
+        time_calls = []
+
+        def _eb(failure, d):
+            """ Errorback for a streamhost candidate """
+            # Remove this deferred from wait list
+            if d is not None:
+                deferreds.remove(d)
+            # If there is no more candidates to check and we still did not
+            # callback then we raise ItemNotFound because we can't connect
+            # to any candidate
+            if not deferreds and not time_calls and not my_defer.called:
+                self.host.sessions[self.sid]['meta']['deferred'].\
+                    errback(errors.ItemNotFoundException())
+                my_defer.errback(errors.ItemNotFoundException())
+                
+        def _cb(result, d, streamhost):
+            """ Callback for a streamhost candidate """
+            # Okay, we've found the candidate, let's generate a reply
+            used = stanzas.StreamHostUsed(jid=streamhost.jid)
+            used_query = stanzas.StreamHostUsedQuery(sid=self.sid,
+                                                     streamhost_used=used)
+            iq = self.iq.makeResult()
+            iq.link(used_query)
+            my_defer.callback(iq)
+
+            # Clean up all ongoing checks
+            for time_call in time_calls:
+                time_call.cancel()
+            for defer in deferreds:
+                defer.cancel()
+        
+        def i():
+            # An iterator which iterates through deferreds to check
+            for streamhost in self.streamhosts:
                 addr = hashSID(self.sid, self.iq.from_, self.iq.to)
-                yield self._startClient(self, streamhost.rhost,
-                                        streamhost.port, addr)
-            except:
-                pass
+                d = self._startClient(self, streamhost.rhost,
+                                      streamhost.port, addr)
+                d.addCallback(_cb, d, streamhost)
+                d.addErrback(_eb, d)
+                deferreds.append(d)
+                yield
+
+        def later(iterator, interval=3):
+            """ Call iterators with a given interval """
+            # Remove earliest time call if it exists
+            if time_calls:
+                time_calls.pop(0)
+            # Iterate to a next streamhost
+            try:
+                iterator.next()
+            except StopIteration:
+                # We don't have to test anything now, call errorback to clean
+                _eb(None, None)
             else:
-                used = stanzas.StreamHostUsed(jid=streamhost.jid)
-                used_query = stanzas.StreamHostUsedQuery(sid=self.sid,
-                                                         streamhost_used=used)
-                iq = self.iq.makeResult()
-                iq.link(used_query)
-                defer.returnValue(iq)
-       
-        self.host.sessions[self.sid]['meta']['deferred'].\
-            errback(errors.ItemNotFoundException)
-        raise errors.ItemNotFoundException
+                # Call next deferred after the interval
+                _later(iterator, interval)
+        def _later(iterator, interval):
+            time_calls.append(reactor.callLater(5, later, iterator))
+        
+        iterator = i()
+        later(iterator)
+
+        my_defer = defer.Deferred()
+        return my_defer
 
 class Socks5Stream(protocol.Factory):
     """ Describe a socks5 (XEP-0060) stream service which allow you
