@@ -197,6 +197,7 @@ class Dispatcher(object):
         """
         deferred = None
         if not isinstance(els, (tuple, list)):
+            els = els.topElement()
             deferred = getattr(els, 'deferred', None)
             els = (els,)
         for el in els:
