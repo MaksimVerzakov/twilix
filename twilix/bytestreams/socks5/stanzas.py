@@ -26,9 +26,6 @@ class StreamHost(VElement):
             raise NotAcceptableException
         return value
 
-class StreamHostQuery(Socks5QueryWithSid):
-    streamhosts = fields.ElementNode(StreamHost, listed=True)
-
 class StreamHostUsed(VElement):
     elementName = 'streamhost-used'
 
@@ -36,4 +33,18 @@ class StreamHostUsed(VElement):
 
 class StreamHostUsedQuery(Socks5QueryWithSid):
     streamhost_used = fields.ElementNode(StreamHostUsed)
+
+class StreamHostQuery(Socks5QueryWithSid):
+    result_class = StreamHostUsedQuery
+
+    streamhosts = fields.ElementNode(StreamHost, listed=True)
+
+class GotStreamHost(Socks5Query):
+    streamhost = fields.ElementNode(StreamHost)
+    
+class GetStreamHostsQuery(Socks5Query):
+    result_class = GotStreamHost
+
+class ActivateQuery(Socks5QueryWithSid):
+    jid = fields.JidNode('activate')
 

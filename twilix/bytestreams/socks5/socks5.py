@@ -87,7 +87,7 @@ class SOCKSv5Client(protocol.Protocol):
 
     def dataReceived(self, buf):
         if self.state == STATE_READY:
-            self.factory.host.host.dataReceived(self.addr, buf)
+            self.factory.host.dataReceived(self.addr, buf)
             return
 
         self.buf += buf
@@ -113,7 +113,7 @@ class SOCKSv5Client(protocol.Protocol):
                 self.transport.loseConnection()
                 return
             self.state = STATE_READY
-            self.factory.host.host.connections[self.addr]['connection'] = self
+            self.factory.host.connections[self.addr]['connection'] = self
             self.factory.deferred.callback(None)
 
 class SOCKSv5Outgoing(protocol.Protocol):

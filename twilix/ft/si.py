@@ -66,4 +66,5 @@ class SIFileTransferProfile(SIProfile):
         req = FTSIRequest(file_=fr, profile=PROFILE_NS)
         stream, sid = yield self.si.initiate(req, to, from_)
         yield FileSender().beginFileTransfer(buf, stream.getTransport(sid))
+        stream.unregisterSession(sid=sid)
 

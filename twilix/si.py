@@ -1,3 +1,5 @@
+import uuid
+
 from twisted.internet import defer, reactor
 
 from twilix.base.velement import VElement
@@ -97,7 +99,7 @@ class SI(object):
 
     @defer.inlineCallbacks
     def initiate(self, request, to, from_=None):
-        fform = FeatureForm(methods=self.streams.keys()) # XXX: order?
+        fform = FeatureForm(methods=self.streams.keys(), type_='form') # XXX: order?
         feature = Feature(methods=fform)
         request.feature = feature
 
@@ -105,7 +107,7 @@ class SI(object):
             from_ = self.dispatcher.myjid
 
         iq = Iq(from_=from_, to=to, type_='set')
-        request.id_ = sid = iq.id # XXX: moar random
+        request.id_ = sid = unicode(uuid.uuid4())
         iq.link(request)
 
         result = yield self.dispatcher.send(iq)
@@ -116,7 +118,8 @@ class SI(object):
 
         method = form.stream_method.value
         stream = self.streams[method]
-        yield stream.requestStream(to, lambda _buf, _meta:None, sid)
+        yield stream.requestStream(to, lambda _buf, _meta:None, sid,
+                                   from_=from_)
         defer.returnValue((stream, sid))
 
     def receive(self, method, sid, initiator, meta, timeout=60):

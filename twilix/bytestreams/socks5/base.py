@@ -1,6 +1,7 @@
 import time
 import hashlib
 import random
+import warnings
 
 from twisted.internet import protocol, reactor, defer, error
 
@@ -35,20 +36,20 @@ class Socks5ClientFactory(protocol.ClientFactory):
 
     def clientConnectionLost(self, connector, reason):
         if self.protocol.state == STATE_READY:
-            self.host.host.dataReceived(self.addr, None)
+            self.host.dataReceived(self.addr, None)
         else:
             self.deferred.errback('connection lost')
 
     def clientConnectionFailed(self, connector, reason):
         self.deferred.errback(reason)
 
-class InitiationQuery(stanzas.StreamHostQuery):
+def _startClient(host, rhost, port, addr):
+    d = defer.Deferred()
+    f = Socks5ClientFactory(host, addr, d)
+    reactor.connectTCP(rhost, port, f)
+    return d
 
-    def _startClient(self, host, rhost, port, addr):
-        d = defer.Deferred()
-        f = Socks5ClientFactory(host, addr, d)
-        reactor.connectTCP(rhost, port, f)
-        return d
+class InitiationQuery(stanzas.StreamHostQuery):
 
     def setHandler(self):
         if self.sid not in self.host.sessions:
@@ -89,8 +90,8 @@ class InitiationQuery(stanzas.StreamHostQuery):
             # An iterator which iterates through deferreds to check
             for streamhost in self.streamhosts:
                 addr = hashSID(self.sid, self.iq.from_, self.iq.to)
-                d = self._startClient(self, streamhost.rhost,
-                                      streamhost.port, addr)
+                d = _startClient(self.host, streamhost.rhost,
+                                 streamhost.port, addr)
                 d.addCallback(_cb, d, streamhost)
                 d.addErrback(_eb, d)
                 deferreds.append(d)
@@ -130,11 +131,12 @@ class Socks5Stream(protocol.Factory):
         self.sessions = {}
         self.connections = {}
         self.port = None
+        self.proxies = {}
 
     def buildProtocol(self, addr):
         return XEP65Proxy(self)
 
-    def init(self, disco=None, ifaces=None):
+    def init(self, disco=None, ifaces=None, port=None):
         """
         Initialize the service: register all necessary handlers and add a
         feature to service discovery.
@@ -144,11 +146,11 @@ class Socks5Stream(protocol.Factory):
             disco.root_info.addFeatures(Feature(var=SOCKS5_NS))
         
         self.dispatcher.registerHandler((InitiationQuery, self))
+        self.disco = disco
         self.streamhosts = []
         self.ifaces = []
-        # XXX: add possibility to define ports/interfaces
         if ifaces is None:
-            ifaces = (('127.0.0.1', random.randint(1024, 65535)),)
+            ifaces = self.__get_my_addresses(port)
         
         for iface in ifaces:
             try:
@@ -157,6 +159,29 @@ class Socks5Stream(protocol.Factory):
                 pass
             else:
                 self.ifaces.append(iface)
+        if self.dispatcher.myjid.user and disco:
+            self.populate_proxies(self.dispatcher.myjid.host)
+
+    def __get_my_addresses(self, port):
+        try:
+            from netifaces import ifaddresses, AF_INET, interfaces
+        except ImportError:
+            warnings.warn(RuntimeWarning, \
+            "Install the netifaces library to be able to gather info about\
+    your IP address to make proxy65 work better")
+            return []
+
+        for ifname in interfaces():
+            addresses = \
+            [i['addr'] for i in ifaddresses(ifname).setdefault(AF_INET,
+                                                        [{'addr': None}]) if \
+                                                                i.get('addr')]
+        ifaces = []
+        if port is None:
+            port = random.randint(1024, 65535)
+        for addr in addresses:
+            ifaces.append((addr, port))
+        return ifaces
 
     def getTransport(self, sid):
         session = self.sessions[sid]
@@ -219,6 +244,35 @@ class Socks5Stream(protocol.Factory):
             del self.sessions[sid]
 
     @defer.inlineCallbacks
+    def populate_proxies(self, server_jid, from_=None):
+        assert self.disco
+        if from_ is None:
+            from_ = self.dispatcher.myjid
+        result = yield self.disco.getItems(server_jid, from_=from_)
+        proxies = []
+        for item in result.items:
+            try:
+                info = yield self.disco.getInfo(item.jid, from_=from_)
+            except errors.ExceptionWithType:
+                continue
+            if filter(lambda i: i.var == SOCKS5_NS, info.features):
+                proxies.append(item.jid)
+        for jid in proxies:
+            try:
+                yield self.examine_proxy(jid, from_)
+            except errors.ExceptionWithType:
+                pass
+
+    @defer.inlineCallbacks
+    def examine_proxy(self, jid, from_):
+        query = stanzas.GetStreamHostsQuery(
+                 parent=Iq(from_=from_, to=jid, type_='get'))
+        result = yield self.dispatcher.send(query)
+        r = result.streamhost
+        result = (r.rhost, r.port)
+        self.proxies[query.iq.to] = result
+
+    @defer.inlineCallbacks
     def requestStream(self, jid, callback, sid=None, meta=None, from_=None):
         """
         Request bytestream session from another entity.
@@ -244,18 +298,35 @@ class Socks5Stream(protocol.Factory):
                                jid=from_,
                                port=iface[1]) for iface in self.ifaces
         ]
+
+        for proxy_jid in self.proxies:
+            proxy = self.proxies[proxy_jid]
+            streamhosts.append(
+                stanzas.StreamHost(rhost=proxy[0],
+                                   port=proxy[1],
+                                   jid=proxy_jid)
+            )
+
         query = stanzas.StreamHostQuery(sid=sid,
                                 streamhosts=streamhosts,
                                 parent=Iq(type_='set', to=jid, from_=from_))
 
         # XXX: timeout here
-        # TODO: connect to other proxies
-        # TODO: populate proxies list and streamhosts
         d = self.registerSession(sid, from_, jid, callback, meta=meta)
         try:
-            yield self.dispatcher.send(query.iq)
+            result = yield self.dispatcher.send(query)
         except:
             self.unregisterSession(sid=sid)
             raise
-        yield d
+        pjid = result.streamhost_used.jid
+        if pjid in self.proxies:
+            proxy = self.proxies[pjid]
+            yield _startClient(self, proxy[0], proxy[1], 
+                               self.sessions[sid]['hash'])
+            query = stanzas.ActivateQuery(jid=jid, sid=sid,
+                        parent=Iq(type_='set', from_=from_,
+                                  to=pjid))
+            yield self.dispatcher.send(query)
+        else:
+            yield d
         defer.returnValue(sid)
