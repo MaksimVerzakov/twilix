@@ -112,6 +112,7 @@ class Dispatcher(object):
                 pass
 
         if el.type_ in ('result', 'error') and self._callbacks.has_key(el.id):
+            # XXX: check sender here
             id = el.id
             deferred, result_class, error_class = self._callbacks[id]
             if result_class is not None and el.type_ == 'result':
