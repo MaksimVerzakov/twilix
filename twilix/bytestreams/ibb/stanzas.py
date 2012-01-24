@@ -1,6 +1,7 @@
-from twilix.stanzas import Query
+from twilix.stanzas import Query, Message
 from twilix import errors
 from twilix import fields
+from twilix.base.velement import VElement
 
 from twilix.bytestreams.ibb import IBB_NS
 
@@ -12,7 +13,7 @@ class OpenQuery(IbbQuery):
 
     block_size = fields.StringAttr('block-size')
     sid = fields.StringAttr('sid')
-    stanza_type = fields.StringAttr('stanza')
+    stanza_type = fields.StringAttr('stanza', required=False)
 
     def clean_block_size(self, value):
         try:
@@ -27,8 +28,9 @@ class OpenQuery(IbbQuery):
             raise errors.BadRequestException
         return value
 
-class DataQuery(IbbQuery):
+class DataElement(VElement):
     elementName = 'data'
+    elementUri = IBB_NS
 
     seq = fields.StringAttr('seq')
     sid = fields.StringAttr('sid')
@@ -40,6 +42,12 @@ class DataQuery(IbbQuery):
             raise errors.BadRequestException
         value = value % 65536
         return value
+
+class DataQuery(DataElement, Query):
+    pass
+
+class MessageDataQuery(DataElement):
+    parentClass = Message
 
 class CloseQuery(IbbQuery):
     elementName = 'close'

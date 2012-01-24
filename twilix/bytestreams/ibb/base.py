@@ -7,16 +7,19 @@ from twisted.internet import defer, reactor
 from twilix.bytestreams import genSID
 from twilix.bytestreams.ibb import IBB_NS
 from twilix.bytestreams.ibb.stanzas import OpenQuery, CloseQuery as CQ,\
-                                            DataQuery as DQ
+                                            DataQuery as DQ,\
+                                            MessageDataQuery as MDQ
 from twilix.jid import internJID
 from twilix.stanzas import Iq
 from twilix import errors
+from twilix.disco import Feature
 
 class PersonsValidator(object):
     def validate_persons(self):
         s = self.host.sessions[self.sid]
         persons = (s['initiator'], s['target'])
-        if self.iq.from_ not in persons or self.iq.to not in persons:
+        top = self.topElement()
+        if top.from_ not in persons or top.to not in persons:
             raise errors.ItemNotFoundException
 
 class InitiationQuery(OpenQuery, PersonsValidator):
@@ -26,6 +29,8 @@ class InitiationQuery(OpenQuery, PersonsValidator):
         self.validate_persons()
         self.host.sessions[self.sid]['block_size'] = self.block_size
         self.host.sessions[self.sid]['active'] = True
+        if self.stanza == 'message':
+            self.host.session[self.sid]['stanza'] = 'message'
         return self.iq.makeResult()
 
 class CloseQuery(CQ, PersonsValidator):
@@ -34,20 +39,18 @@ class CloseQuery(CQ, PersonsValidator):
             not self.host.sessions[self.sid]['active']:
             raise errors.ItemNotFoundException
         self.validate_persons()
-        self.host.dataReceived(self.sid, None)
+        self.host.unregisterSession(sid=self.sid)
         return self.iq.makeResult()
 
-class DataQuery(DQ, PersonsValidator):
-    def setHandler(self):
-        # XXX: message stanzas support
-        # XXX: StringIO support?
+class DataHandler(object):
+    def handler(self):
         if self.sid not in self.host.sessions or \
             not self.host.sessions[self.sid]['active']:
             raise errors.ItemNotFoundException
         self.validate_persons()
         s = self.host.sessions[self.sid]
         c = self.content.strip()
-        if len(c) > s['block_size']:
+        if len(c) > s['block_size'] * 2: 
             raise errors.NotAcceptableException
         if self.seq != s['incoming_seq']:
             raise errors.UnexpectedRequestException
@@ -57,12 +60,76 @@ class DataQuery(DQ, PersonsValidator):
             buf = base64.b64decode(c)
         except TypeError:
             raise errors.BadRequestException
+        if len(buf) > s['block_size']:
+            raise errors.NotAcceptableException
         self.host.dataReceived(self.sid, buf)
-        return self.iq.makeResult()
+        iq = self.iq
+        if iq:
+            return iq.makeResult()
+    
+class DataQuery(DataHandler, DQ, PersonsValidator):
+    def setHandler(self):
+        return self.handler()
+
+class DataMessage(DataHandler, MDQ, PersonsValidator):
+    def anyHandler(self):
+        if self.topElement().type_ != 'error':
+            return self.handler()
+
+class Transport(object):
+    def __init__(self, sid, session, dispatcher, interval):
+        self.session = session
+        self.dispatcher = dispatcher
+        self.sid = sid
+        self.producer = None
+        self.interval = interval
+        self.buf = ''
+        self._produce()
+        
+    def write(self, buf):
+        self.buf += buf
+
+    @defer.inlineCallbacks
+    def _write(self):
+        # XXX: Error handling
+        if not self.session['active']:
+            defer.returnValue(None)
+        toSend = self.buf[:self.session['block_size']]
+        self.buf = self.buf[self.session['block_size']:]
+        toSend = base64.b64encode(toSend)
+        dq = DQ(seq=self.session['outgoing_seq'],
+                sid=self.sid,
+                parent=Iq(to=self.session['initiator'],
+                          from_=self.session['target'],
+                          type_='set'))
+        self.session['outgoing_seq'] += 1
+        if self.session['is_outgoing']:
+            dq.iq.swapAttributeValues('to', 'from')
+        dq.content = toSend
+        if self.session['wait_for_result_when_send']:
+            yield self.dispatcher.send(dq.iq)
+        else:
+            self.dispatcher.send(dq.iq)
+
+    def registerProducer(self, producer, streaming):
+        assert streaming == False
+        self.producer = producer
+        self._produce()
+    
+    def _produce(self):
+        if self.buf:
+            self._write()
+        elif self.producer:
+            self.producer.resumeProducing()
+        reactor.callLater(self.interval, self._produce)
+
+    def unregisterProducer(self):
+        self.producer = None
 
 class IbbStream(object):
     """ Describe a in-band bytestream service which allow you
         to pass binary data through an XML-stream. """
+    NS = IBB_NS
 
     def __init__(self, dispatcher, send_interval=1):
         self.dispatcher = dispatcher
@@ -71,68 +138,31 @@ class IbbStream(object):
         
     def init(self, disco=None):
         if disco is not None:
-            self.disco.root_info.addFeatures(Feature(var=IBB_NS))
+            disco.root_info.addFeatures(Feature(var=IBB_NS))
 
         self.dispatcher.registerHandler((InitiationQuery, self))
         self.dispatcher.registerHandler((DataQuery, self))
+        self.dispatcher.registerHandler((DataMessage, self))
         self.dispatcher.registerHandler((CloseQuery, self))
 
-    def dataReceived(self, sid, buf):
+    def dataReceived(self, sid, buf, dont_unregister=False):
         session = self.sessions[sid]
         session['callback'](buf, session['meta'])
-        if buf is None:
+        if buf is None and not dont_unregister:
             self.unregisterSession(sid=sid)
 
     def dataSend(self, sid, buf):
-        if self.sessions[sid]['active']:
-            self.sessions[sid]['buf'] += buf
+        t = self.getTransport(sid)
+        if t:
+            t.write(buf)
             return True
+
+    def getTransport(self, sid):
+        if self.sessions[sid]['active']:
+            return self.sessions[sid]['transport']
 
     def isActive(self, sid):
         return self.sessions[sid]['active']
-
-    @defer.inlineCallbacks
-    def _dataSend(self, sid):
-        # XXX: Error handling
-        s = self.sessions[sid]
-        if not s['active']:
-            return
-        if not s['buf']:
-            if s['closing']:
-                self._unregisterConnection(sid)
-            return
-        toSend = ''
-        i = 0
-        l = 0
-        while True:
-            chunk = s['buf'][i * 100:i * 100 + 100]
-            e = base64.b64encode(chunk)
-            new_l = len(e)
-            if l + new_l > s['block_size'] or not chunk:
-                break
-            i += 1
-            toSend += chunk
-            l += new_l
-        toSend = base64.b64encode(toSend)
-        s['buf'] = s['buf'][i * 100:]
-        dq = DQ(seq=s['outgoing_seq'],
-                sid=sid,
-                parent=Iq(to=s['initiator'],
-                          from_=s['target'],
-                          type_='set'))
-        s['outgoing_seq'] += 1
-        if s['is_outgoing']:
-            dq.iq.swapAttributeValues('to', 'from')
-        dq.content = toSend
-        if s['wait_for_result_when_send']:
-            yield self.dispatcher.send(dq.iq)
-        else:
-            self.dispatcher.send(dq.iq)
-        
-        if s['buf']:
-            reactor.callWhenRunning(self._dataSend, sid)
-        else:
-            reactor.callLater(self.send_interval, self._dataSend, sid)
 
     def registerSession(self, sid, initiator, target, callback, meta=None,
                         block_size=None, stanza_type='iq',
@@ -155,37 +185,38 @@ class IbbStream(object):
             'incoming_seq': 0,
             'outgoing_seq': 0,
             'wait_for_result_when_send': wait_for_result_when_send,
-            'buf': '',
             'is_outgoing': False,
-            'closing': False,
+            'stanza': 'iq',
         }
+        meta['transport'] = Transport(sid, meta, self.dispatcher,
+                                      self.send_interval)
         self.sessions[sid] = meta
-        reactor.callLater(self.send_interval, self._dataSend, sid)
         return meta
 
     def unregisterConnection(self, sid):
         s = self.sessions[sid]
         if not s['active']:
             return
-        s['closing'] = True
+        self.dataReceived(sid, None, dont_unregister=True)
+        self._unregisterConnection(sid)
 
     def _unregisterConnection(self, sid):
         s = self.sessions[sid]
-        if not s['closing']:
-            return
         cq = CQ(sid=sid,
                 parent=Iq(to=s['initiator'],
                           from_=s['target'],
                           type_='set'))
         if s['is_outgoing']:
             cq.iq.swapAttributeValues('to', 'from')
+        self.getTransport(sid).unregisterProducer()
+        s['active'] = False
+        del self.sessions[sid]
         return self.dispatcher.send(cq.iq)
 
     def unregisterSession(self, sid):
         if self.sessions.has_key(sid):
             s = self.sessions[sid]
             self.unregisterConnection(sid)
-            del self.sessions[sid]
             return True
 
     @defer.inlineCallbacks
@@ -208,7 +239,6 @@ class IbbStream(object):
 
         :param block_size: block size to use with the connection.
         """
-        # XXX: generate sid
         if from_ is None:
             from_ = self.dispatcher.myjid
 

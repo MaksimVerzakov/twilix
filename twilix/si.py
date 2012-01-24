@@ -1,4 +1,5 @@
 import uuid
+from UserDict import UserDict
 
 from twisted.internet import defer, reactor
 
@@ -75,10 +76,28 @@ class SIProfile(object):
     def __init__(self, si):
         self.si = si
 
+class Streams(UserDict):
+    def __init__(self):
+        UserDict.__init__(self)
+        self._keys = []
+
+    def __setitem__(self, key, value):
+        self._keys.append(key)
+        UserDict.__setitem__(self, key, value)
+
+    def __delitem__(self, key):
+        UserDict.__delitem__(self, key)
+        self._keys.remove(key)
+
+    def keys(self):
+        return self._keys
+
 class SI(object):
     def __init__(self, dispatcher, streams):
         self.dispatcher = dispatcher
-        self.streams = dict([(stream.NS, stream) for stream in streams])
+        self.streams = Streams()
+        for stream in streams:
+            self.streams[stream.NS] = stream
 
     def init(self, disco=None, iq_validator=None):
         self.iq_validator = iq_validator
@@ -99,7 +118,7 @@ class SI(object):
 
     @defer.inlineCallbacks
     def initiate(self, request, to, from_=None):
-        fform = FeatureForm(methods=self.streams.keys(), type_='form') # XXX: order?
+        fform = FeatureForm(methods=self.streams.keys(), type_='form')
         feature = Feature(methods=fform)
         request.feature = feature
 
@@ -114,7 +133,6 @@ class SI(object):
         form = FeatureForm.createFromElement(result.feature.methods,
                                              methods=self.streams.keys())
         form.validate()
-                                            # XXX: order?
 
         method = form.stream_method.value
         stream = self.streams[method]
@@ -154,6 +172,7 @@ class TimeOut(object):
         self.sid = sid
         self.__timeout_call = None
     def fire(self):
+        self.__timeout_call = None
         self.stream.unregisterSession(sid=self.sid)
     def reset(self):
         if self.__timeout_call is None:
@@ -163,4 +182,6 @@ class TimeOut(object):
     def set(self):
         self.__timeout_call = reactor.callLater(self.timeout, self.fire)
     def cancel(self):
-        self.__timeout_call.cancel()
+        if self.__timeout_call:
+            self.__timeout_call.cancel()
+            self.__timeout_call = None
