@@ -5,6 +5,8 @@ There are Message, Presence, Iq classes inherit from Stanza.
 Stanzas can be used for incoming stanzas validation and parsing and to
 construct your own XML-stanza to be sent into an xmlstream.
 """
+import uuid
+
 from twisted.internet.defer import Deferred
 from twisted.words.xish.domish import Element
 
@@ -118,8 +120,7 @@ class Iq(Stanza):
         
         """
         if 'id' not in kwargs:
-            kwargs['id'] = 'H_%s' % Element._idCounter
-            Element._idCounter += 1
+            kwargs['id'] = uuid.uuid4()
         super(Iq, self).__init__(**kwargs)
         if not self.type_ in ('result', 'error') and \
             not kwargs.get('dont_defer', False):
