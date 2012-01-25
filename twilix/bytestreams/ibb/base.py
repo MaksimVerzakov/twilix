@@ -66,6 +66,7 @@ class DataHandler(object):
         iq = self.iq
         if iq:
             return iq.makeResult()
+        # XXX: return EmptyStanza here?
     
 class DataQuery(DataHandler, DQ, PersonsValidator):
     def setHandler(self):
