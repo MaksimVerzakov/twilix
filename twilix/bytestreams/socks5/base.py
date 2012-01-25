@@ -164,9 +164,9 @@ class Socks5Stream(protocol.Factory):
         try:
             from netifaces import ifaddresses, AF_INET, interfaces
         except ImportError:
-            warnings.warn(RuntimeWarning, \
+            warnings.warn(
             "Install the netifaces library to be able to gather info about\
-    your IP address to make proxy65 work better")
+    your IP address to make proxy65 work better", RuntimeWarning)
             return []
 
         for ifname in interfaces():
