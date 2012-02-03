@@ -114,6 +114,21 @@ class ExceptionWithContent(ExceptionWithType):
                              text=self.reason,
                              type_=self.type)
 
+    def __unicode__(self):
+        text = u''
+        if self.content.text:
+            text = u', text: %s' % (self.content.text,)
+        return u'<XMPP %s%s, type: %s>' % (
+                self.__class__.__name__,
+                text,
+                self.content.type_)
+
+    def __repr__(self):
+        return self.__unicode__()
+
+    def __str__(self):
+        return str(self.__unicode__())
+
 class ExceptionWithAppCondition(ExceptionWithType):
     """
     Extends class ExceptionWithType.
