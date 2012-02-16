@@ -111,6 +111,8 @@ class VElement(MyElement):
             True if elements are equal.
             
         """
+        if isinstance(other, (str, unicode)):
+            return False
         if self.uri != other.uri or self.name != other.name:
             return False
         for attr in self.attributesProps:

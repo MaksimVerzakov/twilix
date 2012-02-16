@@ -388,6 +388,8 @@ class MyElement(Element):
         transits = ('result_class', 'error_class', 'dispatcher')
         for transit in transits:
             t = getattr(el, transit, None)
+            if t == 'self':
+                t = el
             if t is not None:
                 setattr(self, transit, t)
 
