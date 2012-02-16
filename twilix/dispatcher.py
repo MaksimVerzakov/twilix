@@ -222,6 +222,13 @@ class Dispatcher(object):
                 if isinstance(el, (EmptyStanza, BreakStanza)):
                     return
             if el.type_ in ('set', 'get') and el.deferred is not None:
-                self._callbacks[el.id] = (el.deferred, el.result_class, el.error_class)
+                result_class = el.result_class
+                if result_class == 'self':
+                    result_class = el
+                error_class = el.error_class
+                if error_class == 'self':
+                    error_class = el
+                self._callbacks[el.id] = (el.deferred, result_class, 
+                                                       error_class)
             self.xmlstream.send(top_el)
         return deferred
