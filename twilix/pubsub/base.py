@@ -20,6 +20,9 @@ class PublishElement(VElement):
     node = fields.StringAttr('node')
     item = fields.ElementNode(Item)
 
+class PublishQuery(Query):
+    publish = fields.ElementNode(PublishElement)
+
 class SubscribeElement(VElement):
     elementName = 'subscribe'
 
