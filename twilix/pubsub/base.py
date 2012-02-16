@@ -21,6 +21,8 @@ class PublishElement(VElement):
     item = fields.ElementNode(Item)
 
 class PublishQuery(Query):
+    result_class = 'self'
+
     publish = fields.ElementNode(PublishElement)
 
 class SubscribeElement(VElement):
