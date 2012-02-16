@@ -361,6 +361,11 @@ class ElementNode(NodeProp):
             return                                 #XXX: EmptyElement()?
         return self.cls.createFromElement(value)
 
+    def clean_set(self, value):
+        if isinstance(value, dict):
+            return self.cls(**value)
+        return value
+
 class BooleanNode(BooleanType, StringNode):
     pass
 
