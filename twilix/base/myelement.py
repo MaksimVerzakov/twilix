@@ -4,12 +4,21 @@ from twilix.base.exceptions import ElementParseError, WrongElement
 
 class EmptyStanza(object):   
     """Dummy stanza to send when nothing to send."""
+    # TODO: slots?
     def __nonzero__(self):
         return False
 
 class EmptyElement(object):
     """Dummy Element."""
-    pass
+    name = None
+    uri = None
+
+    def __nonzero__(self):
+        return False
+    def __unicode__(self):
+        return u''
+    def __init__(self, parent=None, *args, **kwargs):
+        self.parent = parent
 
 class BreakStanza(object):   
     """Stanza that breaks handling loop."""
@@ -75,7 +84,15 @@ class MyElement(Element):
         parentClass = getattr(cls, 'parentClass', None)
         if parentClass:
             p = parentClass.createFromElement(el, **kwargs)
-            r = cls._createFromElement(p.firstChildElement(), **kwargs)
+            to_check = p.firstChildElement()
+            r = EmptyElement()
+            if to_check:
+                try:
+                    r = cls._createFromElement(to_check, **kwargs)
+                except WrongElement:
+                    pass
+            if not r and getattr(cls, 'isRequired', True):
+                raise WrongElement
             p.link(r)
         else:
             r = cls._createFromElement(el, **kwargs)
@@ -88,9 +105,8 @@ class MyElement(Element):
                 raise WrongElement
         elif el is None:
             raise WrongElement
-        else:
-            if cls.elementUri is not None and el.uri != cls.elementUri:
-                raise WrongElement
+        elif cls.elementUri is not None and el.uri != cls.elementUri:
+            raise WrongElement
         if cls.elementName is not None and el.name != cls.elementName:
             raise WrongElement
         for name, attr in cls.attributesProps.items():
@@ -384,12 +400,5 @@ class MyElement(Element):
         if not dont_clean:
             self.removeChilds(el.name, el.uri)
         self.addChild(el)
+        el.parent = self
         self._links.append(el)
-        transits = ('result_class', 'error_class', 'dispatcher')
-        for transit in transits:
-            t = getattr(el, transit, None)
-            if t == 'self':
-                t = el
-            if t is not None:
-                setattr(self, transit, t)
-

@@ -198,8 +198,6 @@ class Dispatcher(object):
         """
         deferred = None
         if not isinstance(els, (tuple, list)):
-            els = els.topElement()
-            deferred = getattr(els, 'deferred', None)
             els = (els,)
         for el in els:
             if isinstance(el, (EmptyStanza, BreakStanza)):
@@ -221,14 +219,12 @@ class Dispatcher(object):
                 el = func()
                 if isinstance(el, (EmptyStanza, BreakStanza)):
                     return
-            if el.type_ in ('set', 'get') and el.deferred is not None:
-                result_class = el.result_class
-                if result_class == 'self':
-                    result_class = el
-                error_class = el.error_class
-                if error_class == 'self':
-                    error_class = el
-                self._callbacks[el.id] = (el.deferred, result_class, 
-                                                       error_class)
+            if top_el.type_ in ('set', 'get') and top_el.deferred is not None:
+                deferred = top_el.deferred
+                result_class = top_el.result_class
+                error_class = top_el.error_class
+                assert result_class != 'self'
+                assert error_class != 'self'
+                self._callbacks[top_el.id] = (deferred, result_class, error_class)
             self.xmlstream.send(top_el)
         return deferred

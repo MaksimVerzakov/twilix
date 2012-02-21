@@ -20,6 +20,7 @@ def get_declared_fields(bases, attrs):
     node_fields = [(field_name, attrs.pop(field_name)) for field_name, obj in \
                     attrs.items() if isinstance(obj, fields.NodeProp)]
 
+    # TODO: don't allow fields starts with _ also.
     for field_name, _ in attr_fields + node_fields:
         if hasattr(VElement, field_name):
             raise ValueError, "Can not construct element with the %s \
@@ -41,6 +42,17 @@ class DeclarativeFieldsMetaClass(type):
     def __new__(cls, name, bases, attrs):
         attrs['attributesProps'], attrs['nodesProps'] = \
               get_declared_fields(bases, attrs)
+
+        _descriptors = attrs.get('_descriptors')
+        if not _descriptors:
+            for base in bases[::-1]:
+                _descriptors = getattr(base, '_descriptors', None)
+                if _descriptors is not None:
+                    break
+
+        for descriptor in _descriptors:
+            if attrs.has_key(descriptor):
+                attrs['_%s' % (descriptor,)] = attrs.pop(descriptor)
 
         new_class = super(DeclarativeFieldsMetaClass, cls).__new__(cls, name,
                                                                 bases, attrs)
@@ -69,9 +81,12 @@ class VElement(MyElement):
     children = None
     attributes = None
     defaultUri = None
+    parentClass = None
     result_class = None
     error_class = None
+    isRequired = True
     dispatcher = None
+    _descriptors = ('result_class', 'error_class', 'dispatcher')
 
     __metaclass__ = DeclarativeFieldsMetaClass
 
@@ -90,7 +105,16 @@ class VElement(MyElement):
                                        localPrefixes=self.elementPrefixes)
         self.host = kwargs.get('host', None)
         self.parent = kwargs.get('parent', None)
-        self.dispatcher = kwargs.get('dispatcher', None)
+        try:
+            self._dispatcher = kwargs['dispatcher']
+        except KeyError:
+            pass
+        top = kwargs.get('top', None)
+        if getattr(self.parentClass, 'parentClass', None) is None:
+            if self.parent is None:
+                self.parent = top
+        elif self.parent is None and top is not None:
+            self.parent = self.parentClass(top=top)
         if self.parent is not None:
             self.parent.link(self)
         for attr in self.attributesProps:
@@ -101,6 +125,20 @@ class VElement(MyElement):
             value = kwargs.get(attr, None)
             if value is not None or node.default is not None:
                 setattr(self, attr, value)
+
+    def __getattr__(self, key, *args, **kwargs):
+        if key in self._descriptors:
+            value = getattr(self, '_%s' % (key,), None)
+            if value == 'self':
+                value = self
+            if value is not None and not self._links:
+                return value
+            for link in self._links:
+                _value = getattr(link, key, None)
+                if _value is not None:
+                    return _value
+            return value
+        return super(VElement, self).__getattr__(key, *args, **kwargs)
 
     def __eq__(self, other):
         """

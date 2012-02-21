@@ -20,15 +20,6 @@ class PublishElement(VElement):
     node = fields.StringAttr('node')
     item = fields.ElementNode(Item)
 
-class PQuery(Query):
-    elementName = 'pubsub'
-    elementUri = 'http://jabber.org/protocol/pubsub'
-
-class PublishQuery(PQuery):
-    result_class = 'self'
-
-    publish = fields.ElementNode(PublishElement)
-
 class SubscribeElement(VElement):
     elementName = 'subscribe'
 

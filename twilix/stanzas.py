@@ -101,7 +101,7 @@ class ErrorStanza(Stanza):
         
     """
     error = fields.ElementNode(Error)
-Stanza.error_class = ErrorStanza
+Stanza._error_class = ErrorStanza
 
 class Iq(Stanza):
     """

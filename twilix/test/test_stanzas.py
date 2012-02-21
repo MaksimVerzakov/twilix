@@ -112,8 +112,9 @@ class TestQuery(unittest.TestCase):
         self.query = stanzas.Query()
 
     def test_resultClasses(self):
-        self.assertEqual(stanzas.Iq.result_class, None)
-        self.assertEqual(stanzas.Iq.error_class, stanzas.ErrorStanza)
+        iq = stanzas.Iq(type_='set')
+        self.assertEqual(iq.result_class, None)
+        self.assertEqual(iq.error_class, stanzas.ErrorStanza)
             
     def test_createFromElement(self):
         func = self.query.createFromElement
