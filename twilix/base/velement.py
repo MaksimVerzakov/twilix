@@ -173,3 +173,7 @@ class VElement(MyElement):
         """Return valid iq when it's requested."""
         return self.topElement()
 
+    def makeResult(self):
+        assert self._result_class
+        result = self._result_class(top=self.iq.makeResult())
+        return result
