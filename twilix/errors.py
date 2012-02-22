@@ -100,8 +100,11 @@ class ExceptionWithType(Exception):
         self.reason = reason
         self.type = type
         if self.type == None:
-            self.type =  conditions[self.condition]
+            self.type = conditions[self.condition]
         super(ExceptionWithType, self).__init__(*args, **kwargs)
+
+    def __unicode__(self):
+        return self.reason
 
 class ExceptionWithContent(ExceptionWithType):
     """
