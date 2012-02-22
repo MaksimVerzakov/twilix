@@ -168,3 +168,8 @@ class VElement(MyElement):
         """
         return not self.__eq__(other)
 
+    @property
+    def iq(self):
+        """Return valid iq when it's requested."""
+        return self.topElement()
+

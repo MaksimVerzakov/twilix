@@ -260,8 +260,3 @@ class Query(VElement):
 
     node = fields.StringAttr('node', required=False)
 
-    @property
-    def iq(self):
-        """Return valid iq when it's requested."""
-        return self.topElement()
-
