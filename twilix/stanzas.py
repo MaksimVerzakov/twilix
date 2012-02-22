@@ -55,9 +55,9 @@ class Stanza(VElement):
         """
         super(Stanza, self).__init__(*args, **kwargs)
         if 'result_class' in kwargs:
-            self.result_class = kwargs['result_class']
+            self._result_class = kwargs['result_class']
         if 'error_class' in kwargs:
-            self.error_class = kwargs['error_class']
+            self._error_class = kwargs['error_class']
 
     def __unicode__(self):
         """Overrrides unicode converter."""
