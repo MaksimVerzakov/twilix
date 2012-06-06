@@ -1,4 +1,5 @@
 from twilix.base import VElement
+from twilix.stanzas import Message
 
 class Delay(VElement):
     """
@@ -6,3 +7,5 @@ class Delay(VElement):
     """
     elementName = 'delay'
     elementUri = 'urn:xmpp:delay'
+    
+    parentClass = Message
