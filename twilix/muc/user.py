@@ -1,7 +1,7 @@
 from pydispatch import dispatcher
 
 from twilix.stanzas import Presence
-from twilix.base import VElement
+from twilix.base.velement import VElement
 from twilix import fields
 
 class UserItemInfo(VElement):

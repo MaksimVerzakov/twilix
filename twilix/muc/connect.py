@@ -1,5 +1,5 @@
 from twilix.stanzas import Presence
-from twilix.base import VElement
+from twilix.base.velement import VElement
 
 class ConnectPresence(VElement):
     """

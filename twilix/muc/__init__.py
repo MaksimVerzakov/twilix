@@ -1,8 +1,5 @@
-from pydispatch import dispatcher
-
 from twilix.stanzas import Presence, Iq
-from twilix.base import VElement, MyElement
-from twilix import fields
+from twilix.base.myelement import MyElement
 from twilix.jid import internJID
 
 from .user import UserPresence, UserItemInfo
@@ -21,6 +18,7 @@ class MultiChat(object):
     def __init__(self, dispatcher):
         """Setup global configuration"""
         self.dispatcher = dispatcher
+        self.init()
         
     def init(self):
         """Makes some initialization actions"""
@@ -135,6 +133,4 @@ class MultiChat(object):
         iq = Iq(type_='get', to=room_jid, from_=self.dispatcher.myjid)
         i = UserItemInfo(role=role, affiliation=affiliation)
         return makeAdminQuery(i, iq, self.dispatcher)
-        
-
 
