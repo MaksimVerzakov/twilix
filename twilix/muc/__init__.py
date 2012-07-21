@@ -18,7 +18,6 @@ class MultiChat(object):
     def __init__(self, dispatcher):
         """Setup global configuration"""
         self.dispatcher = dispatcher
-        self.init()
         
     def init(self):
         """Makes some initialization actions"""
